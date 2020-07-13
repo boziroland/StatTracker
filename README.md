@@ -26,3 +26,25 @@ A felhasználók publikusan elérhető adatai alatt lesz egy kommentszekció is,
 |15|normál|A felhasználók adatai alatt lesz egy kommentszekció, melybe lehetséges lesz majd megjegyzéseket fűzni|
 
 # Tervek
+
+## Entitások
+
+* Felhasználó
+* API-ok
+* Mérföldkő
+* Kommentszekció
+* Komment
+
+## Use-case diagram
+
+![alt text](diagrams/usecase.png "Use-case diagram")
+
+## Osztálydiagram
+
+![alt text](diagrams/class.png "Class diagram")
+
+## Szekvenciadiagramok
+
+![alt text](diagrams/seq1.png "Sequence diagram")
+![alt text](diagrams/seq2.png "Sequence diagram")
+
