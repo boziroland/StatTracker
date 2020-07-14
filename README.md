@@ -45,7 +45,10 @@ A felhasználók publikusan elérhető adatai alatt lesz egy kommentszekció is,
 
 ## Szekvenciadiagramok
 
-![alt text](diagrams/seq1.png "Sequence diagram")
-![alt text](diagrams/seq2.png "Sequence diagram")
-![alt text](diagrams/seq3.png "Sequence diagram")
+### Adatok lekérése korábbi autentikációval
+![alt text](diagrams/seq1.png "Retrieving data with previous authentication")
+### Adatok lekérése OAuth-tal
+![alt text](diagrams/seq2.png "Retrieving data with OAuth")
+### Mérföldkő elérésének elenőrzése és email küldése
+![alt text](diagrams/seq3.png "Milestone check and send email")
 
