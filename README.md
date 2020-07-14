@@ -47,4 +47,5 @@ A felhasználók publikusan elérhető adatai alatt lesz egy kommentszekció is,
 
 ![alt text](diagrams/seq1.png "Sequence diagram")
 ![alt text](diagrams/seq2.png "Sequence diagram")
+![alt text](diagrams/seq3.png "Sequence diagram")
 
