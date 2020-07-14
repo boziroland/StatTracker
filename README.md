@@ -41,7 +41,7 @@ A felhasználók publikusan elérhető adatai alatt lesz egy kommentszekció is,
 
 ## Osztálydiagram
 
-![alt text](diagrams/class.png "Class diagram")
+![alt text](diagrams/class.svg "Class diagram")
 
 ## Szekvenciadiagramok
 
