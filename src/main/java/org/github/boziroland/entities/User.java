@@ -12,17 +12,17 @@ public class User {
     private List<Milestone> milestones;
     private List<Comment> comments;
 
-    private LeaguePlayer leaguePlayer;
+    private LeagueData leagueData;
     private SpecificAPIData1 specificPlayer;
 
-    public User(int ID, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeaguePlayer leaguePlayer, SpecificAPIData1 specificPlayer) {
+    public User(int ID, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeagueData leagueData, SpecificAPIData1 specificPlayer) {
         this.ID = ID;
         this.name = name;
         this.password = password;
         this.email = email;
         this.milestones = milestones;
         this.comments = comments;
-        this.leaguePlayer = leaguePlayer;
+        this.leagueData = leagueData;
         this.specificPlayer = specificPlayer;
     }
 
@@ -70,12 +70,12 @@ public class User {
         this.comments = comments;
     }
 
-    public LeaguePlayer getLeaguePlayer() {
-        return leaguePlayer;
+    public LeagueData getLeagueData() {
+        return leagueData;
     }
 
-    public void setLeaguePlayer(LeaguePlayer leaguePlayer) {
-        this.leaguePlayer = leaguePlayer;
+    public void setLeagueData(LeagueData leagueData) {
+        this.leagueData = leagueData;
     }
 
     public SpecificAPIData1 getSpecificPlayer() {
@@ -97,12 +97,12 @@ public class User {
                 Objects.equals(email, user.email) &&
                 Objects.equals(milestones, user.milestones) &&
                 Objects.equals(comments, user.comments) &&
-                Objects.equals(leaguePlayer, user.leaguePlayer) &&
+                Objects.equals(leagueData, user.leagueData) &&
                 Objects.equals(specificPlayer, user.specificPlayer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, name, password, email, milestones, comments, leaguePlayer, specificPlayer);
+        return Objects.hash(ID, name, password, email, milestones, comments, leagueData, specificPlayer);
     }
 }

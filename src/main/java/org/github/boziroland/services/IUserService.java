@@ -21,10 +21,10 @@ public interface IUserService{
      * @param email The user's email
      * @param milestones The user's milestones
      * @param comments The user's comments
-     * @param leaguePlayer The user's League account
+     * @param leagueData The user's League account
      * @param specificPlayer The user's <i>Specific</i> account
      */
-    void createOrUpdate(int id, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeaguePlayer leaguePlayer, SpecificAPIData1 specificPlayer);
+    void createOrUpdate(int id, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeagueData leagueData, SpecificAPIData1 specificPlayer);
 
     /**
      * Finds a user by their ID
@@ -63,12 +63,12 @@ public interface IUserService{
      * @param email The user's email
      * @param milestones The user's milestones
      * @param comments The user's comments
-     * @param leaguePlayer The user's League account
+     * @param leagueData The user's League account
      * @param specificPlayer The user's <i>Specific</i> account
      */
-    void delete(int id, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeaguePlayer leaguePlayer, SpecificAPIData1 specificPlayer);
+    void delete(int id, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeagueData leagueData, SpecificAPIData1 specificPlayer);
 
-    void requestInformation(GeneralAPIData gap);
+    void requestInformation(int id, GeneralAPIData gap);
 
-    void sendEmail();
+    void sendEmail(int id);
 }

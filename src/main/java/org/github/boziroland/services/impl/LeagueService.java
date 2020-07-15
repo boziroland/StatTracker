@@ -3,7 +3,7 @@ package org.github.boziroland.services.impl;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import org.github.boziroland.DAL.ILeagueDAO;
-import org.github.boziroland.entities.LeaguePlayer;
+import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.services.ILeagueService;
 
 import java.util.List;
@@ -19,21 +19,21 @@ public class LeagueService implements ILeagueService {
 
     @Override
     public void createOrUpdate(Summoner player, List<MatchReference> lastTenMatches) {
-        dao.createOrUpdate(new LeaguePlayer(player, lastTenMatches));
+        dao.createOrUpdate(new LeagueData(player, lastTenMatches));
     }
 
     @Override
-    public List<LeaguePlayer> findByusername(String name) {
+    public List<LeagueData> findByusername(String name) {
         return dao.findByuserName(name);
     }
 
     @Override
-    public Optional<LeaguePlayer> findByuserID(String id) {
+    public Optional<LeagueData> findByuserID(String id) {
         return dao.findByUserId(id);
     }
 
     @Override
-    public List<LeaguePlayer> list() {
+    public List<LeagueData> list() {
         return dao.list();
     }
 

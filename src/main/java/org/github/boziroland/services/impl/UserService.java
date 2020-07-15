@@ -16,9 +16,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void createOrUpdate(int id, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeaguePlayer leaguePlayer, SpecificAPIData1 specificPlayer) {
+    public void createOrUpdate(int id, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeagueData leagueData, SpecificAPIData1 specificPlayer) {
 
-        User user = new User(id, name, password, email, milestones, comments, leaguePlayer, specificPlayer);
+        User user = new User(id, name, password, email, milestones, comments, leagueData, specificPlayer);
 
         //TODO itt le lehetne kérdezni napi 1x a felhasználó adatait
         //TODO viszont akkor talán egy időt is kéne felhasználónként tárolni, hogy neki mikor kérdezzük
@@ -50,17 +50,34 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void delete(int id, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeaguePlayer leaguePlayer, SpecificAPIData1 specificPlayer) {
-        dao.delete(new User(id, name, password, email, milestones, comments, leaguePlayer, specificPlayer));
+    public void delete(int id, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeagueData leagueData, SpecificAPIData1 specificPlayer) {
+        dao.delete(new User(id, name, password, email, milestones, comments, leagueData, specificPlayer));
     }
 
     @Override
-    public void requestInformation(GeneralAPIData gap) {
+    public void requestInformation(int id, GeneralAPIData gap) {
+        var user = dao.findById(id);
 
+        if(user.isPresent()){
+            //TODO request information
+        }else{
+            throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
+        }
     }
 
     @Override
-    public void sendEmail() {
+    public void sendEmail(int id) {
+        var user = dao.findById(id);
 
+        if(user.isPresent()){
+            var userEmail = user.get().getEmail();
+            if(userEmail != null){
+                //TODO send email
+            }else{
+                throw new NullPointerException("Nincs megadva email cím!");
+            }
+        }else{
+            throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
+        }
     }
 }

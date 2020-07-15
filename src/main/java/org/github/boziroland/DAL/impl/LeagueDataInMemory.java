@@ -1,22 +1,22 @@
 package org.github.boziroland.DAL.impl;
 
 import org.github.boziroland.DAL.ILeagueDAO;
-import org.github.boziroland.entities.LeaguePlayer;
+import org.github.boziroland.entities.LeagueData;
 
 import java.util.*;
 
 public class LeagueDataInMemory implements ILeagueDAO {
 
-    Map<String, LeaguePlayer> idPlayerMap = new HashMap<>();
+    Map<String, LeagueData> idPlayerMap = new HashMap<>();
 
     @Override
-    public void createOrUpdate(LeaguePlayer player) {
+    public void createOrUpdate(LeagueData player) {
         idPlayerMap.put(player.getPlayer().getAccountId(), player);
     }
 
     @Override
-    public List<LeaguePlayer> findByuserName(String name) {
-        var ret = new ArrayList<LeaguePlayer>();
+    public List<LeagueData> findByuserName(String name) {
+        var ret = new ArrayList<LeagueData>();
 
         for(var player : idPlayerMap.entrySet()){
             var currentPlayer = player.getValue();
@@ -28,12 +28,12 @@ public class LeagueDataInMemory implements ILeagueDAO {
     }
 
     @Override
-    public Optional<LeaguePlayer> findByUserId(String id) {
+    public Optional<LeagueData> findByUserId(String id) {
         return Optional.ofNullable(idPlayerMap.get(id));
     }
 
     @Override
-    public List<LeaguePlayer> list() {
+    public List<LeagueData> list() {
         return new ArrayList<>(idPlayerMap.values());
     }
 
