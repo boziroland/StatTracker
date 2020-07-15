@@ -10,9 +10,18 @@ public class User {
     private String email;
     private List<Milestone> milestones;
     private List<Comment> comments;
+    private CommentSection commentSection;
 
     private LeaguePlayer leaguePlayer;
     private SpecificAPIData1 specificPlayer;
+
+    public void requestInformationGeneralAPIData(GeneralAPIData gap){
+        //TODO
+    }
+
+    public void sendEmail(){
+        //TODO
+    }
 
     public User(int id) {
         ID = id;
@@ -62,12 +71,27 @@ public class User {
         this.comments = comments;
     }
 
-    public void requestInformationGeneralAPIData(GeneralAPIData gap){
-        //TODO
+    public CommentSection getCommentSection() {
+        return commentSection;
     }
 
-    public void sendEmail(){
-        //TODO
+    public void setCommentSection(CommentSection commentSection) {
+        this.commentSection = commentSection;
     }
 
+    public LeaguePlayer getLeaguePlayer() {
+        return leaguePlayer;
+    }
+
+    public void setLeaguePlayer(LeaguePlayer leaguePlayer) {
+        this.leaguePlayer = leaguePlayer;
+    }
+
+    public SpecificAPIData1 getSpecificPlayer() {
+        return specificPlayer;
+    }
+
+    public void setSpecificPlayer(SpecificAPIData1 specificPlayer) {
+        this.specificPlayer = specificPlayer;
+    }
 }

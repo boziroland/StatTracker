@@ -9,7 +9,7 @@ public class UserInMemory implements IUserDAO{
     List<User> users = new ArrayList<>();
 
     @Override
-    public void createorUpdate(User userToAdd) {
+    public void createOrUpdate(User userToAdd) {
         var user = findById(userToAdd.getID());
         if(user.isEmpty()) {
             users.add(userToAdd);

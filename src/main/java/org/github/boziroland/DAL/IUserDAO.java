@@ -14,7 +14,7 @@ public interface IUserDAO {
      * Creates or updates an existing record of a user.
      * @param user The user to add/update
      */
-    void createorUpdate(User user);
+    void createOrUpdate(User user);
 
     /**
      * Finds a user by their ID.

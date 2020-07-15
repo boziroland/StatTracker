@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface IUserService{
 
     /**
-     * @see IUserDAO#createorUpdate(User)
+     * @see IUserDAO#createOrUpdate(User)
      */
     void createorUpdate(User user);
 
