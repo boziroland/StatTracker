@@ -1,6 +1,7 @@
 package org.github.boziroland.entities;
 
 import java.util.List;
+import java.util.Objects;
 
 public class User {
 
@@ -10,7 +11,6 @@ public class User {
     private String email;
     private List<Milestone> milestones;
     private List<Comment> comments;
-    private CommentSection commentSection;
 
     private LeaguePlayer leaguePlayer;
     private SpecificAPIData1 specificPlayer;
@@ -71,14 +71,6 @@ public class User {
         this.comments = comments;
     }
 
-    public CommentSection getCommentSection() {
-        return commentSection;
-    }
-
-    public void setCommentSection(CommentSection commentSection) {
-        this.commentSection = commentSection;
-    }
-
     public LeaguePlayer getLeaguePlayer() {
         return leaguePlayer;
     }
@@ -93,5 +85,25 @@ public class User {
 
     public void setSpecificPlayer(SpecificAPIData1 specificPlayer) {
         this.specificPlayer = specificPlayer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return ID == user.ID &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(milestones, user.milestones) &&
+                Objects.equals(comments, user.comments) &&
+                Objects.equals(leaguePlayer, user.leaguePlayer) &&
+                Objects.equals(specificPlayer, user.specificPlayer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ID, name, password, email, milestones, comments, leaguePlayer, specificPlayer);
     }
 }
