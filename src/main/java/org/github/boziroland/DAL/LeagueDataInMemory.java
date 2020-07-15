@@ -9,8 +9,8 @@ public class LeagueDataInMemory implements ILeagueDAO {
     Map<String, LeaguePlayer> idPlayerMap = new HashMap<>();
 
     @Override
-    public void createOrUpdate(LeaguePlayer param) {
-        idPlayerMap.put(param.getPlayer().getAccountId(), param);
+    public void createOrUpdate(LeaguePlayer player) {
+        idPlayerMap.put(player.getPlayer().getAccountId(), player);
     }
 
     @Override

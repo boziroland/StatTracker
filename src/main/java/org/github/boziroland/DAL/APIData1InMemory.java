@@ -9,8 +9,8 @@ public class APIData1InMemory implements IAPIData1DAO {
     Map<String, SpecificAPIData1> idSpecificdataMap = new HashMap<>();
 
     @Override
-    public void createOrUpdate(SpecificAPIData1 param) {
-        idSpecificdataMap.put(param.getUserID(), param);
+    public void createOrUpdate(SpecificAPIData1 player) {
+        idSpecificdataMap.put(player.getUserID(), player);
     }
 
     @Override

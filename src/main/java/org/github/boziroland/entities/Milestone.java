@@ -4,7 +4,7 @@ public class Milestone {
 
     private String name;
     private String description;
-    private int requiremnt;
+    private int requirement;
 
     public boolean checkAchievement(int userScore){
         return false;
