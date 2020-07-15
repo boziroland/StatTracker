@@ -1,5 +1,6 @@
-package org.github.boziroland.DAL;
+package org.github.boziroland.DAL.impl;
 
+import org.github.boziroland.DAL.ILeagueDAO;
 import org.github.boziroland.entities.LeaguePlayer;
 
 import java.util.*;

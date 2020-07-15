@@ -1,5 +1,6 @@
-package org.github.boziroland.DAL;
+package org.github.boziroland.DAL.impl;
 
+import org.github.boziroland.DAL.IAPIData1DAO;
 import org.github.boziroland.entities.SpecificAPIData1;
 
 import java.util.*;
