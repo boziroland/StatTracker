@@ -10,16 +10,11 @@ import java.util.Optional;
 
 public class CommentSectionInMemory implements ICommentSectionDAO {
 
-    Map<String, CommentSection> idCommentSectionMap = new HashMap<>();
+    Map<Integer, CommentSection> idCommentSectionMap = new HashMap<>();
 
     @Override
     public void createOrUpdate(CommentSection commentSection) {
-        idCommentSectionMap.put(commentSection.getId(), commentSection);
-    }
-
-    @Override
-    public Optional<CommentSection> findById(String id) {
-        return Optional.ofNullable(idCommentSectionMap.get(id));
+        idCommentSectionMap.put(commentSection.getUser().getID(), commentSection);
     }
 
     @Override

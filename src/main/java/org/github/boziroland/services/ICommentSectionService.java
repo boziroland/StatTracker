@@ -1,9 +1,11 @@
 package org.github.boziroland.services;
 
+import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.CommentSection;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.DAL.ICommentSectionDAO;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,14 +14,13 @@ import java.util.Optional;
 public interface ICommentSectionService {
 
     /**
-     * @see ICommentSectionDAO#createOrUpdate(CommentSection)
+     * Creates a CommentSection instance and passes it to
+     * @see CommentSection
+     *
+     * @param user The User whom this comment section belongs to
+     * @param messages The messages in the comment section
      */
-    void createOrUpdate(CommentSection commentSection);
-
-    /**
-     * @see ICommentSectionDAO#findById(String)
-     */
-    Optional<CommentSection> findById(String id);
+    void createOrUpdate(User user, List<Comment> messages);
 
     /**
      * @see ICommentSectionDAO#findByUser(User)

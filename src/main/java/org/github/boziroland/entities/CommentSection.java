@@ -5,16 +5,12 @@ import java.util.Objects;
 
 public class CommentSection {
 
-    private String id;
     private User user;
     private List<Comment> messages;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public CommentSection(User user, List<Comment> messages) {
+        this.user = user;
+        this.messages = messages;
     }
 
     public List<Comment> getMessages() {

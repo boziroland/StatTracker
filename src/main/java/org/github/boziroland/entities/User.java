@@ -15,16 +15,15 @@ public class User {
     private LeaguePlayer leaguePlayer;
     private SpecificAPIData1 specificPlayer;
 
-    public void requestInformationGeneralAPIData(GeneralAPIData gap){
-        //TODO
-    }
-
-    public void sendEmail(){
-        //TODO
-    }
-
-    public User(int id) {
-        ID = id;
+    public User(int ID, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeaguePlayer leaguePlayer, SpecificAPIData1 specificPlayer) {
+        this.ID = ID;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.milestones = milestones;
+        this.comments = comments;
+        this.leaguePlayer = leaguePlayer;
+        this.specificPlayer = specificPlayer;
     }
 
     public int getID() {

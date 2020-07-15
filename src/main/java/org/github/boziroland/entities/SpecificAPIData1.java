@@ -8,6 +8,12 @@ public class SpecificAPIData1 extends GeneralAPIData{
     private String username;
     private String userID;
 
+    public SpecificAPIData1(String token, String username, String userID) {
+        this.token = token;
+        this.username = username;
+        this.userID = userID;
+    }
+
     @Override
     public String retrieveData() {
         return null;

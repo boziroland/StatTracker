@@ -12,6 +12,11 @@ public class LeaguePlayer extends GeneralAPIData{
     private Summoner player;
     private List<MatchReference> lastTenMatches;
 
+    public LeaguePlayer(Summoner player, List<MatchReference> lastTenMatches) {
+        this.player = player;
+        this.lastTenMatches = lastTenMatches;
+    }
+
     @Override
     public String retrieveData() { return null; }
 

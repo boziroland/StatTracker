@@ -12,9 +12,14 @@ import java.util.Optional;
 public interface IAPIData1Service {
 
     /**
+     * Creates a SpecificAPIData1 instance and passes it to
      * @see IAPIData1DAO#createOrUpdate(SpecificAPIData1)
+     *
+     * @param token The OAuth token of the player
+     * @param username The username of the player
+     * @param userID The ID of the player
      */
-    void createOrUpdate(SpecificAPIData1 player);
+    void createOrUpdate(String token, String username, String userID);
 
     /**
      * @see IAPIData1DAO#findByName(String)

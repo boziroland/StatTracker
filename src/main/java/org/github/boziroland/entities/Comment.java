@@ -8,6 +8,12 @@ public class Comment {
     private String message;
     private String ID;
 
+    public Comment(User sender, String message, String ID) {
+        this.sender = sender;
+        this.message = message;
+        this.ID = ID;
+    }
+
     public User getSender() {
         return sender;
     }

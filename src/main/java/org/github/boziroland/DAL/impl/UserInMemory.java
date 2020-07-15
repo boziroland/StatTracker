@@ -25,7 +25,6 @@ public class UserInMemory implements IUserDAO {
                 }
             }
         }
-
     }
 
     @Override

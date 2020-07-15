@@ -19,7 +19,7 @@ public interface IUserDAO {
     /**
      * Finds a user by their ID.
      * @param ID The ID of the user we want to find
-     * @return The user we found, wrapped into an Optional container
+     * @return The user we found, wrapped in an Optional container
      */
     Optional<User> findById(int ID);
 

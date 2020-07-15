@@ -12,27 +12,41 @@ import java.util.Optional;
 public interface IMilestoneService {
 
     /**
+     * Creates a milestone instance and passes it to
      * @see IMilestoneDAO#createOrUpdate(Milestone)
+     *
+     * @param name
+     * @param description
+     * @param requirement
      */
-    void createOrUpdate(Milestone milestone);
+    void createOrUpdate(String name, String description, int requirement);
 
     /**
-     * @see IMilestoneDAO#findByName(String)
+     * Finds a Milestone by its name
+     * @param name The name of the wanted Milestone
+     * @return The Milestone, wrapped in an optional container
      */
     Optional<Milestone> findByName(String name);
 
     /**
-     * @see IMilestoneDAO#list()
+     * Lists every Milestone
+     * @return A List of every Milestone
      */
     List<Milestone> list();
 
     /**
-     * @see IMilestoneDAO#deleteByName(String)
+     * Deletes a milestone, given its name
+     * @param name The name of the milestone we want to remove
      */
     void deleteByName(String name);
 
     /**
+     * Creates a milestone instance and passes it to
      * @see IMilestoneDAO#delete(Milestone)
+     *
+     * @param name
+     * @param description
+     * @param requirement
      */
-    void delete(Milestone milestone);
+    void delete(String name, String description, int requirement);
 }

@@ -8,6 +8,12 @@ public class Milestone {
     private String description;
     private int requirement;
 
+    public Milestone(String name, String description, int requirement) {
+        this.name = name;
+        this.description = description;
+        this.requirement = requirement;
+    }
+
     public boolean checkAchievement(int userScore){
         return false;
     }

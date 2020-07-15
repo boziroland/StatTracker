@@ -17,13 +17,6 @@ public interface ICommentSectionDAO {
     void createOrUpdate(CommentSection commentSection);
 
     /**
-     * Finds a CommentSection by its id.
-     * @param id The id of the CommentSection
-     * @return The CommentSection we found, wrapped into an Optional container
-     */
-    Optional<CommentSection> findById(String id);
-
-    /**
      * Finds a CommentSection by the User it belongs to.
      * @param user The User whose CommentSectionwe want to find
      * @return The CommentSection we found, wrapped into an Optional container

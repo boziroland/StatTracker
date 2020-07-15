@@ -17,8 +17,8 @@ public interface IMilestoneDAO {
     void createOrUpdate(Milestone milestone);
 
     /**
-     * The milestone to find.
-     * @param name The name of the milestone we want to fin
+     * Finds a milestone by its name
+     * @param name The name of the milestone we want to find
      * @return The Milestone we found, wrappedinto an Optional containe
      */
     Optional<Milestone> findByName(String name);

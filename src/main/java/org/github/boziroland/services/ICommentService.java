@@ -14,9 +14,14 @@ import java.util.Optional;
 public interface ICommentService {
 
     /**
+     * Creates a Comment instance and passes it to
      * @see ICommentDAO#create(Comment)
+     *
+     * @param sender The user who wrote the comment
+     * @param message The text of the message
+     * @param ID The message's id
      */
-    void create(Comment comment);
+    void create(User sender, String message, String ID);
 
     /**
      * @see ICommentDAO#findById(String)
@@ -44,8 +49,13 @@ public interface ICommentService {
     void deleteByUser(User user);
 
     /**
+     * Creates a Comment instance and passes it to
      * @see ICommentDAO#delete(Comment)
+     *
+     * @param sender The user who wrote the comment
+     * @param message The text of the message
+     * @param ID The message's id
      */
-    void delete(Comment comment);
+    void delete(User sender, String message, String ID);
 
 }
