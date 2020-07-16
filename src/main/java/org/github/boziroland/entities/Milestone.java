@@ -4,18 +4,20 @@ import java.util.Objects;
 
 public class Milestone {
 
+    public enum Game{
+        LOL, OTHERGAME
+    }
+
     private String name;
     private String description;
     private int requirement;
+    private Game game;
 
-    public Milestone(String name, String description, int requirement) {
+    public Milestone(String name, String description, int requirement, Game game) {
         this.name = name;
         this.description = description;
         this.requirement = requirement;
-    }
-
-    public boolean checkAchievement(int userScore){
-        return false;
+        this.game = game;
     }
 
     public String getName() {

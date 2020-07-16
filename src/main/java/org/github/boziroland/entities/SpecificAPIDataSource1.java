@@ -2,25 +2,16 @@ package org.github.boziroland.entities;
 
 import java.util.Objects;
 
-public class SpecificAPIData1 extends GeneralAPIData{
+public class SpecificAPIDataSource1 extends GeneralAPIDataSource {
 
     private String token;
     private String username;
     private String userID;
 
-    public SpecificAPIData1(String token, String username, String userID) {
+    public SpecificAPIDataSource1(String token, String username, String userID) {
         this.token = token;
         this.username = username;
         this.userID = userID;
-    }
-
-    @Override
-    public String retrieveData() {
-        return null;
-    }
-
-    private void requestAccessToken(){
-        //TODO
     }
 
     public String getToken() {
@@ -39,7 +30,7 @@ public class SpecificAPIData1 extends GeneralAPIData{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SpecificAPIData1 that = (SpecificAPIData1) o;
+        SpecificAPIDataSource1 that = (SpecificAPIDataSource1) o;
         return token.equals(that.token) &&
                 username.equals(that.username) &&
                 userID.equals(that.userID);

@@ -19,7 +19,7 @@ public interface IMilestoneService {
      * @param description
      * @param requirement
      */
-    void createOrUpdate(String name, String description, int requirement);
+    void createOrUpdate(String name, String description, int requirement, Milestone.Game game);
 
     /**
      * Finds a Milestone by its name
@@ -48,5 +48,5 @@ public interface IMilestoneService {
      * @param description
      * @param requirement
      */
-    void delete(String name, String description, int requirement);
+    void delete(String name, String description, int requirement, Milestone.Game game);
 }

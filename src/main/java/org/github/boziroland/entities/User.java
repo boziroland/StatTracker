@@ -2,6 +2,7 @@ package org.github.boziroland.entities;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Objects;
 
 public class User {
 
@@ -9,21 +10,23 @@ public class User {
     private String name;
     private String password;
     private String email;
-    private List<Milestone> milestones;
+    private MilestoneHolder milestones;
     private List<Comment> comments;
+    private String leagueName;
+    private String gameName2;
 
-    private LeagueData leagueData;
-    private SpecificAPIData1 specificPlayer;
+    private LeagueDataSource leagueData;
+    private SpecificAPIDataSource1 specificPlayer;
 
-    public User(int ID, String name, String password, String email, List<Milestone> milestones, List<Comment> comments, LeagueData leagueData, SpecificAPIData1 specificPlayer) {
+    public User(int ID, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) {
         this.ID = ID;
         this.name = name;
         this.password = password;
         this.email = email;
         this.milestones = milestones;
         this.comments = comments;
-        this.leagueData = leagueData;
-        this.specificPlayer = specificPlayer;
+        this.leagueName = leagueName;
+        this.gameName2 = gameName2;
     }
 
     public int getID() {
@@ -42,7 +45,7 @@ public class User {
         return email;
     }
 
-    public List<Milestone> getMilestones() {
+    public MilestoneHolder getMilestones() {
         return milestones;
     }
 
@@ -58,7 +61,7 @@ public class User {
         this.email = email;
     }
 
-    public void setMilestones(List<Milestone> milestones) {
+    public void setMilestones(MilestoneHolder milestones) {
         this.milestones = milestones;
     }
 
@@ -70,20 +73,36 @@ public class User {
         this.comments = comments;
     }
 
-    public LeagueData getLeagueData() {
+    public LeagueDataSource getLeagueData() {
         return leagueData;
     }
 
-    public void setLeagueData(LeagueData leagueData) {
+    public void setLeagueData(LeagueDataSource leagueData) {
         this.leagueData = leagueData;
     }
 
-    public SpecificAPIData1 getSpecificPlayer() {
+    public SpecificAPIDataSource1 getSpecificPlayer() {
         return specificPlayer;
     }
 
-    public void setSpecificPlayer(SpecificAPIData1 specificPlayer) {
+    public void setSpecificPlayer(SpecificAPIDataSource1 specificPlayer) {
         this.specificPlayer = specificPlayer;
+    }
+
+    public String getLeagueName() {
+        return leagueName;
+    }
+
+    public void setLeagueName(String leagueName) {
+        this.leagueName = leagueName;
+    }
+
+    public String getGameName2() {
+        return gameName2;
+    }
+
+    public void setGameName2(String gameName2) {
+        this.gameName2 = gameName2;
     }
 
     @Override
