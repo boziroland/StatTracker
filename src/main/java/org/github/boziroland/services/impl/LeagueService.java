@@ -26,16 +26,11 @@ public class LeagueService implements ILeagueService {
     public LeagueService(ILeagueDAO dao) throws IOException {
         this.dao = dao;
 
-        Optional<String> key = null;
-        try {
-            key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
+        Optional<String> key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
 
-            if(key.isPresent()){
-                ApiConfig config = new ApiConfig().setKey(key.get());
-                api = new RiotApi(config);
-            }
-        } catch (IOException e) {
-            throw e;
+        if(key.isPresent()){
+            ApiConfig config = new ApiConfig().setKey(key.get());
+            api = new RiotApi(config);
         }
 
     }
@@ -93,11 +88,7 @@ public class LeagueService implements ILeagueService {
     @Override
     public Optional<String> readKeyFromFile(String file) throws IOException {
         List<String> lines;
-        try {
-            lines = Files.readAllLines(Paths.get(file));
-        } catch (IOException e) {
-            throw e;
-        }
+        lines = Files.readAllLines(Paths.get(file));
         return Optional.of(lines.get(0));
     }
 }

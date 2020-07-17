@@ -16,7 +16,6 @@ public class UserService implements IUserService {
 
     IUserDAO dao;
 
-    //LeagueService ls;
     MilestoneService milestoneService = new MilestoneService(new MilestoneInMemory());
     SecurityService securityService = new SecurityService();
 
@@ -24,9 +23,7 @@ public class UserService implements IUserService {
         this.dao = dao;
         try {
             throw new IOException();
-           // ls = new LeagueService(new LeagueDataInMemory());
         } catch (IOException e) {
-           // ls = null;
             //TODO itt még talán ki kellene írni valami hibát a felhasználónak
             e.printStackTrace();
         }
