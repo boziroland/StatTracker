@@ -1,21 +1,21 @@
 package org.github.boziroland;
 
 import org.github.boziroland.DAL.impl.LeagueDataInMemory;
-import org.github.boziroland.DAL.impl.MilestoneInMemory;
 import org.github.boziroland.DAL.impl.UserInMemory;
 import org.github.boziroland.entities.MilestoneHolder;
 import org.github.boziroland.entities.User;
+import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.services.impl.LeagueService;
-import org.github.boziroland.services.impl.MilestoneService;
 import org.github.boziroland.services.impl.UserService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RegistrationException, IOException {
 
         List<Optional<User>> users = new ArrayList<>();
 
@@ -28,8 +28,7 @@ public class Main {
         service.requestInformation(users.get(0).get().getID(), leagueService);
         users.get(0).get().getLeagueData();
 
-        MilestoneService milestoneService = new MilestoneService(new MilestoneInMemory());
-
         service.checkMilestones(users.get(0).get().getID());
+
     }
 }

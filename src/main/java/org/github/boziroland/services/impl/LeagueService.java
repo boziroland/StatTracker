@@ -10,6 +10,9 @@ import org.github.boziroland.DAL.ILeagueDAO;
 import org.github.boziroland.entities.LeagueDataSource;
 import org.github.boziroland.services.ILeagueService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +23,21 @@ public class LeagueService implements ILeagueService {
     ILeagueDAO dao;
     RiotApi api;
 
-    public LeagueService(ILeagueDAO dao) {
+    public LeagueService(ILeagueDAO dao) throws IOException {
         this.dao = dao;
 
-        ApiConfig config = new ApiConfig().setKey("YOUR-API-KEY-HERE");
-        api = new RiotApi(config);
+        Optional<String> key = null;
+        try {
+            key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
+
+            if(key.isPresent()){
+                ApiConfig config = new ApiConfig().setKey(key.get());
+                api = new RiotApi(config);
+            }
+        } catch (IOException e) {
+            throw e;
+        }
+
     }
 
     @Override
@@ -75,5 +88,16 @@ public class LeagueService implements ILeagueService {
         }
 
         return ret;
+    }
+
+    @Override
+    public Optional<String> readKeyFromFile(String file) throws IOException {
+        List<String> lines;
+        try {
+            lines = Files.readAllLines(Paths.get(file));
+        } catch (IOException e) {
+            throw e;
+        }
+        return Optional.of(lines.get(0));
     }
 }

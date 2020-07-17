@@ -14,7 +14,7 @@ public class MilestoneHolder {
     }
 
     private void initLeagueMilestones() {
-        leagueMilestones.put(new Milestone("teszt", "teszt teszt", 120, Milestone.Game.LOL), 0);
+        leagueMilestones.put(new Milestone("teszt", "teszt teszt", 100, Milestone.Game.LEAGUE), 0);
     }
 
     private void initGame2Milestones() {

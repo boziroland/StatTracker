@@ -3,10 +3,9 @@ package org.github.boziroland.services;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.github.boziroland.entities.*;
 import org.github.boziroland.DAL.IUserDAO;
-import org.github.boziroland.services.impl.APIService;
+import org.github.boziroland.exceptions.RegistrationException;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -105,7 +104,7 @@ public interface IUserService{
      * @param gameName2 The user's <i>Specific</i> account name
      * @return The registered user, wrapped in an Optional container
      */
-    Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2);
+    Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) throws RegistrationException;
 
     /**
      * Logs the user in

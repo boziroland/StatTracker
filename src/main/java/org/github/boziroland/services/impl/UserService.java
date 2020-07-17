@@ -1,10 +1,13 @@
 package org.github.boziroland.services.impl;
 
 import org.github.boziroland.DAL.IUserDAO;
-import org.github.boziroland.DAL.impl.LeagueDataInMemory;
+import org.github.boziroland.DAL.impl.MilestoneInMemory;
 import org.github.boziroland.entities.*;
+import org.github.boziroland.exceptions.RegistrationException;
+import org.github.boziroland.services.APIService;
 import org.github.boziroland.services.IUserService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,10 +16,20 @@ public class UserService implements IUserService {
 
     IUserDAO dao;
 
-    LeagueService ls = new LeagueService(new LeagueDataInMemory());
+    //LeagueService ls;
+    MilestoneService milestoneService = new MilestoneService(new MilestoneInMemory());
+    SecurityService securityService = new SecurityService();
 
     public UserService(IUserDAO dao) {
         this.dao = dao;
+        try {
+            throw new IOException();
+           // ls = new LeagueService(new LeagueDataInMemory());
+        } catch (IOException e) {
+           // ls = null;
+            //TODO itt még talán ki kellene írni valami hibát a felhasználónak
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -69,7 +82,7 @@ public class UserService implements IUserService {
         if(user.isPresent()){
             Map<String, String> data = gap.requestInformation(user.get().getLeagueName());
 
-            //user.get().setLeagueData();
+            //user.get().setLeagueData(); TODO
 
         }else{
             throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
@@ -89,16 +102,16 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) {
+    public Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) throws RegistrationException {
         if(dao.findByEmail(email).isPresent()){
-            throw new RuntimeException("Email cím foglalt!");
+            throw new RegistrationException("Email cím foglalt!");
         }else{
             if(!password.matches("^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$")){
-                throw new RuntimeException("Túl gyenge jelszó! A jelszónak tartalmaznia kell legalább 2 nagybetűt, 3 kisbetűt, 2 számot, 1 speciális karaktert és legalább 8 hosszúnak kell lennie!");
+                throw new RegistrationException("Túl gyenge jelszó! A jelszónak tartalmaznia kell legalább 2 nagybetűt, 3 kisbetűt, 2 számot, 1 speciális karaktert és legalább 8 hosszúnak kell lennie!");
             }else if(!isValidEmail(email)){
-                throw new RuntimeException("Rossz email!");
+                throw new RegistrationException("Rossz email!");
             }else{
-                Optional<User> user = Optional.of(new User(id, name,password, email, milestones, comments, leagueName, gameName2));
+                Optional<User> user = Optional.of(new User(id, name, securityService.hashPassword(password), email, milestones, comments, leagueName, gameName2));
                 createOrUpdate(user.get());
                 return user;
             }
@@ -107,8 +120,9 @@ public class UserService implements IUserService {
 
     @Override
     public Optional<User> login(String username, String password) {
+        String hashedPassword = securityService.hashPassword(password);
         for(var user : findByName(username))
-            if(user.getPassword().equals(password))
+            if(securityService.hashPassword(user.getPassword()).equals(hashedPassword))
                 return Optional.of(user);
 
         return Optional.empty();
@@ -120,10 +134,8 @@ public class UserService implements IUserService {
 
         var milestones = user.get().getMilestones();
 
-        for(var m : milestones.getLeagueMilestones().entrySet()){
-            if(m.getValue() >= m.getKey().getRequirement()){
-                //TODO
-            }
-        }
+        for(var m : milestones.getLeagueMilestones().entrySet())
+            if(milestoneService.checkAchievement(m.getValue(), m.getKey()))
+                sendEmail(id, "Gratulálok! A(z) " + m.getKey().getName() + " nevű mérföldkő követelményét teljesítetted!");
     }
 }

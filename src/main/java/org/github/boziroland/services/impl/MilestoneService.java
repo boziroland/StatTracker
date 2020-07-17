@@ -40,8 +40,11 @@ public class MilestoneService implements IMilestoneService {
         dao.delete(new Milestone(name, description, requirement, game));
     }
 
-    public boolean checkAchievement(int userScore){
-        //TODO
+    public boolean checkAchievement(int userScore, Milestone m){
+        if(userScore >= m.getRequirement() && !m.isDoneAlready()) {
+            m.setDoneAlready(true);
+            return true;
+        }
         return false;
     }
 

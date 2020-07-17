@@ -55,4 +55,10 @@ public class APIData1Service implements IAPIData1Service {
     public Map<String, String> requestInformation(String accountId) {
         return null;
     }
+
+    @Override
+    public Optional<String> readKeyFromFile(String file) {
+        //TODO
+        return Optional.empty();
+    }
 }
