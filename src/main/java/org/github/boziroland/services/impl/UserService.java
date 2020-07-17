@@ -7,9 +7,7 @@ import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.services.APIService;
 import org.github.boziroland.services.IUserService;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class UserService implements IUserService {
@@ -21,12 +19,12 @@ public class UserService implements IUserService {
 
     public UserService(IUserDAO dao) {
         this.dao = dao;
-        try {
-            throw new IOException();
-        } catch (IOException e) {
-            //TODO itt még talán ki kellene írni valami hibát a felhasználónak
-            e.printStackTrace();
-        }
+//        try {
+//            //throw new IOException();
+//        } catch (IOException e) {
+//            //TODO itt még talán ki kellene írni valami hibát a felhasználónak
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -73,11 +71,11 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void requestInformation(int id, APIService gap) {
+    public void requestInformation(int id, APIService apiService, GeneralAPIData location) {
         var user = dao.findById(id);
 
         if(user.isPresent()){
-            Map<String, String> data = gap.requestInformation(user.get().getLeagueName());
+            apiService.requestInformation(user.get().getLeagueID(), location);
 
             //user.get().setLeagueData(); TODO
 
@@ -99,7 +97,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) throws RegistrationException {
+    public Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueID, String gameName2) throws RegistrationException {
         if(dao.findByEmail(email).isPresent()){
             throw new RegistrationException("Email cím foglalt!");
         }else{
@@ -108,7 +106,7 @@ public class UserService implements IUserService {
             }else if(!isValidEmail(email)){
                 throw new RegistrationException("Rossz email!");
             }else{
-                Optional<User> user = Optional.of(new User(id, name, securityService.hashPassword(password), email, milestones, comments, leagueName, gameName2));
+                Optional<User> user = Optional.of(new User(id, name, securityService.hashPassword(password), email, milestones, comments, leagueID, gameName2));
                 createOrUpdate(user.get());
                 return user;
             }
@@ -116,11 +114,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Optional<User> login(String username, String password) {
+    public Optional<User> login(String email, String password) {
         String hashedPassword = securityService.hashPassword(password);
-        for(var user : findByName(username))
-            if(securityService.hashPassword(user.getPassword()).equals(hashedPassword))
-                return Optional.of(user);
+        Optional<User> user = findByEmail(email);
+
+        if(user.isPresent())
+            if (user.get().getPassword().equals(hashedPassword))
+                return user;
 
         return Optional.empty();
     }

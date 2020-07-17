@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Objects;
 
 //Ezt felhasználva: https://github.com/taycaldwell/riot-api-java
-public class LeagueDataSource extends GeneralAPIDataSource {
+public class LeagueData extends GeneralAPIData {
 
     private Summoner player;
     private List<MatchReference> lastTenMatches;
 
-    public LeagueDataSource() {}
+    public LeagueData() {}
 
-    public LeagueDataSource(Summoner player, List<MatchReference> lastTenMatches) {
+    public LeagueData(Summoner player, List<MatchReference> lastTenMatches) {
         this.player = player;
         this.lastTenMatches = lastTenMatches;
     }
@@ -27,11 +27,19 @@ public class LeagueDataSource extends GeneralAPIDataSource {
         return lastTenMatches;
     }
 
+    public void setPlayer(Summoner player) {
+        this.player = player;
+    }
+
+    public void setLastTenMatches(List<MatchReference> lastTenMatches) {
+        this.lastTenMatches = lastTenMatches;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LeagueDataSource that = (LeagueDataSource) o;
+        LeagueData that = (LeagueData) o;
         return player.equals(that.player) &&
                 lastTenMatches.equals(that.lastTenMatches);
     }

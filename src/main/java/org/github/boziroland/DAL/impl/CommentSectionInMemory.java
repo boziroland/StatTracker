@@ -14,14 +14,14 @@ public class CommentSectionInMemory implements ICommentSectionDAO {
 
     @Override
     public void createOrUpdate(CommentSection commentSection) {
-        idCommentSectionMap.put(commentSection.getUser().getID(), commentSection);
+        idCommentSectionMap.put(commentSection.getUser().getId(), commentSection);
     }
 
     @Override
     public Optional<CommentSection> findByUser(User user) {
 
         for(var cs : idCommentSectionMap.entrySet()){
-            if(cs.getValue().getUser().getID() == user.getID())
+            if(cs.getValue().getUser().getId() == user.getId())
                 return Optional.ofNullable(cs.getValue());
         }
 

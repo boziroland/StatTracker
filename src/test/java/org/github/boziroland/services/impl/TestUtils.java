@@ -6,6 +6,7 @@ import org.github.boziroland.exceptions.RegistrationException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class TestUtils {
@@ -17,5 +18,10 @@ public class TestUtils {
             ret.add(user.get());
         }
         return ret;
+    }
+
+    public static Optional<User> registerAndLoginUserWhoHasLeagueName(UserService service) throws RegistrationException {
+        service.register(-1, "happyuser", "KAcsa11!", "unique@email.com", new MilestoneHolder(), List.of(), "meshons", null);
+        return service.login("unique@email.com", "KAcsa11!");
     }
 }

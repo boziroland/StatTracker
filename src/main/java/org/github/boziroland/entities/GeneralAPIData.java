@@ -2,7 +2,7 @@ package org.github.boziroland.entities;
 
 import java.util.Objects;
 
-public abstract class GeneralAPIDataSource {
+public abstract class GeneralAPIData {
 
     protected String URL;
     protected String userName;
@@ -11,7 +11,7 @@ public abstract class GeneralAPIDataSource {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GeneralAPIDataSource that = (GeneralAPIDataSource) o;
+        GeneralAPIData that = (GeneralAPIData) o;
         return URL.equals(that.URL) &&
                 userName.equals(that.userName);
     }

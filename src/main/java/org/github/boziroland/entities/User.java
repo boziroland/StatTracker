@@ -5,31 +5,34 @@ import java.util.Objects;
 
 public class User {
 
-    private final int ID;
+    private final int id;
     private String name;
     private String password;
     private String email;
     private MilestoneHolder milestones;
     private List<Comment> comments;
-    private String leagueName;
+    private String leagueID;
     private String gameName2;
 
-    private LeagueDataSource leagueData;
-    private SpecificAPIDataSource1 specificPlayer;
+    private LeagueData leagueData;
+    private SpecificAPIData1 specificPlayer;
 
-    public User(int ID, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) {
-        this.ID = ID;
+    public User(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueID, String gameName2) {
+        this.id = id;
         this.name = name;
         this.password = password;
         this.email = email;
         this.milestones = milestones;
         this.comments = comments;
-        this.leagueName = leagueName;
+        this.leagueID = leagueID;
         this.gameName2 = gameName2;
+
+        leagueData = new LeagueData();
+        specificPlayer = new SpecificAPIData1();
     }
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -72,28 +75,28 @@ public class User {
         this.comments = comments;
     }
 
-    public LeagueDataSource getLeagueData() {
+    public LeagueData getLeagueData() {
         return leagueData;
     }
 
-    public void setLeagueData(LeagueDataSource leagueData) {
+    public void setLeagueData(LeagueData leagueData) {
         this.leagueData = leagueData;
     }
 
-    public SpecificAPIDataSource1 getSpecificPlayer() {
+    public SpecificAPIData1 getSpecificPlayer() {
         return specificPlayer;
     }
 
-    public void setSpecificPlayer(SpecificAPIDataSource1 specificPlayer) {
+    public void setSpecificPlayer(SpecificAPIData1 specificPlayer) {
         this.specificPlayer = specificPlayer;
     }
 
-    public String getLeagueName() {
-        return leagueName;
+    public String getLeagueID() {
+        return leagueID;
     }
 
-    public void setLeagueName(String leagueName) {
-        this.leagueName = leagueName;
+    public void setLeagueID(String leagueID) {
+        this.leagueID = leagueID;
     }
 
     public String getGameName2() {
@@ -109,7 +112,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return ID == user.ID &&
+        return id == user.id &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(password, user.password) &&
                 Objects.equals(email, user.email) &&
@@ -121,6 +124,6 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(ID, name, password, email, milestones, comments, leagueData, specificPlayer);
+        return Objects.hash(id, name, password, email, milestones, comments, leagueData, specificPlayer);
     }
 }

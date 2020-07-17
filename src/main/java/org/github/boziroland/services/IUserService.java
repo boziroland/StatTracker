@@ -81,8 +81,9 @@ public interface IUserService{
      * Requests information about the user from the GeneralAPIDataSource.
      * @param id The id of the user whose information we want to request
      * @param gap The data source service
+     * @param location Where to save the data
      */
-    void requestInformation(int id, APIService gap);
+    void requestInformation(int id, APIService gap, GeneralAPIData location);
 
     /**
      * Send an email to the user.
@@ -109,11 +110,11 @@ public interface IUserService{
     /**
      * Logs the user in
      *
-     * @param username The username of the user
+     * @param email The email addresss of the user
      * @param password The password of the user
      * @return The logged in user, wrapped in an Optional container
      */
-    Optional<User> login(String username, String password);
+    Optional<User> login(String email, String password);
 
     /**
      * Checks the validity of an email
