@@ -22,9 +22,16 @@ public class LeagueService implements ILeagueService {
     ILeagueDAO dao;
     RiotApi api;
 
+    public LeagueService() throws IOException{
+        init();
+    }
+
     public LeagueService(ILeagueDAO dao) throws IOException {
         this.dao = dao;
+        init();
+    }
 
+    void init() throws IOException {
         Optional<String> key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
 
         if(key.isPresent()){
@@ -44,7 +51,7 @@ public class LeagueService implements ILeagueService {
     }
 
     @Override
-    public Optional<LeagueData> findByuserID(String id) {
+    public Optional<LeagueData> findByUserID(String id) {
         return dao.findByUserId(id);
     }
 
@@ -73,7 +80,7 @@ public class LeagueService implements ILeagueService {
 
             ((LeagueData)location).setPlayer(summoner);
             ((LeagueData)location).setLastTenMatches(matchList.subList(0, 10));
-
+            createOrUpdate(summoner, matchList.subList(0, 10));
         } catch (RiotApiException e) {
             e.printStackTrace();
         }
@@ -84,5 +91,9 @@ public class LeagueService implements ILeagueService {
         List<String> lines;
         lines = Files.readAllLines(Paths.get(file));
         return Optional.of(lines.get(0));
+    }
+
+    public ILeagueDAO getDao() {
+        return dao;
     }
 }

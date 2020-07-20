@@ -50,4 +50,11 @@ public class CommentService implements ICommentService {
     public void delete(User sender, String message, String ID) {
         dao.delete(new Comment(sender, message, ID));
     }
+
+    @Override
+    public void getProfileComments(User user) {
+        //TODO
+    }
+
+
 }

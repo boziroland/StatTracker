@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The interface IAPIData1Service defines the performable CRUD operations on the SpecificAPIData1 class.
  */
-public interface IAPIData1Service extends APIService {
+public interface IAPIData1Service extends IAPIService {
 
     /**
      * Creates a SpecificAPIData1 instance and passes it to

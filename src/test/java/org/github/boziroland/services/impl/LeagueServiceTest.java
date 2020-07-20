@@ -1,5 +1,6 @@
 package org.github.boziroland.services.impl;
 
+import TestUtils.TestUtils;
 import org.github.boziroland.DAL.impl.LeagueDataInMemory;
 import org.github.boziroland.DAL.impl.UserInMemory;
 import org.junit.jupiter.api.Test;
@@ -11,10 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class LeagueServiceTest {
 
     @Test
-    void testretrieveLeagueData() throws IOException {
+    void testRetrieveLeagueData() throws IOException {
         UserService service = new UserService(new UserInMemory());
         var user = TestUtils.registerAndLoginUserWhoHasLeagueName(service);
-        System.out.println(user.get().getName());
 
         LeagueService leagueService = new LeagueService(new LeagueDataInMemory());
 

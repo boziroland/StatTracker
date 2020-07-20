@@ -1,9 +1,17 @@
-package org.github.boziroland.services.impl;
+package TestUtils;
 
+import org.github.boziroland.config.ApplicationConfig;
 import org.github.boziroland.entities.MilestoneHolder;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
+import org.github.boziroland.services.impl.APIData1Service;
+import org.github.boziroland.services.impl.UserService;
+import org.junit.jupiter.api.BeforeAll;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +32,5 @@ public class TestUtils {
         service.register(-1, "happyuser", "KAcsa11!", "unique@email.com", new MilestoneHolder(), List.of(), "meshons", null);
         return service.login("unique@email.com", "KAcsa11!");
     }
+
 }

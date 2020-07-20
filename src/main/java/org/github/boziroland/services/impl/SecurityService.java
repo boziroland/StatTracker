@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-
 import org.github.boziroland.services.ISecurityService;
 import org.mindrot.jbcrypt.BCrypt;
 

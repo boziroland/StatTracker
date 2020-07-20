@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * The interface ILeagueService defines the performable CRUD operations on the LeaguePlayer class.
  */
-public interface ILeagueService extends APIService {
+public interface ILeagueService extends IAPIService {
 
     /**
      * Creates a LeaguePlayer and passes it to
@@ -30,7 +30,7 @@ public interface ILeagueService extends APIService {
     /**
      * @see ILeagueDAO#findByUserId(String)
      */
-    Optional<LeagueData> findByuserID(String id);
+    Optional<LeagueData> findByUserID(String id);
 
     /**
      * @see ILeagueDAO#list()

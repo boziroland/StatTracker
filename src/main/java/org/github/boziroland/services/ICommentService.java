@@ -58,4 +58,10 @@ public interface ICommentService {
      */
     void delete(User sender, String message, String ID);
 
+    /**
+     * TODO
+     * @param user
+     */
+    void getProfileComments(User user);
+
 }

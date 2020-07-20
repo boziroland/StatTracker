@@ -18,7 +18,14 @@ public interface IUserService{
      * @see IUserDAO#createOrUpdate(User)
      * @param user The user to pass
      */
-    void createOrUpdate(User user);
+    void create(User user);
+
+    /**
+     * Passes the User instance to
+     * @see IUserDAO#createOrUpdate(User)
+     * @param user The user to pass
+     */
+    void update(User user);
 
     /**
      * Creates a User instance, and passes it to
@@ -33,7 +40,22 @@ public interface IUserService{
      * @param leagueName The user's League account name
      * @param gameName2 The user's <i>Specific</i> account name
      */
-    void createOrUpdate(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2);
+    void create(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2);
+
+    /**
+     * Creates a User instance, and passes it to
+     * @see IUserDAO#createOrUpdate(User)
+     *
+     * @param id The user's ID
+     * @param name The user's name
+     * @param password The user's password
+     * @param email The user's email
+     * @param milestones The user's milestones
+     * @param comments The user's comments
+     * @param leagueName The user's League account name
+     * @param gameName2 The user's <i>Specific</i> account name
+     */
+    void update(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2);
 
     /**
      * Finds a user by their ID
@@ -83,7 +105,7 @@ public interface IUserService{
      * @param gap The data source service
      * @param location Where to save the data
      */
-    void requestInformation(int id, APIService gap, GeneralAPIData location);
+    void requestInformation(int id, IAPIService gap, GeneralAPIData location);
 
     /**
      * Send an email to the user.
@@ -131,4 +153,5 @@ public interface IUserService{
      * @param id The user's id whose milestone we want to check
      */
     void checkMilestones(int id);
+
 }
