@@ -16,8 +16,8 @@ public class MilestoneService implements IMilestoneService {
     }
 
     @Override
-    public void createOrUpdate(String name, String description, int requirement) {
-        dao.createOrUpdate(new Milestone(name, description, requirement));
+    public void createOrUpdate(String name, String description, int requirement, Milestone.Game game) {
+        dao.createOrUpdate(new Milestone(name, description, requirement, game));
     }
 
     @Override
@@ -36,7 +36,16 @@ public class MilestoneService implements IMilestoneService {
     }
 
     @Override
-    public void delete(String name, String description, int requirement) {
-        dao.delete(new Milestone(name, description, requirement));
+    public void delete(String name, String description, int requirement, Milestone.Game game) {
+        dao.delete(new Milestone(name, description, requirement, game));
     }
+
+    public boolean checkAchievement(int userScore, Milestone m){
+        if(userScore >= m.getRequirement() && !m.isDoneAlready()) {
+            m.setDoneAlready(true);
+            return true;
+        }
+        return false;
+    }
+
 }

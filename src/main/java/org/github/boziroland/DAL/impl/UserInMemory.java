@@ -11,7 +11,7 @@ public class UserInMemory implements IUserDAO {
 
     @Override
     public void createOrUpdate(User userToAdd) {
-        var user = findById(userToAdd.getID());
+        var user = findById(userToAdd.getId());
         if(user.isEmpty()) {
             users.add(userToAdd);
         }else{
@@ -31,7 +31,7 @@ public class UserInMemory implements IUserDAO {
     public Optional<User> findById(int ID) {
 
         for(var user : users)
-            if(user.getID() == ID)
+            if(user.getId() == ID)
                 return Optional.of(user);
 
         return Optional.empty();
@@ -66,7 +66,7 @@ public class UserInMemory implements IUserDAO {
 
     @Override
     public void delete(User userToDelete) {
-        var user = findById(userToDelete.getID());
+        var user = findById(userToDelete.getId());
         user.ifPresent(value -> users.remove(value));
     }
 }

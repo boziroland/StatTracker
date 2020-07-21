@@ -1,6 +1,7 @@
 package org.github.boziroland.services.impl;
 
 import org.github.boziroland.DAL.IAPIData1DAO;
+import org.github.boziroland.entities.GeneralAPIData;
 import org.github.boziroland.entities.SpecificAPIData1;
 import org.github.boziroland.services.IAPIData1Service;
 
@@ -43,5 +44,20 @@ public class APIData1Service implements IAPIData1Service {
     @Override
     public void deleteByID(String id) {
         dao.deleteByID(id);
+    }
+
+    @Override
+    public void requestToken() {
+
+    }
+
+    @Override
+    public void requestInformation(String accountId, GeneralAPIData location) {
+    }
+
+    @Override
+    public Optional<String> readKeyFromFile(String file) {
+        //TODO
+        return Optional.empty();
     }
 }

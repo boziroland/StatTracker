@@ -7,8 +7,6 @@ public abstract class GeneralAPIData {
     protected String URL;
     protected String userName;
 
-    public abstract String retrieveData();
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
