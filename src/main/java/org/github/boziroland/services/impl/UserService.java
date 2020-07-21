@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class UserService implements IUserService, Runnable {
+public class UserService implements IUserService {
 
     IUserDAO userDao;
 
@@ -155,20 +155,11 @@ public class UserService implements IUserService, Runnable {
                 sendEmail(id, "Gratulálok! A(z) " + m.getKey().getName() + " nevű mérföldkő követelményét teljesítetted!");
     }
 
-    @Override
-    public void run() {
-
-    }
-
     void scheduleHourlyQuery(){
-        Runnable command = new Runnable() {
-            @Override
-            public void run() {
-                updateUsersToQuery();
-                scheduleHourlyQuery();
-            }
+        Runnable command = () -> {
+            updateUsersToQuery();
+            scheduleHourlyQuery();
         };
-        System.out.println(LocalTime.now().toString());
         long delay = ChronoUnit.SECONDS.between(LocalTime.now(), LocalTime.now().plusHours(1));
         scheduler.schedule(command, delay, TimeUnit.SECONDS);
     }
@@ -176,10 +167,9 @@ public class UserService implements IUserService, Runnable {
     void updateUsersToQuery(){
         for(var entry : userQueryTimeMap.entrySet()){
             LocalTime queryTime = entry.getValue();
-            sirs.setRemindTime(queryTime);
+            sirs.setRetrieveTime(queryTime);
             sirs.retrieve(entry.getKey(), leagueService);
         }
-
     }
 
     public void setLeagueService(ILeagueService leagueService) {

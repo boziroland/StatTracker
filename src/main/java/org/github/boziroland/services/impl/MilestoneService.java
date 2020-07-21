@@ -2,6 +2,7 @@ package org.github.boziroland.services.impl;
 
 import org.github.boziroland.DAL.IMilestoneDAO;
 import org.github.boziroland.entities.Milestone;
+import org.github.boziroland.entities.User;
 import org.github.boziroland.services.IMilestoneService;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class MilestoneService implements IMilestoneService {
         dao.delete(new Milestone(name, description, requirement, game));
     }
 
+    @Override
     public boolean checkAchievement(int userScore, Milestone m){
         if(userScore >= m.getRequirement() && !m.isDoneAlready()) {
             m.setDoneAlready(true);
@@ -47,5 +49,4 @@ public class MilestoneService implements IMilestoneService {
         }
         return false;
     }
-
 }

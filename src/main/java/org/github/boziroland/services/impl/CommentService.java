@@ -11,14 +11,15 @@ import java.util.Optional;
 public class CommentService implements ICommentService {
 
     ICommentDAO dao;
+    private int id = 0;
 
     public CommentService(ICommentDAO dao) {
         this.dao = dao;
     }
 
     @Override
-    public void create(User sender, String message, String ID) {
-        dao.create(new Comment(sender, message, ID));
+    public void create(User sender, User receiver, String message, int ID) {
+        dao.create(new Comment(sender, receiver, message, ID));
     }
 
     @Override
@@ -47,8 +48,8 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public void delete(User sender, String message, String ID) {
-        dao.delete(new Comment(sender, message, ID));
+    public void delete(User sender, User receiver, String message, int ID) {
+        dao.delete(new Comment(sender, receiver, message, ID));
     }
 
     @Override
@@ -56,5 +57,10 @@ public class CommentService implements ICommentService {
         //TODO
     }
 
+    @Override
+    public void sendComment(User from, User to, String message) {
+        Comment comment = new Comment(from, to, message, id++);
+        //to.getComm
+    }
 
 }

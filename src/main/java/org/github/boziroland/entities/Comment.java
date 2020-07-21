@@ -5,13 +5,15 @@ import java.util.Objects;
 public class Comment {
 
     private User sender;
+    private User receiver;
     private String message;
-    private String ID;
+    private int id;
 
-    public Comment(User sender, String message, String ID) {
+    public Comment(User sender, User receiver, String message, int id) {
         this.sender = sender;
+        this.receiver = receiver;
         this.message = message;
-        this.ID = ID;
+        this.id = id;
     }
 
     public User getSender() {
@@ -30,12 +32,12 @@ public class Comment {
         this.message = message;
     }
 
-    public String getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -43,13 +45,13 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return ID == comment.ID &&
+        return id == comment.id &&
                 sender.equals(comment.sender) &&
                 message.equals(comment.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sender, message, ID);
+        return Objects.hash(sender, message, id);
     }
 }

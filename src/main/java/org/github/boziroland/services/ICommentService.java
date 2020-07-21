@@ -17,11 +17,12 @@ public interface ICommentService {
      * Creates a Comment instance and passes it to
      * @see ICommentDAO#create(Comment)
      *
-     * @param sender The user who wrote the comment
+     * @param sender The User who wrote the comment
+     * @param receiver The User whose CommentSection this comment was sent to
      * @param message The text of the message
      * @param ID The message's id
      */
-    void create(User sender, String message, String ID);
+    void create(User sender, User receiver, String message, int ID);
 
     /**
      * @see ICommentDAO#findById(String)
@@ -52,16 +53,25 @@ public interface ICommentService {
      * Creates a Comment instance and passes it to
      * @see ICommentDAO#delete(Comment)
      *
-     * @param sender The user who wrote the comment
+     * @param sender The User who wrote the comment
+     * @param receiver The User whose CommentSection this comment was sent to
      * @param message The text of the message
      * @param ID The message's id
      */
-    void delete(User sender, String message, String ID);
+    void delete(User sender, User receiver, String message, int ID);
 
     /**
      * TODO
      * @param user
      */
     void getProfileComments(User user);
+
+    /**
+     * TODO
+     * @param from
+     * @param to
+     * @param comment
+     */
+    void sendComment(User from, User to, String comment);
 
 }

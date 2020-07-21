@@ -8,11 +8,11 @@ import java.util.*;
 
 public class CommentInMemory implements ICommentDAO {
 
-    private Map<String, Comment> idCommentMap = new HashMap<>();
+    private Map<Integer, Comment> idCommentMap = new HashMap<>();
 
     @Override
     public void create(Comment comment) {
-        idCommentMap.put(comment.getID(), comment);
+        idCommentMap.put(comment.getId(), comment);
     }
 
     @Override
@@ -51,6 +51,6 @@ public class CommentInMemory implements ICommentDAO {
 
     @Override
     public void delete(Comment comment) {
-        idCommentMap.remove(comment.getID());
+        idCommentMap.remove(comment.getId());
     }
 }

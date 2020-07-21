@@ -44,9 +44,10 @@ public interface IMilestoneService {
      * Creates a milestone instance and passes it to
      * @see IMilestoneDAO#delete(Milestone)
      *
-     * @param name
-     * @param description
-     * @param requirement
+     * @param name The name of the Milestone
+     * @param description The description of the Milestone
+     * @param requirement The point requirement for the Milestone
+     * @param game The game which the Milestone is associated with
      */
     void delete(String name, String description, int requirement, Milestone.Game game);
 

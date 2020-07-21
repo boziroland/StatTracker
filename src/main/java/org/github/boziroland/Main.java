@@ -1,11 +1,15 @@
 package org.github.boziroland;
 
+import org.github.boziroland.DAL.impl.CommentInMemory;
 import org.github.boziroland.DAL.impl.LeagueDataInMemory;
 import org.github.boziroland.DAL.impl.UserInMemory;
+import org.github.boziroland.entities.CommentSection;
 import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.entities.MilestoneHolder;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
+import org.github.boziroland.services.ICommentService;
+import org.github.boziroland.services.impl.CommentService;
 import org.github.boziroland.services.impl.LeagueService;
 import org.github.boziroland.services.impl.UserService;
 
@@ -33,6 +37,8 @@ public class Main {
         System.out.println(meshonsData.getPlayer().getAccountId());
 
         service.checkMilestones(users.get(0).get().getId());
+
+        ICommentService commentService = new CommentService(new CommentInMemory());
 
     }
 }
