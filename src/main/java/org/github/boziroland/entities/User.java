@@ -10,20 +10,22 @@ public class User {
     private String password;
     private String email;
     private MilestoneHolder milestones;
-    private List<Comment> comments;
+    private List<Comment> commentsOnProfile;
+    private List<Comment> commentsSent;
     private String leagueID;
     private String gameName2;
 
     private LeagueData leagueData;
     private SpecificAPIData1 specificPlayer;
 
-    public User(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueID, String gameName2) {
+    public User(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String gameName2) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.email = email;
         this.milestones = milestones;
-        this.comments = comments;
+        this.commentsOnProfile = commentsOnProfile;
+        this.commentsSent = commentsSent;
         this.leagueID = leagueID;
         this.gameName2 = gameName2;
 
@@ -67,12 +69,12 @@ public class User {
         this.milestones = milestones;
     }
 
-    public List<Comment> getComments() {
-        return comments;
+    public List<Comment> getCommentsSent() {
+        return commentsSent;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setCommentsSent(List<Comment> commentsSent) {
+        this.commentsSent = commentsSent;
     }
 
     public LeagueData getLeagueData() {
@@ -107,6 +109,14 @@ public class User {
         this.gameName2 = gameName2;
     }
 
+    public List<Comment> getCommentsOnProfile() {
+        return commentsOnProfile;
+    }
+
+    public void setCommentsOnProfile(List<Comment> commentsOnProfile) {
+        this.commentsOnProfile = commentsOnProfile;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,13 +127,13 @@ public class User {
                 Objects.equals(password, user.password) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(milestones, user.milestones) &&
-                Objects.equals(comments, user.comments) &&
+                Objects.equals(commentsSent, user.commentsSent) &&
                 Objects.equals(leagueData, user.leagueData) &&
                 Objects.equals(specificPlayer, user.specificPlayer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, password, email, milestones, comments, leagueData, specificPlayer);
+        return Objects.hash(id, name, password, email, milestones, commentsSent, leagueData, specificPlayer);
     }
 }

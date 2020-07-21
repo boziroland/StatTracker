@@ -1,19 +1,22 @@
 package org.github.boziroland.entities;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Comment {
 
+    private LocalDateTime time;
     private User sender;
     private User receiver;
     private String message;
     private int id;
 
-    public Comment(User sender, User receiver, String message, int id) {
+    public Comment(int id, User sender, User receiver, String message, LocalDateTime time) {
+        this.id = id;
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
-        this.id = id;
+        this.time = time;
     }
 
     public User getSender() {

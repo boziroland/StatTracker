@@ -19,11 +19,6 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ICommentSectionDAO commentSectionDAO(){
-        return new CommentSectionInMemory();
-    }
-
-    @Bean
     public ICommentDAO commentDAO(){
         return new CommentInMemory();
     }
@@ -46,11 +41,6 @@ public class ApplicationConfig {
     @Bean
     public IAPIData1Service apiData1Service(IAPIData1DAO apiData1DAO){
         return new APIData1Service(apiData1DAO);
-    }
-
-    @Bean
-    public ICommentSectionService commentSectionService(ICommentSectionDAO commentSectionDAO){
-        return new CommentSectionService(commentSectionDAO);
     }
 
     @Bean

@@ -50,7 +50,7 @@ public class CommentInMemory implements ICommentDAO {
     }
 
     @Override
-    public void delete(Comment comment) {
-        idCommentMap.remove(comment.getId());
+    public void delete(int id) {
+        idCommentMap.remove(id);
     }
 }

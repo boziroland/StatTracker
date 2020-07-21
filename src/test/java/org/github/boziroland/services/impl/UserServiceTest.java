@@ -32,7 +32,7 @@ class UserServiceTest {
     @Test
     void testUserServiceCreate() {
         UserService service = new UserService(new UserInMemory());
-        service.create(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), null, null);
+        service.create(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), null, null);
         assertEquals("bonifác", service.userDao.list().get(0).getName());
     }
 
@@ -52,21 +52,21 @@ class UserServiceTest {
     @Test
     void testRegisterNewUserButEmailAlreadyExists() throws RegistrationException {
         UserService service = new UserService(new UserInMemory());
-        service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), null, null);
-        assertThrows(RegistrationException.class, () -> service.register(1, "albert", "Kutya11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), null, null));
+        service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), null, null);
+        assertThrows(RegistrationException.class, () -> service.register(1, "albert", "Kutya11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), null, null));
     }
 
     @Test
     void testRegistrationSuccess() throws RegistrationException {
         UserService service = new UserService(new UserInMemory());
-        var registeredUser = service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), null, null);
+        var registeredUser = service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), null, null);
         assertTrue(registeredUser.isPresent());
     }
 
     @Test
     void testLoginSuccess() throws RegistrationException {
         UserService service = new UserService(new UserInMemory());
-        var registeredUser = service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), null, null);
+        var registeredUser = service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), null, null);
         assertEquals(service.login("bonifac.solyom@gmail.com", "KAcsa11&").get().getId(), registeredUser.get().getId());
     }
 

@@ -52,13 +52,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void create(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) {
-        create(new User(id, name, password, email, milestones, comments, leagueName, gameName2));
+    public void create(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
+        create(new User(id, name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
     }
 
     @Override
-    public void update(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) {
-        update(new User(id, name, password, email, milestones, comments, leagueName, gameName2));
+    public void update(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
+        update(new User(id, name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
     }
 
     @Override
@@ -85,8 +85,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void delete(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) {
-        userDao.delete(new User(id, name, password, email, milestones, comments, leagueName, gameName2));
+    public void delete(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
+        userDao.delete(new User(id, name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
     }
 
     @Override
@@ -116,7 +116,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueID, String gameName2) throws RegistrationException {
+    public Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueID, String gameName2) throws RegistrationException {
         if(userDao.findByEmail(email).isPresent()){
             throw new RegistrationException("Email cím foglalt!");
         }else{
@@ -125,7 +125,7 @@ public class UserService implements IUserService {
             }else if(!isValidEmail(email)){
                 throw new RegistrationException("Rossz email!");
             }else{
-                Optional<User> user = Optional.of(new User(id, name, securityService.hashPassword(password), email, milestones, comments, leagueID, gameName2));
+                Optional<User> user = Optional.of(new User(id, name, securityService.hashPassword(password), email, milestones, commentsOnProfile, comments, leagueID, gameName2));
                 create(user.get());
                 return user;
             }
@@ -170,9 +170,5 @@ public class UserService implements IUserService {
             sirs.setRetrieveTime(queryTime);
             sirs.retrieve(entry.getKey(), leagueService);
         }
-    }
-
-    public void setLeagueService(ILeagueService leagueService) {
-        this.leagueService = leagueService;
     }
 }

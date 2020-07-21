@@ -5,6 +5,7 @@ import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.services.ICommentService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +19,13 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public void create(User sender, User receiver, String message, int ID) {
-        dao.create(new Comment(sender, receiver, message, ID));
+    public void create(Comment comment) {
+        dao.create(comment);
+    }
+
+    @Override
+    public void create(User sender, User receiver, String message, int ID, LocalDateTime time) {
+        create(new Comment(ID, sender, receiver, message, time));
     }
 
     @Override
@@ -48,19 +54,15 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public void delete(User sender, User receiver, String message, int ID) {
-        dao.delete(new Comment(sender, receiver, message, ID));
-    }
-
-    @Override
-    public void getProfileComments(User user) {
-        //TODO
+    public void delete(int ID) {
+        dao.delete(ID);
     }
 
     @Override
     public void sendComment(User from, User to, String message) {
-        Comment comment = new Comment(from, to, message, id++);
-        //to.getComm
+        Comment comment = new Comment(id++, from, to, message, LocalDateTime.now());
+        from.getCommentsSent().add(comment);
+        to.getCommentsOnProfile().add(comment);
     }
 
 }

@@ -51,7 +51,7 @@ public interface ICommentDAO {
 
     /**
      * Deletes a comment.
-     * @param comment The Comment to delete
+     * @param id The id of the comment to delete
      */
-    void delete(Comment comment);
+    void delete(int id);
 }

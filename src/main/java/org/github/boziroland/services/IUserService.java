@@ -40,7 +40,7 @@ public interface IUserService{
      * @param leagueName The user's League account name
      * @param gameName2 The user's <i>Specific</i> account name
      */
-    void create(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2);
+    void create(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
 
     /**
      * Creates a User instance, and passes it to
@@ -55,7 +55,7 @@ public interface IUserService{
      * @param leagueName The user's League account name
      * @param gameName2 The user's <i>Specific</i> account name
      */
-    void update(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2);
+    void update(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
 
     /**
      * Finds a user by their ID
@@ -97,7 +97,7 @@ public interface IUserService{
      * @param leagueName The user's League account name
      * @param gameName2 The user's <i>Specific</i> account name
      */
-    void delete(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2);
+    void delete(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
 
     /**
      * Requests information about the user from the GeneralAPIDataSource.
@@ -127,7 +127,7 @@ public interface IUserService{
      * @param gameName2 The user's <i>Specific</i> account name
      * @return The registered user, wrapped in an Optional container
      */
-    Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) throws RegistrationException;
+    Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) throws RegistrationException;
 
     /**
      * Logs the user in
