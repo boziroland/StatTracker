@@ -7,6 +7,8 @@ import org.github.boziroland.entities.apiEntities.MySummoner;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +20,11 @@ public class LeagueData extends GeneralAPIData {
 
     @Id
     private int id;
+
+    @OneToOne
     private MySummoner player;
+
+    @OneToMany
     private List<MyMatchReference> lastTenMatches;
 
     public LeagueData() {}

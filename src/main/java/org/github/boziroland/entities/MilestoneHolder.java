@@ -1,14 +1,26 @@
 package org.github.boziroland.entities;
 
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Entity
 public class MilestoneHolder {
 
+    @Id
+    int id;
+
+    @ElementCollection
+    @CollectionTable(name="LeagueMilestonePointJoinTable")
+    @MapKeyColumn(name="Milestone")
     private final Map<Milestone, Integer> leagueMilestones = new HashMap<>();
+
+    @ElementCollection
+    @CollectionTable(name="Game2MilestonePointJoinTable")
+    @MapKeyColumn(name="Milestone")
     private final Map<Milestone, Integer> gameMilestones2 = new HashMap<>();
 
-    public MilestoneHolder() {
+    public MilestoneHolder(int id) {
         initLeagueMilestones();
         initGame2Milestones();
     }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,9 +19,11 @@ public class Comment {
     private int id;
 
     @NonNull
+    @OneToOne
     private User sender;
 
     @NonNull
+    @OneToOne
     private User receiver;
 
     @NonNull

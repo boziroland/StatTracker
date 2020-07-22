@@ -1,38 +1,26 @@
 package org.github.boziroland.services.impl;
 
 import TestUtils.TestUtils;
-import org.awaitility.Awaitility;
-import org.awaitility.Duration;
-import org.github.boziroland.DAL.impl.LeagueDataInMemory;
-import org.github.boziroland.DAL.impl.UserInMemory;
 import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.entities.MilestoneHolder;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 
 import java.io.IOException;
-import java.time.*;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 class UserServiceTest {
 
     @Test
     void testUserServiceCreate() {
         UserService service = new UserService();
-        service.create(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), null, null);
+        service.create(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(-1), List.of(), List.of(), null, null);
         assertEquals("bonifác", service.list().get(0).getName());
     }
 
@@ -52,21 +40,21 @@ class UserServiceTest {
     @Test
     void testRegisterNewUserButEmailAlreadyExists() throws RegistrationException {
         UserService service = new UserService();
-        service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), null, null);
-        assertThrows(RegistrationException.class, () -> service.register(1, "albert", "Kutya11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), null, null));
+        service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(-1), List.of(), List.of(), null, null);
+        assertThrows(RegistrationException.class, () -> service.register(1, "albert", "Kutya11&", "bonifac.solyom@gmail.com", new MilestoneHolder(-1), List.of(), List.of(), null, null));
     }
 
     @Test
     void testRegistrationSuccess() throws RegistrationException {
         UserService service = new UserService();
-        var registeredUser = service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), null, null);
+        var registeredUser = service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(-1), List.of(), List.of(), null, null);
         assertTrue(registeredUser.isPresent());
     }
 
     @Test
     void testLoginSuccess() throws RegistrationException {
         UserService service = new UserService();
-        var registeredUser = service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), null, null);
+        var registeredUser = service.register(0, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(-1), List.of(), List.of(), null, null);
         assertEquals(service.login("bonifac.solyom@gmail.com", "KAcsa11&").get().getId(), registeredUser.get().getId());
     }
 

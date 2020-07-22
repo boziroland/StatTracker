@@ -2,6 +2,8 @@ package org.github.boziroland.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,13 +15,23 @@ public class User {
     private String name;
     private String password;
     private String email;
+
+    @OneToOne
     private MilestoneHolder milestones;
+
+    @OneToMany
     private List<Comment> commentsOnProfile;
+
+    @OneToMany
     private List<Comment> commentsSent;
+
     private String leagueID;
     private String gameName2;
 
+    @OneToOne
     private LeagueData leagueData;
+
+    @OneToOne
     private SpecificAPIData1 specificPlayer;
 
     public User(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String gameName2) {
