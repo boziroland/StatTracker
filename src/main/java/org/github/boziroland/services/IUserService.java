@@ -1,8 +1,11 @@
 package org.github.boziroland.services;
 
 import org.apache.commons.validator.routines.EmailValidator;
-import org.github.boziroland.entities.*;
 import org.github.boziroland.DAL.IUserDAO;
+import org.github.boziroland.entities.Comment;
+import org.github.boziroland.entities.GeneralAPIData;
+import org.github.boziroland.entities.MilestoneHolder;
+import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 
 import java.util.List;

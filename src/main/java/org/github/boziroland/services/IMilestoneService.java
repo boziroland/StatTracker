@@ -1,7 +1,7 @@
 package org.github.boziroland.services;
 
-import org.github.boziroland.entities.Milestone;
 import org.github.boziroland.DAL.IMilestoneDAO;
+import org.github.boziroland.entities.Milestone;
 
 import java.util.List;
 import java.util.Optional;

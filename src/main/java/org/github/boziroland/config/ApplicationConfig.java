@@ -2,7 +2,6 @@ package org.github.boziroland.config;
 
 import org.github.boziroland.DAL.*;
 import org.github.boziroland.DAL.impl.*;
-import org.github.boziroland.entities.User;
 import org.github.boziroland.services.*;
 import org.github.boziroland.services.impl.*;
 import org.springframework.context.annotation.Bean;
@@ -40,26 +39,26 @@ public class ApplicationConfig {
 
     @Bean
     public IAPIData1Service apiData1Service(IAPIData1DAO apiData1DAO){
-        return new APIData1Service(apiData1DAO);
+        return new APIData1Service();
     }
 
     @Bean
     public ICommentService commentService(ICommentDAO commentDAO){
-        return new CommentService(commentDAO);
+        return new CommentService();
     }
 
     @Bean
     public ILeagueService leagueService(ILeagueDAO leagueDAO) throws IOException {
-        return new LeagueService(leagueDAO);
+        return new LeagueService();
     }
 
     @Bean
     public IMilestoneService milestoneService(IMilestoneDAO milestoneDAO){
-        return new MilestoneService(milestoneDAO);
+        return new MilestoneService();
     }
 
     @Bean
     public IUserService userService(IUserDAO userDAO){
-        return new UserService(userDAO);
+        return new UserService();
     }
 }

@@ -1,13 +1,17 @@
 package org.github.boziroland.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Objects;
 
+@Entity
 public class Milestone {
 
     public enum Game{
         LEAGUE, OTHERGAME
     }
 
+    @Id
     private final String name;
     private final String description;
     private final int requirement;

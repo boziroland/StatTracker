@@ -1,7 +1,5 @@
 package org.github.boziroland;
 
-import org.github.boziroland.DAL.impl.LeagueDataInMemory;
-import org.github.boziroland.DAL.impl.UserInMemory;
 import org.github.boziroland.entities.MilestoneHolder;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.services.impl.LeagueService;
@@ -21,8 +19,8 @@ public class Application {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(Application.class, args);
 
         List<Optional<User>> users = new ArrayList<>();
-        LeagueService leagueService = new LeagueService(new LeagueDataInMemory());
-        UserService service = new UserService(new UserInMemory(), leagueService);
+        LeagueService leagueService = new LeagueService();
+        UserService service = new UserService(leagueService);
         service.register(1, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), "meshons", null);
         users.add(service.login("bonifac.solyom@gmail.com", "KAcsa11&"));
         System.out.println(users.get(0).get().getName());

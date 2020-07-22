@@ -1,9 +1,8 @@
 package org.github.boziroland.services;
 
+import org.github.boziroland.DAL.ICommentDAO;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.User;
-import org.github.boziroland.DAL.ICommentDAO;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,8 +28,9 @@ public interface ICommentService {
 
     /**
      * @see ICommentDAO#findById(String)
+     * @param id The id
      */
-    Optional<Comment> findById(String id);
+    Optional<Comment> findById(int id);
 
     /**
      * @see ICommentDAO#findByUser(User)
@@ -44,8 +44,9 @@ public interface ICommentService {
 
     /**
      * @see ICommentDAO#deleteById(String)
+     * @param id The id
      */
-    void deleteById(String id);
+    void deleteById(int id);
 
     /**
      * @see ICommentDAO#deleteByUser(User)

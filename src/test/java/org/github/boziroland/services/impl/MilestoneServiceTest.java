@@ -12,7 +12,7 @@ class MilestoneServiceTest {
 
     @Test
     void testMilestoneNotDone(){
-        MilestoneService service = new MilestoneService(new MilestoneInMemory());
+        MilestoneService service = new MilestoneService();
         Milestone milestone = Mockito.mock(Milestone.class);
 
         when(milestone.getRequirement()).thenReturn(100);
@@ -23,7 +23,7 @@ class MilestoneServiceTest {
 
     @Test
     void testMilestoneDone(){
-        MilestoneService service = new MilestoneService(new MilestoneInMemory());
+        MilestoneService service = new MilestoneService();
         Milestone milestone = Mockito.mock(Milestone.class);
 
         when(milestone.getRequirement()).thenReturn(100);
@@ -34,7 +34,7 @@ class MilestoneServiceTest {
 
     @Test
     void testMilestoneDoneButWasAlreadyDone(){
-        MilestoneService service = new MilestoneService(new MilestoneInMemory());
+        MilestoneService service = new MilestoneService();
         Milestone milestone = Mockito.mock(Milestone.class);
 
         when(milestone.getRequirement()).thenReturn(100);
@@ -45,7 +45,7 @@ class MilestoneServiceTest {
 
     @Test
     void testMilestoneNotDoneAlthoughItWasAlreadyDone(){
-        MilestoneService service = new MilestoneService(new MilestoneInMemory());
+        MilestoneService service = new MilestoneService();
         Milestone milestone = Mockito.mock(Milestone.class);
 
         when(milestone.getRequirement()).thenReturn(100);

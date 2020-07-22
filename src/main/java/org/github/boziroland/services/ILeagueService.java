@@ -2,8 +2,8 @@ package org.github.boziroland.services;
 
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
-import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.DAL.ILeagueDAO;
+import org.github.boziroland.entities.LeagueData;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +12,8 @@ import java.util.Optional;
  * The interface ILeagueService defines the performable CRUD operations on the LeaguePlayer class.
  */
 public interface ILeagueService extends IAPIService {
+
+    //TODO comment this class
 
     /**
      * Creates a LeaguePlayer and passes it to
@@ -23,14 +25,10 @@ public interface ILeagueService extends IAPIService {
     void createOrUpdate(Summoner player, List <MatchReference> lastTenMatches);
 
     /**
-     * @see ILeagueDAO#findByUsername(String)
-     */
-    List<LeagueData> findByUsername(String name);
-
-    /**
      * @see ILeagueDAO#findByUserId(String)
+     * @param id TODO
      */
-    Optional<LeagueData> findByUserID(String id);
+    Optional<LeagueData> findById(int id);
 
     /**
      * @see ILeagueDAO#list()
@@ -38,14 +36,9 @@ public interface ILeagueService extends IAPIService {
     List<LeagueData> list();
 
     /**
-     * @see ILeagueDAO#deleteByName(String)
-     */
-    void deleteByName(String name);
-
-    /**
      * @see ILeagueDAO#deleteById(String)
      */
-    void deleteById(String id);
+    void deleteById(int id);
 
 
 

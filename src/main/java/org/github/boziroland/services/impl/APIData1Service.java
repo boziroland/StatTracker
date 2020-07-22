@@ -1,8 +1,8 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.DAL.IAPIData1DAO;
 import org.github.boziroland.entities.GeneralAPIData;
 import org.github.boziroland.entities.SpecificAPIData1;
+import org.github.boziroland.repositories.IAPIData1Repository;
 import org.github.boziroland.services.IAPIData1Service;
 
 import java.util.List;
@@ -10,54 +10,31 @@ import java.util.Optional;
 
 public class APIData1Service implements IAPIData1Service {
 
-    IAPIData1DAO dao;
+    IAPIData1Repository data1Repository;
 
-    public APIData1Service(IAPIData1DAO dao) {
-        this.dao = dao;
+    public APIData1Service() {}
+
+    @Override
+    public void createOrUpdate(String token, String username, int userID) {
+        data1Repository.save(new SpecificAPIData1(token, username, userID));
     }
 
     @Override
-    public void createOrUpdate(String token, String username, String userID) {
-        dao.createOrUpdate(new SpecificAPIData1(token, username, userID));
-    }
-
-    @Override
-    public List<SpecificAPIData1> findByName(String name) {
-        return dao.findByName(name);
-    }
-
-    @Override
-    public Optional<SpecificAPIData1> findByID(String id) {
-        return dao.findByID(id);
+    public Optional<SpecificAPIData1> findById(int id) {
+        return data1Repository.findById(id);
     }
 
     @Override
     public List<SpecificAPIData1> list() {
-        return dao.list();
+        return data1Repository.findAll();
     }
 
     @Override
-    public void deleteByName(String name) {
-        dao.deleteByName(name);
-    }
-
-    @Override
-    public void deleteByID(String id) {
-        dao.deleteByID(id);
-    }
-
-    @Override
-    public void requestToken() {
-
+    public void deleteById(int id) {
+        data1Repository.deleteById(id);
     }
 
     @Override
     public void requestInformation(String accountId, GeneralAPIData location) {
-    }
-
-    @Override
-    public Optional<String> readKeyFromFile(String file) {
-        //TODO
-        return Optional.empty();
     }
 }

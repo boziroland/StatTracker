@@ -3,7 +3,9 @@ package org.github.boziroland.DAL.impl;
 import org.github.boziroland.DAL.IUserDAO;
 import org.github.boziroland.entities.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class UserInMemory implements IUserDAO {
 

@@ -13,10 +13,10 @@ class LeagueServiceTest {
 
     @Test
     void testRetrieveLeagueData() throws IOException {
-        UserService service = new UserService(new UserInMemory());
+        UserService service = new UserService();
         var user = TestUtils.registerAndLoginUserWhoHasLeagueName(service);
 
-        LeagueService leagueService = new LeagueService(new LeagueDataInMemory());
+        LeagueService leagueService = new LeagueService();
 
         user.ifPresent(value -> service.requestInformation(value.getId(), leagueService, value.getLeagueData()));
 

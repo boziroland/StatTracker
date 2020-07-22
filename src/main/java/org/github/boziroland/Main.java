@@ -1,8 +1,5 @@
 package org.github.boziroland;
 
-import org.github.boziroland.DAL.impl.CommentInMemory;
-import org.github.boziroland.DAL.impl.LeagueDataInMemory;
-import org.github.boziroland.DAL.impl.UserInMemory;
 import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.entities.MilestoneHolder;
 import org.github.boziroland.entities.User;
@@ -23,8 +20,8 @@ public class Main {
 
         List<Optional<User>> users = new ArrayList<>();
 
-        LeagueService leagueService = new LeagueService(new LeagueDataInMemory());
-        UserService service = new UserService(new UserInMemory(), leagueService);
+        LeagueService leagueService = new LeagueService();
+        UserService service = new UserService(leagueService);
         service.register(1, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), "meshons", null);
         users.add(service.login("bonifac.solyom@gmail.com", "KAcsa11&"));
         service.register(2, "bonifác", "KAcsa11&", "bon1fac.solyom@gmail.com", new MilestoneHolder(), List.of(), List.of(), "meshons", null);
@@ -39,7 +36,7 @@ public class Main {
 
         service.checkMilestones(users.get(0).get().getId());
 
-        ICommentService commentService = new CommentService(new CommentInMemory());
+        ICommentService commentService = new CommentService();
 
         commentService.sendComment(users.get(0).get(), users.get(1).get(), "valami");
 

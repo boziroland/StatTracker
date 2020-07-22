@@ -1,9 +1,10 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.DAL.ICommentDAO;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.User;
+import org.github.boziroland.repositories.ICommentRepository;
 import org.github.boziroland.services.ICommentService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,16 +12,14 @@ import java.util.Optional;
 
 public class CommentService implements ICommentService {
 
-    ICommentDAO dao;
-    private int id = 0;
+    @Autowired
+    ICommentRepository commentRepository;
 
-    public CommentService(ICommentDAO dao) {
-        this.dao = dao;
-    }
+    public CommentService() {}
 
     @Override
     public void create(Comment comment) {
-        dao.create(comment);
+        commentRepository.save(comment);
     }
 
     @Override
@@ -29,38 +28,38 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public Optional<Comment> findById(String id) {
-        return dao.findById(id);
+    public Optional<Comment> findById(int id) {
+        return commentRepository.findById(id);
     }
 
     @Override
     public List<Comment> findByUser(User user) {
-        return dao.findByUser(user);
+        return commentRepository.findBySender(user);
     }
 
     @Override
     public List<Comment> list() {
-        return dao.list();
+        return commentRepository.findAll();
     }
 
     @Override
-    public void deleteById(String id) {
-        dao.deleteById(id);
+    public void deleteById(int id) {
+        commentRepository.deleteById(id);
     }
 
     @Override
     public void deleteByUser(User user) {
-        dao.deleteByUser(user);
+        commentRepository.deleteBySender(user);
     }
 
     @Override
     public void delete(int ID) {
-        dao.delete(ID);
+        commentRepository.deleteById(ID);
     }
 
     @Override
     public void sendComment(User from, User to, String message) {
-        Comment comment = new Comment(id++, from, to, message, LocalDateTime.now());
+        Comment comment = new Comment(-1, from, to, message, LocalDateTime.now());
         from.getCommentsSent().add(comment);
         to.getCommentsOnProfile().add(comment);
     }

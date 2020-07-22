@@ -7,28 +7,26 @@ import java.util.*;
 
 public class APIData1InMemory implements IAPIData1DAO {
 
-    Map<String, SpecificAPIData1> idSpecificdataMap = new HashMap<>();
+    Map<Integer, SpecificAPIData1> idSpecificdataMap = new HashMap<>();
 
     @Override
     public void createOrUpdate(SpecificAPIData1 player) {
-        idSpecificdataMap.put(player.getUserID(), player);
+        idSpecificdataMap.put(player.getId(), player);
     }
 
     @Override
     public List<SpecificAPIData1> findByName(String name) {
         var ret = new ArrayList<SpecificAPIData1>();
 
-        for (var elem : idSpecificdataMap.entrySet()){
-            if(elem.getValue().getUsername().equals(name)){
+        for (var elem : idSpecificdataMap.entrySet())
+            if(elem.getValue().getUsername().equals(name))
                 ret.add(elem.getValue());
-            }
-        }
 
         return ret;
     }
 
     @Override
-    public Optional<SpecificAPIData1> findByID(String id) {
+    public Optional<SpecificAPIData1> findByID(int id) {
         return Optional.ofNullable(idSpecificdataMap.get(id));
     }
 
@@ -42,12 +40,12 @@ public class APIData1InMemory implements IAPIData1DAO {
         var usersToRemove = findByName(name);
 
         for(var user : usersToRemove){
-            idSpecificdataMap.remove(user.getUserID());
+            idSpecificdataMap.remove(user.getId());
         }
     }
 
     @Override
-    public void deleteByID(String id) {
+    public void deleteByID(int id) {
         idSpecificdataMap.remove(id);
     }
 }

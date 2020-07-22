@@ -6,28 +6,22 @@ import net.rithms.riot.api.RiotApiException;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import net.rithms.riot.constant.Platform;
-import org.github.boziroland.DAL.ILeagueDAO;
 import org.github.boziroland.entities.GeneralAPIData;
 import org.github.boziroland.entities.LeagueData;
+import org.github.boziroland.repositories.ILeagueRepository;
 import org.github.boziroland.services.ILeagueService;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
 public class LeagueService implements ILeagueService {
 
-    ILeagueDAO dao;
+    //ILeagueDAO dao;
+    ILeagueRepository leagueRepository;
     RiotApi api;
 
     public LeagueService() throws IOException{
-        init();
-    }
-
-    public LeagueService(ILeagueDAO dao) throws IOException {
-        this.dao = dao;
         init();
     }
 
@@ -42,32 +36,22 @@ public class LeagueService implements ILeagueService {
 
     @Override
     public void createOrUpdate(Summoner player, List<MatchReference> lastTenMatches) {
-        dao.createOrUpdate(new LeagueData(player, lastTenMatches));
+        leagueRepository.save(new LeagueData(-1, player, lastTenMatches));
     }
 
     @Override
-    public List<LeagueData> findByUsername(String name) {
-        return dao.findByUsername(name);
-    }
-
-    @Override
-    public Optional<LeagueData> findByUserID(String id) {
-        return dao.findByUserId(id);
+    public Optional<LeagueData> findById(int id) {
+        return leagueRepository.findById(id);
     }
 
     @Override
     public List<LeagueData> list() {
-        return dao.list();
+        return leagueRepository.findAll();
     }
 
     @Override
-    public void deleteByName(String name) {
-        dao.deleteByName(name);
-    }
-
-    @Override
-    public void deleteById(String id) {
-        dao.deleteById(id);
+    public void deleteById(int id) {
+        leagueRepository.deleteById(id);
     }
 
     @Override
@@ -84,16 +68,5 @@ public class LeagueService implements ILeagueService {
         } catch (RiotApiException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public Optional<String> readKeyFromFile(String file) throws IOException {
-        List<String> lines;
-        lines = Files.readAllLines(Paths.get(file));
-        return Optional.of(lines.get(0));
-    }
-
-    public ILeagueDAO getDao() {
-        return dao;
     }
 }

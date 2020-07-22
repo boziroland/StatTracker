@@ -1,20 +1,24 @@
 package org.github.boziroland.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Objects;
 
+@Entity
 public class SpecificAPIData1 extends GeneralAPIData {
 
+    @Id
+    private int id;
     private String token;
     private String username;
-    private String userID;
 
     public SpecificAPIData1() {
     }
 
-    public SpecificAPIData1(String token, String username, String userID) {
+    public SpecificAPIData1(String token, String username, int id) {
         this.token = token;
         this.username = username;
-        this.userID = userID;
+        this.id = id;
     }
 
     public String getToken() {
@@ -25,8 +29,8 @@ public class SpecificAPIData1 extends GeneralAPIData {
         return username;
     }
 
-    public String getUserID() {
-        return userID;
+    public int getId() {
+        return id;
     }
 
     @Override
@@ -36,11 +40,11 @@ public class SpecificAPIData1 extends GeneralAPIData {
         SpecificAPIData1 that = (SpecificAPIData1) o;
         return token.equals(that.token) &&
                 username.equals(that.username) &&
-                userID.equals(that.userID);
+                id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(token, username, userID);
+        return Objects.hash(token, username, id);
     }
 }

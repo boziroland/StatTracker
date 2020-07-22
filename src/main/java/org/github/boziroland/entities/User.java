@@ -1,10 +1,14 @@
 package org.github.boziroland.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class User {
 
+    @Id
     private final int id;
     private String name;
     private String password;

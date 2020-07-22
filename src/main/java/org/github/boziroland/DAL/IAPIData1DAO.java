@@ -28,7 +28,7 @@ public interface IAPIData1DAO {
      * @param id The ID of the SpecificAPIData1 we want to fund
      * @return The SpecificAPIData1 we found, wrapped into an Optional Container
      */
-    Optional<SpecificAPIData1> findByID(String id);
+    Optional<SpecificAPIData1> findByID(int id);
 
     /**
      * Lists every SpecificAPIData1.
@@ -46,5 +46,5 @@ public interface IAPIData1DAO {
      * Removes every SpecificAPIData1 by their ID,
      * @param id The ID of the player we want to remove
      */
-    void deleteByID(String id);
+    void deleteByID(int id);
 }

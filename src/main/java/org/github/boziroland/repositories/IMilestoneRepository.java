@@ -1,4 +1,10 @@
 package org.github.boziroland.repositories;
 
-public interface IMilestoneRepository {
+import org.github.boziroland.entities.Milestone;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface IMilestoneRepository extends JpaRepository<Milestone, String> {
+
+
+
 }

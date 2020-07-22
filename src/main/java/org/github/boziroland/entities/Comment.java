@@ -1,60 +1,32 @@
 package org.github.boziroland.entities;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.time.LocalDateTime;
+
+@Entity
+@Data
+@RequiredArgsConstructor
 public class Comment {
 
-    private LocalDateTime time;
-    private User sender;
-    private User receiver;
-    private String message;
+    @Id
+    @org.springframework.lang.NonNull
     private int id;
 
-    public Comment(int id, User sender, User receiver, String message, LocalDateTime time) {
-        this.id = id;
-        this.sender = sender;
-        this.receiver = receiver;
-        this.message = message;
-        this.time = time;
-    }
+    @NonNull
+    private User sender;
 
-    public User getSender() {
-        return sender;
-    }
+    @NonNull
+    private User receiver;
 
-    public void setSender(User sender) {
-        this.sender = sender;
-    }
+    @NonNull
+    private String message;
 
-    public String getMessage() {
-        return message;
-    }
+    @NonNull
+    private LocalDateTime time;
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Comment comment = (Comment) o;
-        return id == comment.id &&
-                sender.equals(comment.sender) &&
-                message.equals(comment.message);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sender, message, id);
-    }
 }

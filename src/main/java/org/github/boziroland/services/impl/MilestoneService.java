@@ -1,8 +1,7 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.DAL.IMilestoneDAO;
 import org.github.boziroland.entities.Milestone;
-import org.github.boziroland.entities.User;
+import org.github.boziroland.repositories.IMilestoneRepository;
 import org.github.boziroland.services.IMilestoneService;
 
 import java.util.List;
@@ -10,35 +9,33 @@ import java.util.Optional;
 
 public class MilestoneService implements IMilestoneService {
 
-    IMilestoneDAO dao;
+    IMilestoneRepository milestoneRepository;
 
-    public MilestoneService(IMilestoneDAO dao) {
-        this.dao = dao;
-    }
+    public MilestoneService() {}
 
     @Override
     public void createOrUpdate(String name, String description, int requirement, Milestone.Game game) {
-        dao.createOrUpdate(new Milestone(name, description, requirement, game));
+        milestoneRepository.save(new Milestone(name, description, requirement, game));
     }
 
     @Override
     public Optional<Milestone> findByName(String name) {
-        return dao.findByName(name);
+        return milestoneRepository.findById(name);
     }
 
     @Override
     public List<Milestone> list() {
-        return dao.list();
+        return milestoneRepository.findAll();
     }
 
     @Override
     public void deleteByName(String name) {
-        dao.deleteByName(name);
+        milestoneRepository.deleteById(name);
     }
 
     @Override
     public void delete(String name, String description, int requirement, Milestone.Game game) {
-        dao.delete(new Milestone(name, description, requirement, game));
+        milestoneRepository.delete(new Milestone(name, description, requirement, game));
     }
 
     @Override

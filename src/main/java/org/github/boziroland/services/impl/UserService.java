@@ -1,10 +1,13 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.DAL.IUserDAO;
-import org.github.boziroland.DAL.impl.MilestoneInMemory;
-import org.github.boziroland.entities.*;
+import org.github.boziroland.entities.Comment;
+import org.github.boziroland.entities.GeneralAPIData;
+import org.github.boziroland.entities.MilestoneHolder;
+import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
+import org.github.boziroland.repositories.IUserRepository;
 import org.github.boziroland.services.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -15,9 +18,11 @@ import java.util.concurrent.TimeUnit;
 
 public class UserService implements IUserService {
 
-    IUserDAO userDao;
+    //IUserDAO userDao;
+    @Autowired
+    IUserRepository userRepository;
 
-    IMilestoneService milestoneService = new MilestoneService(new MilestoneInMemory());
+    IMilestoneService milestoneService = new MilestoneService();
     ISecurityService securityService = new SecurityService();
 
     ILeagueService leagueService;
@@ -28,27 +33,25 @@ public class UserService implements IUserService {
 
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public UserService(IUserDAO userDao) {
+    public UserService() {
         scheduleHourlyQuery();
-        this.userDao = userDao;
     }
 
-    public UserService(IUserDAO userDao, ILeagueService leagueService) {//TODO inject other api service too
+    public UserService(ILeagueService leagueService) {//TODO inject other api service too
         scheduleHourlyQuery();
-        this.userDao = userDao;
         this.leagueService = leagueService;
     }
 
     @Override
     public void create(User user) {
-        userDao.createOrUpdate(user);
+        userRepository.save(user);
         int secondsInADay = 24 * 60 * 60;
         userQueryTimeMap.put(user, LocalTime.ofSecondOfDay(new Random().nextInt(secondsInADay)));
     }
 
     @Override
     public void update(User user) {
-        userDao.createOrUpdate(user);
+        userRepository.save(user);
     }
 
     @Override
@@ -63,35 +66,37 @@ public class UserService implements IUserService {
 
     @Override
     public Optional<User> findById(int ID) {
-        return userDao.findById(ID);
+        return userRepository.findById(ID);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
         if(isValidEmail(email))
-            return userDao.findByEmail(email);
+            return Optional.of(userRepository.findByEmail(email));
+            //return userDao.findByEmail(email);
 
         return Optional.empty();
     }
 
     @Override
     public List<User> findByName(String name) {
-        return userDao.findByName(name);
+        return userRepository.findByName(name);
+        //return userDao.findByName(name);
     }
 
     @Override
     public List<User> list() {
-        return userDao.list();
+        return userRepository.findAll();
     }
 
     @Override
     public void delete(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-        userDao.delete(new User(id, name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
+        userRepository.delete(new User(id, name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
     }
 
     @Override
     public void requestInformation(int id, IAPIService IAPIService, GeneralAPIData location) {
-        var user = userDao.findById(id);
+        var user = findById(id);
 
         if(user.isPresent()){
             IAPIService.requestInformation(user.get().getLeagueID(), location);
@@ -105,7 +110,7 @@ public class UserService implements IUserService {
 
     @Override
     public void sendEmail(int id, String message) {
-        var user = userDao.findById(id);
+        var user = findById(id);
 
         if(user.isPresent()){
             var userEmail = user.get().getEmail();
@@ -117,7 +122,7 @@ public class UserService implements IUserService {
 
     @Override
     public Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueID, String gameName2) throws RegistrationException {
-        if(userDao.findByEmail(email).isPresent()){
+        if(findByEmail(email).isPresent()){
             throw new RegistrationException("Email cím foglalt!");
         }else{
             if(!password.matches("^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$")){
@@ -146,7 +151,7 @@ public class UserService implements IUserService {
 
     @Override
     public void checkMilestones(int id) {
-        var user = userDao.findById(id);
+        var user = findById(id);
 
         var milestones = user.get().getMilestones();
 
