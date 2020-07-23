@@ -10,6 +10,7 @@ import org.github.boziroland.entities.GeneralAPIData;
 import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.repositories.ILeagueRepository;
 import org.github.boziroland.services.ILeagueService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 public class LeagueService implements ILeagueService {
 
-    //ILeagueDAO dao;
+    @Autowired
     ILeagueRepository leagueRepository;
     RiotApi api;
 
@@ -36,7 +37,7 @@ public class LeagueService implements ILeagueService {
 
     @Override
     public void createOrUpdate(Summoner player, List<MatchReference> lastTenMatches) {
-        leagueRepository.save(new LeagueData(-1, player, lastTenMatches));
+        leagueRepository.save(new LeagueData(player, lastTenMatches));
     }
 
     @Override

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
@@ -13,13 +14,16 @@ import javax.persistence.Id;
 public class MyMatchReference {
 
     @Id
-    long gameId;
-    int champion;
-    String lane;
-    String platformId;
-    int queue;
-    int season;
-    long timestamp;
+    @GeneratedValue
+    private Integer id;
+
+    private long gameId;
+    private int champion;
+    private String lane;
+    private String platformId;
+    private int queue;
+    private int season;
+    private long timestamp;
 
     public MyMatchReference(MatchReference m){
         gameId = m.getGameId();

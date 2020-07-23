@@ -18,13 +18,15 @@ import java.util.concurrent.TimeUnit;
 
 public class UserService implements IUserService {
 
-    //IUserDAO userDao;
     @Autowired
     IUserRepository userRepository;
 
-    IMilestoneService milestoneService = new MilestoneService();
+    @Autowired
+    IMilestoneService milestoneService;
+
     ISecurityService securityService = new SecurityService();
 
+    @Autowired
     ILeagueService leagueService;
 
     ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
@@ -33,20 +35,16 @@ public class UserService implements IUserService {
 
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public UserService() {
+    public UserService() {//TODO inject other api service too
         scheduleHourlyQuery();
-    }
-
-    public UserService(ILeagueService leagueService) {//TODO inject other api service too
-        scheduleHourlyQuery();
-        this.leagueService = leagueService;
     }
 
     @Override
-    public void create(User user) {
-        userRepository.save(user);
+    public User create(User user) {
+        User savedUser = userRepository.save(user);
         int secondsInADay = 24 * 60 * 60;
         userQueryTimeMap.put(user, LocalTime.ofSecondOfDay(new Random().nextInt(secondsInADay)));
+        return savedUser;
     }
 
     @Override
@@ -55,13 +53,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void create(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-        create(new User(id, name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
+    public User create(String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
+        return create(new User(name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
     }
 
     @Override
     public void update(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-        update(new User(id, name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
+        update(new User(name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
     }
 
     @Override
@@ -71,9 +69,8 @@ public class UserService implements IUserService {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        if(isValidEmail(email))
-            return Optional.of(userRepository.findByEmail(email));
-            //return userDao.findByEmail(email);
+        if (isValidEmail(email))
+            return Optional.ofNullable(userRepository.findByEmail(email));
 
         return Optional.empty();
     }
@@ -81,7 +78,6 @@ public class UserService implements IUserService {
     @Override
     public List<User> findByName(String name) {
         return userRepository.findByName(name);
-        //return userDao.findByName(name);
     }
 
     @Override
@@ -91,19 +87,19 @@ public class UserService implements IUserService {
 
     @Override
     public void delete(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-        userRepository.delete(new User(id, name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
+        userRepository.delete(new User(name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
     }
 
     @Override
     public void requestInformation(int id, IAPIService IAPIService, GeneralAPIData location) {
         var user = findById(id);
 
-        if(user.isPresent()){
+        if (user.isPresent()) {
             IAPIService.requestInformation(user.get().getLeagueID(), location);
 
             //user.get().setLeagueData(); TODO
 
-        }else{
+        } else {
             throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
         }
     }
@@ -112,27 +108,26 @@ public class UserService implements IUserService {
     public void sendEmail(int id, String message) {
         var user = findById(id);
 
-        if(user.isPresent()){
+        if (user.isPresent()) {
             var userEmail = user.get().getEmail();
-                //TODO send email
-        }else{
+            //TODO send email
+        } else {
             throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
         }
     }
 
     @Override
-    public Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueID, String gameName2) throws RegistrationException {
-        if(findByEmail(email).isPresent()){
+    public Optional<User> register(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueID, String gameName2) throws RegistrationException {
+        if (findByEmail(email).isPresent()) {
             throw new RegistrationException("Email cím foglalt!");
-        }else{
-            if(!password.matches("^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$")){
+        } else {
+            if (!password.matches("^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$")) {
                 throw new RegistrationException("Túl gyenge jelszó! A jelszónak tartalmaznia kell legalább 2 nagybetűt, 3 kisbetűt, 2 számot, 1 speciális karaktert és legalább 8 hosszúnak kell lennie!");
-            }else if(!isValidEmail(email)){
+            } else if (!isValidEmail(email)) {
                 throw new RegistrationException("Rossz email!");
-            }else{
-                Optional<User> user = Optional.of(new User(id, name, securityService.hashPassword(password), email, milestones, commentsOnProfile, comments, leagueID, gameName2));
-                create(user.get());
-                return user;
+            } else {
+                Optional<User> user = Optional.of(new User(name, securityService.hashPassword(password), email, commentsOnProfile, comments, leagueID, gameName2));
+                return Optional.of(create(user.get()));
             }
         }
     }
@@ -142,7 +137,7 @@ public class UserService implements IUserService {
         String hashedPassword = securityService.hashPassword(password);
         Optional<User> user = findByEmail(email);
 
-        if(user.isPresent())
+        if (user.isPresent())
             if (user.get().getPassword().equals(hashedPassword))
                 return user;
 
@@ -155,12 +150,13 @@ public class UserService implements IUserService {
 
         var milestones = user.get().getMilestones();
 
-        for(var m : milestones.getLeagueMilestones().entrySet())
-            if(milestoneService.checkAchievement(m.getValue(), m.getKey()))
+        for (var m : milestones.getLeagueMilestones().entrySet())
+            if (milestoneService.checkAchievement(m.getValue(), m.getKey()))
                 sendEmail(id, "Gratulálok! A(z) " + m.getKey().getName() + " nevű mérföldkő követelményét teljesítetted!");
     }
 
-    void scheduleHourlyQuery(){
+    @Override
+    public void scheduleHourlyQuery() {
         Runnable command = () -> {
             updateUsersToQuery();
             scheduleHourlyQuery();
@@ -169,8 +165,9 @@ public class UserService implements IUserService {
         scheduler.schedule(command, delay, TimeUnit.SECONDS);
     }
 
-    void updateUsersToQuery(){
-        for(var entry : userQueryTimeMap.entrySet()){
+    @Override
+    public void updateUsersToQuery() {
+        for (var entry : userQueryTimeMap.entrySet()) {
             LocalTime queryTime = entry.getValue();
             sirs.setRetrieveTime(queryTime);
             sirs.retrieve(entry.getKey(), leagueService);

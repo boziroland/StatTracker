@@ -1,9 +1,8 @@
 package org.github.boziroland.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,45 +10,60 @@ import java.util.Objects;
 public class User {
 
     @Id
-    private final int id;
+    @GeneratedValue
+    private Integer id;
     private String name;
     private String password;
     private String email;
 
     @OneToOne
+    @Autowired
     private MilestoneHolder milestones;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Comment> commentsOnProfile;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Comment> commentsSent;
 
-    private String leagueID;
-    private String gameName2;
-
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private LeagueData leagueData;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private SpecificAPIData1 specificPlayer;
 
-    public User(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String gameName2) {
-        this.id = id;
+    public User(){}
+
+    public User(String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String gameName2) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.milestones = milestones;
         this.commentsOnProfile = commentsOnProfile;
         this.commentsSent = commentsSent;
-        this.leagueID = leagueID;
-        this.gameName2 = gameName2;
 
         leagueData = new LeagueData();
+        leagueData.setUsername(leagueID);
+
         specificPlayer = new SpecificAPIData1();
+        specificPlayer.setUsername(gameName2);
     }
 
-    public int getId() {
+    public User(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String gameName2) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.commentsOnProfile = commentsOnProfile;
+        this.commentsSent = commentsSent;
+
+        leagueData = new LeagueData();
+        leagueData.setUsername(leagueID);
+
+        specificPlayer = new SpecificAPIData1();
+        specificPlayer.setUsername(gameName2);
+    }
+
+    public Integer getId() {
         return id;
     }
 
@@ -110,19 +124,19 @@ public class User {
     }
 
     public String getLeagueID() {
-        return leagueID;
+        return leagueData.getUsername();
     }
 
     public void setLeagueID(String leagueID) {
-        this.leagueID = leagueID;
+        leagueData.setUsername(leagueID);
     }
 
     public String getGameName2() {
-        return gameName2;
+        return specificPlayer.getUsername();
     }
 
     public void setGameName2(String gameName2) {
-        this.gameName2 = gameName2;
+        specificPlayer.setUsername(gameName2);
     }
 
     public List<Comment> getCommentsOnProfile() {

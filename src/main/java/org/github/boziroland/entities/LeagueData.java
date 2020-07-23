@@ -5,10 +5,7 @@ import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import org.github.boziroland.entities.apiEntities.MyMatchReference;
 import org.github.boziroland.entities.apiEntities.MySummoner;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,19 +15,15 @@ import java.util.Objects;
 @Entity
 public class LeagueData extends GeneralAPIData {
 
-    @Id
-    private int id;
-
     @OneToOne
     private MySummoner player;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<MyMatchReference> lastTenMatches;
 
     public LeagueData() {}
 
-    public LeagueData(int id, Summoner player, List<MatchReference> lastTenMatches) {
-        this.id = id;
+    public LeagueData(Summoner player, List<MatchReference> lastTenMatches) {
         setPlayer(player);
         setLastTenMatches(lastTenMatches);
     }

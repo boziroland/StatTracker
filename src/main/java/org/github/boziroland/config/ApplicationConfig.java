@@ -61,4 +61,29 @@ public class ApplicationConfig {
     public IUserService userService(IUserDAO userDAO){
         return new UserService();
     }
+
+    @Bean
+    public IAPIData1Service apiData1Service(){
+        return new APIData1Service();
+    }
+
+    @Bean
+    public ICommentService commentService(){
+        return new CommentService();
+    }
+
+    @Bean
+    public ILeagueService leagueService() throws IOException {
+        return new LeagueService();
+    }
+
+    @Bean
+    public IMilestoneService milestoneService(){
+        return new MilestoneService();
+    }
+
+    @Bean
+    public IUserService userService(){
+        return new UserService();
+    }
 }

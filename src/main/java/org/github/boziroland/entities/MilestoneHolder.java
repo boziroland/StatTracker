@@ -8,19 +8,20 @@ import java.util.Map;
 public class MilestoneHolder {
 
     @Id
-    int id;
+    @GeneratedValue
+    private Integer id;
 
     @ElementCollection
     @CollectionTable(name="LeagueMilestonePointJoinTable")
     @MapKeyColumn(name="Milestone")
-    private final Map<Milestone, Integer> leagueMilestones = new HashMap<>();
+    private Map<Milestone, Integer> leagueMilestones = new HashMap<>();
 
     @ElementCollection
     @CollectionTable(name="Game2MilestonePointJoinTable")
     @MapKeyColumn(name="Milestone")
-    private final Map<Milestone, Integer> gameMilestones2 = new HashMap<>();
+    private Map<Milestone, Integer> gameMilestones2 = new HashMap<>();
 
-    public MilestoneHolder(int id) {
+    public MilestoneHolder() {
         initLeagueMilestones();
         initGame2Milestones();
     }

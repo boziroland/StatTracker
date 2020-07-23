@@ -16,7 +16,7 @@ public class APIData1Service implements IAPIData1Service {
 
     @Override
     public void createOrUpdate(String token, String username, int userID) {
-        data1Repository.save(new SpecificAPIData1(token, username, userID));
+        data1Repository.save(new SpecificAPIData1(token));
     }
 
     @Override

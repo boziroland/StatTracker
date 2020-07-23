@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
@@ -13,18 +14,20 @@ import javax.persistence.Id;
 public class MySummoner {
 
     @Id
-    String accountId;
-    String name;
-    String id;
-    int profileIconid;
-    String puuid;
-    long revisionDate;
-    int summonerLevel;
+    @GeneratedValue
+    private Integer id;
+    private String accountId;
+    private String name;
+    private String idLeague;
+    private int profileIconid;
+    private String puuid;
+    private long revisionDate;
+    private int summonerLevel;
 
     public MySummoner(Summoner s){
         accountId = s.getAccountId();
         name = s.getName();
-        id = s.getId();
+        idLeague = s.getId();
         profileIconid = s.getProfileIconId();
         puuid = s.getPuuid();
         revisionDate = s.getRevisionDate();

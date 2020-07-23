@@ -16,7 +16,7 @@ public class Comment {
 
     @Id
     @org.springframework.lang.NonNull
-    private int id;
+    private Integer id;
 
     @NonNull
     @OneToOne

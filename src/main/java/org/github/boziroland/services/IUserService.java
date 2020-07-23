@@ -21,7 +21,7 @@ public interface IUserService{
      * @see IUserDAO#createOrUpdate(User)
      * @param user The user to pass
      */
-    void create(User user);
+    User create(User user);
 
     /**
      * Passes the User instance to
@@ -33,9 +33,7 @@ public interface IUserService{
     /**
      * Creates a User instance, and passes it to
      * @see IUserDAO#createOrUpdate(User)
-     *
-     * @param id The user's ID
-     * @param name The user's name
+     *@param name The user's name
      * @param password The user's password
      * @param email The user's email
      * @param milestones The user's milestones
@@ -43,7 +41,7 @@ public interface IUserService{
      * @param leagueName The user's League account name
      * @param gameName2 The user's <i>Specific</i> account name
      */
-    void create(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
+    User create(String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
 
     /**
      * Creates a User instance, and passes it to
@@ -120,17 +118,15 @@ public interface IUserService{
     /**
      * Registers a user.
      *
-     * @param id The user's ID
      * @param name The user's name
      * @param password The user's password
      * @param email The user's email
-     * @param milestones The user's milestones
      * @param comments The user's comments
      * @param leagueName The user's League account name
      * @param gameName2 The user's <i>Specific</i> account name
      * @return The registered user, wrapped in an Optional container
      */
-    Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) throws RegistrationException;
+    Optional<User> register(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) throws RegistrationException;
 
     /**
      * Logs the user in
@@ -157,4 +153,7 @@ public interface IUserService{
      */
     void checkMilestones(int id);
 
-}
+    void scheduleHourlyQuery();
+    void updateUsersToQuery();
+
+    }

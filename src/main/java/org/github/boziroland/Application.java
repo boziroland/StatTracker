@@ -1,8 +1,6 @@
 package org.github.boziroland;
 
-import org.github.boziroland.entities.MilestoneHolder;
 import org.github.boziroland.entities.User;
-import org.github.boziroland.services.impl.LeagueService;
 import org.github.boziroland.services.impl.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,9 +17,8 @@ public class Application {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(Application.class, args);
 
         List<Optional<User>> users = new ArrayList<>();
-        LeagueService leagueService = new LeagueService();
-        UserService service = new UserService(leagueService);
-        service.register(1, "bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", new MilestoneHolder(-1), List.of(), List.of(), "meshons", null);
+        UserService service = applicationContext.getBean(UserService.class);
+        service.register("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", List.of(), List.of(), "meshons", null);
         users.add(service.login("bonifac.solyom@gmail.com", "KAcsa11&"));
         System.out.println(users.get(0).get().getName());
 
