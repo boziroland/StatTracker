@@ -1,13 +1,14 @@
 package org.github.boziroland.services.impl;
 
 import TestUtils.TestUtils;
+import jdk.jshell.spi.ExecutionControl;
+import org.github.boziroland.entities.IntegerEntity;
 import org.github.boziroland.entities.LeagueData;
-import org.github.boziroland.entities.MilestoneHolder;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.services.ILeagueService;
+import org.github.boziroland.services.IMilestoneService;
 import org.github.boziroland.services.IUserService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -31,6 +32,9 @@ class UserServiceTest {
 
     @Autowired
     ILeagueService leagueService;
+
+    @Autowired
+    IMilestoneService milestoneService;
 
     @Test
     void testUserServiceCreate() {
@@ -67,23 +71,37 @@ class UserServiceTest {
     }
 
     @Test
-    void testLoginFailureBecauseNoSuchUserExists(){
+    void testLoginFailureBecauseNoSuchUserExists() {
         assertTrue(userService.login("IDoNot", "Exist").isEmpty());
     }
 
     @Test
     void testLoginFailureBecauseThePasswordWasIncorrect() throws RegistrationException {
-        User user = TestUtils.createNDifferentUsers(userService, 1).get(0);
+        User user = TestUtils.registerNDifferentUsers(userService, 1).get(0);
         assertTrue(userService.login(user.getEmail(), "incorrectPassword").isEmpty());
     }
 
     @Test
     void testScheduling() {
-        await().atMost(5, TimeUnit.SECONDS);
         userService.scheduleHourlyQuery();
         await().atLeast(4, TimeUnit.SECONDS).atMost(10, TimeUnit.SECONDS);
         userService.scheduleHourlyQuery();
         await().atLeast(4, TimeUnit.SECONDS).atMost(10, TimeUnit.SECONDS);
     }
 
+    @Test
+    void testRemoveUser() {
+        User user = TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0);
+        userService.delete(user);
+        assertEquals(userService.list().size(), 0);
+    }
+
+    @Test
+    void testUserAchievesMilestoneRequirement() {
+        User user = TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0);
+        for (var m : user.getLeagueMilestones().entrySet())
+            m.setValue(150);
+
+        assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.checkMilestones(user.getId()));
+    }
 }

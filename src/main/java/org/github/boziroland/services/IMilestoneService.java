@@ -14,12 +14,19 @@ public interface IMilestoneService {
     /**
      * Creates a milestone instance and passes it to
      * @see IMilestoneDAO#createOrUpdate(Milestone)
-     *
-     * @param name
+     *@param name
      * @param description
      * @param requirement
+     * @return
      */
-    void createOrUpdate(String name, String description, int requirement, Milestone.Game game);
+    Milestone createOrUpdate(String name, String description, int requirement, Milestone.Game game);
+
+    /**
+     * TODO
+     * @param m
+     * @return
+     */
+    Milestone createOrUpdate(Milestone m);
 
     /**
      * Finds a Milestone by its name

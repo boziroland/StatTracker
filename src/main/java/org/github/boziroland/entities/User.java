@@ -1,9 +1,9 @@
 package org.github.boziroland.entities;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -16,9 +16,15 @@ public class User {
     private String password;
     private String email;
 
-    @OneToOne
-    @Autowired
-    private MilestoneHolder milestones;
+    @ElementCollection
+    @CollectionTable(name = "LeagueMilestonePointJoinTable")
+    @MapKeyColumn(name = "Milestone")
+    private Map<Milestone, Integer> leagueMilestones = new HashMap<>();
+
+    @ElementCollection
+    @CollectionTable(name = "Game2MilestonePointJoinTable")
+    @MapKeyColumn(name = "Milestone")
+    private Map<Milestone, Integer> gameMilestones2 = new HashMap<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Comment> commentsOnProfile;
@@ -32,21 +38,7 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     private SpecificAPIData1 specificPlayer;
 
-    public User(){}
-
-    public User(String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String gameName2) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.milestones = milestones;
-        this.commentsOnProfile = commentsOnProfile;
-        this.commentsSent = commentsSent;
-
-        leagueData = new LeagueData();
-        leagueData.setUsername(leagueID);
-
-        specificPlayer = new SpecificAPIData1();
-        specificPlayer.setUsername(gameName2);
+    public User() {
     }
 
     public User(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String gameName2) {
@@ -61,6 +53,17 @@ public class User {
 
         specificPlayer = new SpecificAPIData1();
         specificPlayer.setUsername(gameName2);
+
+        initLeagueMilestones();
+        initGame2Milestones();
+    }
+
+    private void initLeagueMilestones() {
+        leagueMilestones.put(new Milestone("teszt", "teszt teszt", 100, Milestone.Game.LEAGUE), 0);
+    }
+
+    private void initGame2Milestones() {
+
     }
 
     public Integer getId() {
@@ -79,10 +82,6 @@ public class User {
         return email;
     }
 
-    public MilestoneHolder getMilestones() {
-        return milestones;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -93,10 +92,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setMilestones(MilestoneHolder milestones) {
-        this.milestones = milestones;
     }
 
     public List<Comment> getCommentsSent() {
@@ -147,6 +142,14 @@ public class User {
         this.commentsOnProfile = commentsOnProfile;
     }
 
+    public Map<Milestone, Integer> getLeagueMilestones() {
+        return leagueMilestones;
+    }
+
+    public Map<Milestone, Integer> getGameMilestones2() {
+        return gameMilestones2;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -156,7 +159,6 @@ public class User {
                 Objects.equals(name, user.name) &&
                 Objects.equals(password, user.password) &&
                 Objects.equals(email, user.email) &&
-                Objects.equals(milestones, user.milestones) &&
                 Objects.equals(commentsSent, user.commentsSent) &&
                 Objects.equals(leagueData, user.leagueData) &&
                 Objects.equals(specificPlayer, user.specificPlayer);
@@ -164,6 +166,6 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, password, email, milestones, commentsSent, leagueData, specificPlayer);
+        return Objects.hash(id, name, password, email, commentsSent, leagueData, specificPlayer);
     }
 }

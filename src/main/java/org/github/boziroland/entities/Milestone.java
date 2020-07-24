@@ -1,15 +1,12 @@
 package org.github.boziroland.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class Milestone {
 
-    public enum Game{
+    public enum Game {
         LEAGUE, OTHERGAME
     }
 
@@ -28,7 +25,8 @@ public class Milestone {
 
     private boolean doneAlready;
 
-    public Milestone(){}
+    public Milestone() {
+    }
 
     public Milestone(String name, String description, int requirement, Game game) {
         this.name = name;

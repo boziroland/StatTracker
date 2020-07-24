@@ -13,7 +13,6 @@ public abstract class GeneralAPIData {
     @GeneratedValue
     protected Integer id;
 
-    //protected String URL;
     protected String username;
 
     public String getUsername() {

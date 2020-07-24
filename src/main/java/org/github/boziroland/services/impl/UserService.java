@@ -1,8 +1,9 @@
 package org.github.boziroland.services.impl;
 
+import jdk.jshell.spi.ExecutionControl;
+import lombok.SneakyThrows;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.GeneralAPIData;
-import org.github.boziroland.entities.MilestoneHolder;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.repositories.IUserRepository;
@@ -41,6 +42,16 @@ public class UserService implements IUserService {
 
     @Override
     public User create(User user) {
+        //TODO ezt valahogy jobban kéne
+        for(var m : user.getLeagueMilestones().entrySet()){
+            var milestone = milestoneService.createOrUpdate(m.getKey());
+            int value = user.getLeagueMilestones().remove(m.getKey());
+            user.getLeagueMilestones().put(milestone, value);
+        }
+
+        for(var m : user.getGameMilestones2().entrySet())
+            milestoneService.createOrUpdate(m.getKey());
+
         User savedUser = userRepository.save(user);
         int secondsInADay = 24 * 60 * 60;
         userQueryTimeMap.put(user, LocalTime.ofSecondOfDay(new Random().nextInt(secondsInADay)));
@@ -53,13 +64,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User create(String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-        return create(new User(name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
+    public User create(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
+        return create(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
     }
 
     @Override
-    public void update(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-        update(new User(name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
+    public void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
+        update(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
     }
 
     @Override
@@ -86,31 +97,38 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void delete(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-        userRepository.delete(new User(name, password, email, milestones, commentsOnProfile, comments, leagueName, gameName2));
+    public void delete(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
+        userRepository.delete(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+    }
+
+    @Override
+    public void delete(User user) {
+        userRepository.deleteById(user.getId());
+    }
+
+    @Override
+    public void deleteById(int id) {
+        userRepository.deleteById(id);
     }
 
     @Override
     public void requestInformation(int id, IAPIService IAPIService, GeneralAPIData location) {
         var user = findById(id);
 
-        if (user.isPresent()) {
+        if (user.isPresent())
             IAPIService.requestInformation(user.get().getLeagueID(), location);
-
-            //user.get().setLeagueData(); TODO
-
-        } else {
+        else
             throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
-        }
     }
 
+    @SneakyThrows
     @Override
     public void sendEmail(int id, String message) {
         var user = findById(id);
 
         if (user.isPresent()) {
             var userEmail = user.get().getEmail();
-            //TODO send email
+            throw new ExecutionControl.NotImplementedException("should have sent an email");
         } else {
             throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
         }
@@ -133,6 +151,11 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public Optional<User> register(String name, String password, String email, String leagueName, String gameName2) throws RegistrationException {
+        return register(name, password, email, List.of(), List.of(), leagueName, gameName2);
+    }
+
+    @Override
     public Optional<User> login(String email, String password) {
         String hashedPassword = securityService.hashPassword(password);
         Optional<User> user = findByEmail(email);
@@ -148,7 +171,7 @@ public class UserService implements IUserService {
     public void checkMilestones(int id) {
         var user = findById(id);
 
-        var milestones = user.get().getMilestones();
+        var milestones = user.get();
 
         for (var m : milestones.getLeagueMilestones().entrySet())
             if (milestoneService.checkAchievement(m.getValue(), m.getKey()))

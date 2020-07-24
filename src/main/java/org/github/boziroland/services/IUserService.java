@@ -4,7 +4,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.github.boziroland.DAL.IUserDAO;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.GeneralAPIData;
-import org.github.boziroland.entities.MilestoneHolder;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 
@@ -33,30 +32,27 @@ public interface IUserService{
     /**
      * Creates a User instance, and passes it to
      * @see IUserDAO#createOrUpdate(User)
-     *@param name The user's name
+     *
+     * @param name The user's name
      * @param password The user's password
      * @param email The user's email
-     * @param milestones The user's milestones
      * @param comments The user's comments
      * @param leagueName The user's League account name
-     * @param gameName2 The user's <i>Specific</i> account name
-     */
-    User create(String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
+     * @param gameName2 The user's <i>Specific</i> account name     */
+    User create(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
 
     /**
      * Creates a User instance, and passes it to
      * @see IUserDAO#createOrUpdate(User)
-     *
-     * @param id The user's ID
+     *@param id The user's ID
      * @param name The user's name
      * @param password The user's password
      * @param email The user's email
-     * @param milestones The user's milestones
      * @param comments The user's comments
      * @param leagueName The user's League account name
      * @param gameName2 The user's <i>Specific</i> account name
      */
-    void update(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
+    void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
 
     /**
      * Finds a user by their ID
@@ -88,17 +84,25 @@ public interface IUserService{
     /**
      * Creates a User instance, and passes it to
      * @see IUserDAO#createOrUpdate(User)
-     *
      * @param id The user's ID
      * @param name The user's name
      * @param password The user's password
      * @param email The user's email
-     * @param milestones The user's milestones
      * @param comments The user's comments
      * @param leagueName The user's League account name
      * @param gameName2 The user's <i>Specific</i> account name
      */
-    void delete(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
+    void delete(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
+
+    /**
+     * @param user The user to delete
+     */
+    void delete(User user);
+
+    /**
+     * @param id The id of the user to delete
+     */
+    void deleteById(int id);
 
     /**
      * Requests information about the user from the GeneralAPIDataSource.
@@ -121,12 +125,25 @@ public interface IUserService{
      * @param name The user's name
      * @param password The user's password
      * @param email The user's email
+     * @param commentsOnProfile The comments on the user's comments
      * @param comments The user's comments
      * @param leagueName The user's League account name
      * @param gameName2 The user's <i>Specific</i> account name
      * @return The registered user, wrapped in an Optional container
      */
     Optional<User> register(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) throws RegistrationException;
+
+    /**
+     * Registers a user.
+     *
+     * @param name The user's name
+     * @param password The user's password
+     * @param email The user's email
+     * @param leagueName The user's League account name
+     * @param gameName2 The user's <i>Specific</i> account name
+     * @return The registered user, wrapped in an Optional container
+     */
+    Optional<User> register(String name, String password, String email, String leagueName, String gameName2) throws RegistrationException;
 
     /**
      * Logs the user in
@@ -148,12 +165,19 @@ public interface IUserService{
     }
 
     /**
-     * Checks a user's milestones, if one's requirements are fulfilled, it sends an email and deletes the milestone
+     * Checks a user's milestones, if one's requirements are fulfilled, it sends an email
      * @param id The user's id whose milestone we want to check
      */
     void checkMilestones(int id);
 
+    /**
+     * TODO
+     */
     void scheduleHourlyQuery();
+
+    /**
+     * TODO
+     */
     void updateUsersToQuery();
 
     }

@@ -3,19 +3,26 @@ package org.github.boziroland.services.impl;
 import org.github.boziroland.entities.Milestone;
 import org.github.boziroland.repositories.IMilestoneRepository;
 import org.github.boziroland.services.IMilestoneService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
 
 public class MilestoneService implements IMilestoneService {
 
+    @Autowired
     IMilestoneRepository milestoneRepository;
 
     public MilestoneService() {}
 
     @Override
-    public void createOrUpdate(String name, String description, int requirement, Milestone.Game game) {
-        milestoneRepository.save(new Milestone(name, description, requirement, game));
+    public Milestone createOrUpdate(String name, String description, int requirement, Milestone.Game game) {
+        return milestoneRepository.save(new Milestone(name, description, requirement, game));
+    }
+
+    @Override
+    public Milestone createOrUpdate(Milestone m) {
+        return createOrUpdate(m.getName(), m.getDescription(), m.getRequirement(), m.getGame());
     }
 
     @Override

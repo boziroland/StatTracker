@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.DAL.impl.MilestoneInMemory;
 import org.github.boziroland.entities.Milestone;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,7 +10,7 @@ import static org.mockito.Mockito.when;
 class MilestoneServiceTest {
 
     @Test
-    void testMilestoneNotDone(){
+    void testMilestoneNotDone() {
         MilestoneService service = new MilestoneService();
         Milestone milestone = Mockito.mock(Milestone.class);
 
@@ -22,7 +21,7 @@ class MilestoneServiceTest {
     }
 
     @Test
-    void testMilestoneDone(){
+    void testMilestoneDone() {
         MilestoneService service = new MilestoneService();
         Milestone milestone = Mockito.mock(Milestone.class);
 
@@ -33,7 +32,7 @@ class MilestoneServiceTest {
     }
 
     @Test
-    void testMilestoneDoneButWasAlreadyDone(){
+    void testMilestoneDoneButWasAlreadyDone() {
         MilestoneService service = new MilestoneService();
         Milestone milestone = Mockito.mock(Milestone.class);
 
@@ -44,7 +43,7 @@ class MilestoneServiceTest {
     }
 
     @Test
-    void testMilestoneNotDoneAlthoughItWasAlreadyDone(){
+    void testMilestoneNotDoneAlthoughItWasAlreadyDone() {
         MilestoneService service = new MilestoneService();
         Milestone milestone = Mockito.mock(Milestone.class);
 

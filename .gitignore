@@ -4,3 +4,4 @@ target
 src/main/resources/riotAPIkey.txt
 logs
 data.mv.db
+data.trace.db

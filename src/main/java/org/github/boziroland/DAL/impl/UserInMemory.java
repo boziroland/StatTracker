@@ -22,7 +22,7 @@ public class UserInMemory implements IUserDAO {
                 if(elem == actualUser){
                     elem.setName(actualUser.getName());
                     elem.setEmail(actualUser.getEmail());
-                    elem.setMilestones(actualUser.getMilestones());
+                  //  elem.setMilestones(actualUser.getMilestones());
                     elem.setPassword(actualUser.getPassword());
                 }
             }
