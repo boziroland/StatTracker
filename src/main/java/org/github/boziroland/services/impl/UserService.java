@@ -43,13 +43,13 @@ public class UserService implements IUserService {
     @Override
     public User create(User user) {
         //TODO ezt valahogy jobban kéne
-        for(var m : user.getLeagueMilestones().entrySet()){
+        for (var m : user.getLeagueMilestones().entrySet()) {
             var milestone = milestoneService.createOrUpdate(m.getKey());
             int value = user.getLeagueMilestones().remove(m.getKey());
             user.getLeagueMilestones().put(milestone, value);
         }
 
-        for(var m : user.getGameMilestones2().entrySet())
+        for (var m : user.getGameMilestones2().entrySet())
             milestoneService.createOrUpdate(m.getKey());
 
         User savedUser = userRepository.save(user);
@@ -139,8 +139,10 @@ public class UserService implements IUserService {
         if (findByEmail(email).isPresent()) {
             throw new RegistrationException("Email cím foglalt!");
         } else {
-            if (!password.matches("^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$")) {
-                throw new RegistrationException("Túl gyenge jelszó! A jelszónak tartalmaznia kell legalább 2 nagybetűt, 3 kisbetűt, 2 számot, 1 speciális karaktert és legalább 8 hosszúnak kell lennie!");
+            if (!isValidUsername(name)) {
+                throw new RegistrationException("A felhasználónévnek legalább 5 hosszúnak kell lennie!");
+            } else if (!isValidPassword(password)) {
+                throw new RegistrationException("Túl gyenge jelszó! A jelszónak tartalmaznia kell legalább 1 nagybetűt, 1 kisbetűt, 1 számot, nem tartalmazhat szóközt és legalább 8 karakter hosszúnak kell lennie!");
             } else if (!isValidEmail(email)) {
                 throw new RegistrationException("Rossz email!");
             } else {
