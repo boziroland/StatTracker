@@ -11,31 +11,32 @@ import java.util.Optional;
  */
 public interface IAPIData1Service extends IAPIService {
 
-    //TODO comments
+	//TODO comments
 
-    /**
-     * Creates a SpecificAPIData1 instance and passes it to
-     * @see IAPIData1DAO#createOrUpdate(SpecificAPIData1)
-     *@param token The OAuth token of the player
-     * @param username The username of the player
-     * @param userID The ID of the player
-     */
-    void createOrUpdate(String token, String username, int userID);
+	/**
+	 * Creates a SpecificAPIData1 instance and passes it to
+	 *
+	 * @param token    The OAuth token of the player
+	 * @param username The username of the player
+	 * @param userID   The ID of the player
+	 * @see IAPIData1DAO#createOrUpdate(SpecificAPIData1)
+	 */
+	void createOrUpdate(String token, String username, int userID);
 
-    /**
-     * @see IAPIData1DAO#findByID(int)
-     * @param id
-     */
-    Optional<SpecificAPIData1> findById(int id);
+	/**
+	 * @param id
+	 * @see IAPIData1DAO#findByID(int)
+	 */
+	Optional<SpecificAPIData1> findById(int id);
 
-    /**
-     * @see IAPIData1DAO#list()
-     */
-    List<SpecificAPIData1> list();
+	/**
+	 * @see IAPIData1DAO#list()
+	 */
+	List<SpecificAPIData1> list();
 
-    /**
-     * @see IAPIData1DAO#deleteByID(int)
-     * @param id
-     */
-    void deleteById(int id);
+	/**
+	 * @param id
+	 * @see IAPIData1DAO#deleteByID(int)
+	 */
+	void deleteById(int id);
 }

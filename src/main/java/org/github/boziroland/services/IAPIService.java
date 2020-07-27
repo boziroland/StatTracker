@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public interface IAPIService {
 
-    void requestInformation(String accountId, GeneralAPIData location);
+	void requestInformation(String accountId, GeneralAPIData location);
 
-    default Optional<String> readKeyFromFile(String file) throws IOException {
-        List<String> lines;
-        lines = Files.readAllLines(Paths.get(file));
-        return Optional.of(lines.get(0));
-    }
+	default Optional<String> readKeyFromFile(String file) throws IOException {
+		List<String> lines;
+		lines = Files.readAllLines(Paths.get(file));
+		return Optional.of(lines.get(0));
+	}
 }

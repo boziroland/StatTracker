@@ -5,14 +5,14 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class SecurityService implements ISecurityService {
 
-    private final String salt;
+	private final String salt;
 
-    public SecurityService() {
-        salt = BCrypt.gensalt();
-    }
+	public SecurityService() {
+		salt = BCrypt.gensalt();
+	}
 
-    @Override
-    public String hashPassword(String password) {
-        return BCrypt.hashpw(password, salt);
-    }
+	@Override
+	public String hashPassword(String password) {
+		return BCrypt.hashpw(password, salt);
+	}
 }

@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface ICommentRepository extends JpaRepository<Comment, Integer> {
 
-    List<Comment> findBySender(User sender);
-    void deleteBySender(User sender);
+	List<Comment> findBySender(User sender);
+
+	void deleteBySender(User sender);
 
 }

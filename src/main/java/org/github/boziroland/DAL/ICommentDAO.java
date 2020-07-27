@@ -11,47 +11,54 @@ import java.util.Optional;
  */
 public interface ICommentDAO {
 
-    /**
-     * Creates a comment.
-     * @param comment The comment to add
-     */
-    void create(Comment comment);
+	/**
+	 * Creates a comment.
+	 *
+	 * @param comment The comment to add
+	 */
+	void create(Comment comment);
 
-    /**
-     * Finds a comment by their ID.
-     * @param id The ID of the comment we want to find
-     * @return The comment we found, wrapped into an Optional container
-     */
-    Optional<Comment> findById(String id);
+	/**
+	 * Finds a comment by their ID.
+	 *
+	 * @param id The ID of the comment we want to find
+	 * @return The comment we found, wrapped into an Optional container
+	 */
+	Optional<Comment> findById(String id);
 
-    /**
-     * Finds a user's comments.
-     * @param user The user whose comments we want to find
-     * @return The List of comments we found
-     */
-    List<Comment> findByUser(User user);
+	/**
+	 * Finds a user's comments.
+	 *
+	 * @param user The user whose comments we want to find
+	 * @return The List of comments we found
+	 */
+	List<Comment> findByUser(User user);
 
-    /**
-     * Lists every comment.
-     * @return A list of every comment
-     */
-    List<Comment> list();
+	/**
+	 * Lists every comment.
+	 *
+	 * @return A list of every comment
+	 */
+	List<Comment> list();
 
-    /**
-     * Deletes a comment by its id.
-     * @param id The id of the comment we want to remove
-     */
-    void deleteById(String id);
+	/**
+	 * Deletes a comment by its id.
+	 *
+	 * @param id The id of the comment we want to remove
+	 */
+	void deleteById(String id);
 
-    /**
-     * Deletes a user's comments.
-     * @param user The user whose comments we want to delete
-     */
-    void deleteByUser(User user);
+	/**
+	 * Deletes a user's comments.
+	 *
+	 * @param user The user whose comments we want to delete
+	 */
+	void deleteByUser(User user);
 
-    /**
-     * Deletes a comment.
-     * @param id The id of the comment to delete
-     */
-    void delete(int id);
+	/**
+	 * Deletes a comment.
+	 *
+	 * @param id The id of the comment to delete
+	 */
+	void delete(int id);
 }

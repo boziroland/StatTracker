@@ -11,26 +11,26 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ScheduledInformationRetrieverService implements IScheduledInformationRetrieverService {
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private LocalTime retrieveTime;
+	private LocalTime retrieveTime;
 
-    @Override
-    public void retrieve(User user, IAPIService service){
-        Runnable sender = new Runnable(){
-            public void run(){
-                service.requestInformation(user.getLeagueID(), user.getLeagueData());
-            }
-        };
-        long delay = ChronoUnit.SECONDS.between(LocalTime.now(), retrieveTime);
-        scheduler.schedule(sender, delay, TimeUnit.SECONDS);
-    }
+	@Override
+	public void retrieve(User user, IAPIService service) {
+		Runnable sender = new Runnable() {
+			public void run() {
+				service.requestInformation(user.getLeagueID(), user.getLeagueData());
+			}
+		};
+		long delay = ChronoUnit.SECONDS.between(LocalTime.now(), retrieveTime);
+		scheduler.schedule(sender, delay, TimeUnit.SECONDS);
+	}
 
-    public void setRetrieveTime(LocalTime retrieveTime) {
-        this.retrieveTime = retrieveTime;
-    }
+	public void setRetrieveTime(LocalTime retrieveTime) {
+		this.retrieveTime = retrieveTime;
+	}
 
-    public LocalTime getRetrieveTime() {
-        return retrieveTime;
-    }
+	public LocalTime getRetrieveTime() {
+		return retrieveTime;
+	}
 }

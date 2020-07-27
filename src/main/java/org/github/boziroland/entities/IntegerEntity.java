@@ -15,14 +15,14 @@ import javax.persistence.Id;
 @AllArgsConstructor
 public class IntegerEntity {
 
-    @Id
-    @GeneratedValue
-    Integer id;
+	@Id
+	@GeneratedValue
+	Integer id;
 
-    @Basic
-    Integer value;
+	@Basic
+	Integer value;
 
-    public IntegerEntity(Integer i) {
-        value = i;
-    }
+	public IntegerEntity(Integer i) {
+		value = i;
+	}
 }

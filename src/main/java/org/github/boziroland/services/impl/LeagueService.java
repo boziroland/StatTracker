@@ -18,56 +18,56 @@ import java.util.Optional;
 
 public class LeagueService implements ILeagueService {
 
-    @Autowired
-    ILeagueRepository leagueRepository;
-    RiotApi api;
+	@Autowired
+	ILeagueRepository leagueRepository;
+	RiotApi api;
 
-    public LeagueService() throws IOException{
-        init();
-    }
+	public LeagueService() throws IOException {
+		init();
+	}
 
-    void init() throws IOException {
-        Optional<String> key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
+	void init() throws IOException {
+		Optional<String> key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
 
-        if(key.isPresent()){
-            ApiConfig config = new ApiConfig().setKey(key.get());
-            api = new RiotApi(config);
-        }
-    }
+		if (key.isPresent()) {
+			ApiConfig config = new ApiConfig().setKey(key.get());
+			api = new RiotApi(config);
+		}
+	}
 
-    @Override
-    public void createOrUpdate(Summoner player, List<MatchReference> lastTenMatches) {
-        leagueRepository.save(new LeagueData(player, lastTenMatches));
-    }
+	@Override
+	public void createOrUpdate(Summoner player, List<MatchReference> lastTenMatches) {
+		leagueRepository.save(new LeagueData(player, lastTenMatches));
+	}
 
-    @Override
-    public Optional<LeagueData> findById(int id) {
-        return leagueRepository.findById(id);
-    }
+	@Override
+	public Optional<LeagueData> findById(int id) {
+		return leagueRepository.findById(id);
+	}
 
-    @Override
-    public List<LeagueData> list() {
-        return leagueRepository.findAll();
-    }
+	@Override
+	public List<LeagueData> list() {
+		return leagueRepository.findAll();
+	}
 
-    @Override
-    public void deleteById(int id) {
-        leagueRepository.deleteById(id);
-    }
+	@Override
+	public void deleteById(int id) {
+		leagueRepository.deleteById(id);
+	}
 
-    @Override
-    public void requestInformation(String accountId, GeneralAPIData location) {
+	@Override
+	public void requestInformation(String accountId, GeneralAPIData location) {
 
-        try {
+		try {
 
-            Summoner summoner = api.getSummonerByName(Platform.EUNE, accountId);
-            List<MatchReference> matchList = api.getMatchListByAccountId(Platform.EUNE, summoner.getAccountId()).getMatches();
+			Summoner summoner = api.getSummonerByName(Platform.EUNE, accountId);
+			List<MatchReference> matchList = api.getMatchListByAccountId(Platform.EUNE, summoner.getAccountId()).getMatches();
 
-            ((LeagueData)location).setPlayer(summoner);
-            ((LeagueData)location).setLastTenMatches(matchList.subList(0, 10));
-            createOrUpdate(summoner, matchList.subList(0, 10));
-        } catch (RiotApiException e) {
-            e.printStackTrace();
-        }
-    }
+			((LeagueData) location).setPlayer(summoner);
+			((LeagueData) location).setLastTenMatches(matchList.subList(0, 10));
+			createOrUpdate(summoner, matchList.subList(0, 10));
+		} catch (RiotApiException e) {
+			e.printStackTrace();
+		}
+	}
 }

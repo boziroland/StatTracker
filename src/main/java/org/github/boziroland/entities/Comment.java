@@ -14,22 +14,22 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class Comment {
 
-    @Id
-    @org.springframework.lang.NonNull
-    private Integer id;
+	@Id
+	@org.springframework.lang.NonNull
+	private Integer id;
 
-    @NonNull
-    @OneToOne
-    private User sender;
+	@NonNull
+	@OneToOne
+	private User sender;
 
-    @NonNull
-    @OneToOne
-    private User receiver;
+	@NonNull
+	@OneToOne
+	private User receiver;
 
-    @NonNull
-    private String message;
+	@NonNull
+	private String message;
 
-    @NonNull
-    private LocalDateTime time;
+	@NonNull
+	private LocalDateTime time;
 
 }

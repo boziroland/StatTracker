@@ -13,33 +13,32 @@ import java.util.Optional;
  */
 public interface ILeagueService extends IAPIService {
 
-    //TODO comment this class
+	//TODO comment this class
 
-    /**
-     * Creates a LeaguePlayer and passes it to
-     * @see ILeagueDAO#createOrUpdate(LeagueData)
-     *
-     * @param player The League account of the player
-     * @param lastTenMatches The last ten matches of the player
-     */
-    void createOrUpdate(Summoner player, List <MatchReference> lastTenMatches);
+	/**
+	 * Creates a LeaguePlayer and passes it to
+	 *
+	 * @param player         The League account of the player
+	 * @param lastTenMatches The last ten matches of the player
+	 * @see ILeagueDAO#createOrUpdate(LeagueData)
+	 */
+	void createOrUpdate(Summoner player, List<MatchReference> lastTenMatches);
 
-    /**
-     * @see ILeagueDAO#findByUserId(String)
-     * @param id TODO
-     */
-    Optional<LeagueData> findById(int id);
+	/**
+	 * @param id TODO
+	 * @see ILeagueDAO#findByUserId(String)
+	 */
+	Optional<LeagueData> findById(int id);
 
-    /**
-     * @see ILeagueDAO#list()
-     */
-    List<LeagueData> list();
+	/**
+	 * @see ILeagueDAO#list()
+	 */
+	List<LeagueData> list();
 
-    /**
-     * @see ILeagueDAO#deleteById(String)
-     */
-    void deleteById(int id);
-
+	/**
+	 * @see ILeagueDAO#deleteById(String)
+	 */
+	void deleteById(int id);
 
 
 }

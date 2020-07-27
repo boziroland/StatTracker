@@ -10,31 +10,32 @@ import java.util.Optional;
 
 public class APIData1Service implements IAPIData1Service {
 
-    IAPIData1Repository data1Repository;
+	IAPIData1Repository data1Repository;
 
-    public APIData1Service() {}
+	public APIData1Service() {
+	}
 
-    @Override
-    public void createOrUpdate(String token, String username, int userID) {
-        data1Repository.save(new SpecificAPIData1(token));
-    }
+	@Override
+	public void createOrUpdate(String token, String username, int userID) {
+		data1Repository.save(new SpecificAPIData1(token));
+	}
 
-    @Override
-    public Optional<SpecificAPIData1> findById(int id) {
-        return data1Repository.findById(id);
-    }
+	@Override
+	public Optional<SpecificAPIData1> findById(int id) {
+		return data1Repository.findById(id);
+	}
 
-    @Override
-    public List<SpecificAPIData1> list() {
-        return data1Repository.findAll();
-    }
+	@Override
+	public List<SpecificAPIData1> list() {
+		return data1Repository.findAll();
+	}
 
-    @Override
-    public void deleteById(int id) {
-        data1Repository.deleteById(id);
-    }
+	@Override
+	public void deleteById(int id) {
+		data1Repository.deleteById(id);
+	}
 
-    @Override
-    public void requestInformation(String accountId, GeneralAPIData location) {
-    }
+	@Override
+	public void requestInformation(String accountId, GeneralAPIData location) {
+	}
 }

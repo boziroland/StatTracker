@@ -11,31 +11,31 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ComponentScan("org.github.boziroland")
 class LeagueServiceTest {
 
-    @Autowired
-    IUserService userService;
+	@Autowired
+	IUserService userService;
 
-    @Autowired
-    ILeagueService leagueService;
+	@Autowired
+	ILeagueService leagueService;
 
-    @Test
-    void testRetrieveLeagueData() throws IOException {
-        var user = TestUtils.registerAndLoginUserWhoHasLeagueName(userService);
+	@Test
+	void testRetrieveLeagueData() throws IOException {
+		var user = TestUtils.registerAndLoginUserWhoHasLeagueName(userService);
 
-        if(user.isPresent()){
-            userService.requestInformation(user.get().getId(), leagueService, user.get().getLeagueData());
-        }
+		if (user.isPresent()) {
+			userService.requestInformation(user.get().getId(), leagueService, user.get().getLeagueData());
+		}
 //
 //        user.ifPresent(value -> {
 //            userService.requestInformation(value.getId(), leagueService, value.getLeagueData());
 //        });
 
-        assertEquals(user.get().getLeagueData().getPlayer().getName(), user.get().getLeagueID());
-    }
+		assertEquals(user.get().getLeagueData().getPlayer().getName(), user.get().getLeagueID());
+	}
 }

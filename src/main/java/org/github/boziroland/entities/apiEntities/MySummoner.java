@@ -13,24 +13,24 @@ import javax.persistence.Id;
 @RequiredArgsConstructor
 public class MySummoner {
 
-    @Id
-    @GeneratedValue
-    private Integer id;
-    private String accountId;
-    private String name;
-    private String idLeague;
-    private int profileIconid;
-    private String puuid;
-    private long revisionDate;
-    private int summonerLevel;
+	@Id
+	@GeneratedValue
+	private Integer id;
+	private String accountId;
+	private String name;
+	private String idLeague;
+	private int profileIconid;
+	private String puuid;
+	private long revisionDate;
+	private int summonerLevel;
 
-    public MySummoner(Summoner s){
-        accountId = s.getAccountId();
-        name = s.getName();
-        idLeague = s.getId();
-        profileIconid = s.getProfileIconId();
-        puuid = s.getPuuid();
-        revisionDate = s.getRevisionDate();
-        summonerLevel = s.getSummonerLevel();
-    }
+	public MySummoner(Summoner s) {
+		accountId = s.getAccountId();
+		name = s.getName();
+		idLeague = s.getId();
+		profileIconid = s.getProfileIconId();
+		puuid = s.getPuuid();
+		revisionDate = s.getRevisionDate();
+		summonerLevel = s.getSummonerLevel();
+	}
 }
