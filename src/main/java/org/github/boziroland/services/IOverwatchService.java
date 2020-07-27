@@ -1,7 +1,7 @@
 package org.github.boziroland.services;
 
 import org.github.boziroland.DAL.IAPIData1DAO;
-import org.github.boziroland.entities.SpecificAPIData1;
+import org.github.boziroland.entities.OverwatchData;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The interface IAPIData1Service defines the performable CRUD operations on the SpecificAPIData1 class.
  */
-public interface IAPIData1Service extends IAPIService {
+public interface IOverwatchService extends IAPIService {
 
 	//TODO comments
 
@@ -19,7 +19,7 @@ public interface IAPIData1Service extends IAPIService {
 	 * @param token    The OAuth token of the player
 	 * @param username The username of the player
 	 * @param userID   The ID of the player
-	 * @see IAPIData1DAO#createOrUpdate(SpecificAPIData1)
+	 * @see IAPIData1DAO#createOrUpdate(OverwatchData)
 	 */
 	void createOrUpdate(String token, String username, int userID);
 
@@ -27,12 +27,12 @@ public interface IAPIData1Service extends IAPIService {
 	 * @param id
 	 * @see IAPIData1DAO#findByID(int)
 	 */
-	Optional<SpecificAPIData1> findById(int id);
+	Optional<OverwatchData> findById(int id);
 
 	/**
 	 * @see IAPIData1DAO#list()
 	 */
-	List<SpecificAPIData1> list();
+	List<OverwatchData> list();
 
 	/**
 	 * @param id

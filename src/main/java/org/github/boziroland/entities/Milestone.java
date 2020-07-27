@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Milestone {
 
 	public enum Game {
-		LEAGUE, OTHERGAME
+		LEAGUE, OVERWATCH
 	}
 
 	@Id

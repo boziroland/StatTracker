@@ -1,6 +1,7 @@
 package org.github.boziroland;
 
 import org.github.boziroland.entities.User;
+import org.github.boziroland.services.impl.OverwatchService;
 import org.github.boziroland.services.impl.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ public class Application {
 		UserService service = applicationContext.getBean(UserService.class);
 		service.register("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", "meshons", null);
 		users.add(service.login("bonifac.solyom@gmail.com", "KAcsa11&"));
+		service.requestInformation(123123, new OverwatchService(), users.get(0).get().getOverwatchData());
+		LOGGER.info(users.get(0).get().getOverwatchData().getPlayer().getLevel().toString());
 		LOGGER.info(users.get(0).get().getName());
 
 	}

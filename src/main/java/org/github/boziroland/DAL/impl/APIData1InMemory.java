@@ -1,22 +1,23 @@
 package org.github.boziroland.DAL.impl;
 
 import org.github.boziroland.DAL.IAPIData1DAO;
-import org.github.boziroland.entities.SpecificAPIData1;
+import org.github.boziroland.entities.OverwatchData;
 
 import java.util.*;
 
 public class APIData1InMemory implements IAPIData1DAO {
 
-	Map<Integer, SpecificAPIData1> idSpecificdataMap = new HashMap<>();
+	Map<Integer, OverwatchData> idSpecificdataMap = new HashMap<>();
 
 	@Override
-	public void createOrUpdate(SpecificAPIData1 player) {
-		idSpecificdataMap.put(player.getId(), player);
+	public void createOrUpdate(OverwatchData player) {
+		idSpecificdataMap.put(5000, player);
+		//idSpecificdataMap.put(player.getId(), player);
 	}
 
 	@Override
-	public List<SpecificAPIData1> findByName(String name) {
-		var ret = new ArrayList<SpecificAPIData1>();
+	public List<OverwatchData> findByName(String name) {
+		var ret = new ArrayList<OverwatchData>();
 
 		for (var elem : idSpecificdataMap.entrySet())
 			if (elem.getValue().getUsername().equals(name))
@@ -26,12 +27,12 @@ public class APIData1InMemory implements IAPIData1DAO {
 	}
 
 	@Override
-	public Optional<SpecificAPIData1> findByID(int id) {
+	public Optional<OverwatchData> findByID(int id) {
 		return Optional.ofNullable(idSpecificdataMap.get(id));
 	}
 
 	@Override
-	public List<SpecificAPIData1> list() {
+	public List<OverwatchData> list() {
 		return new ArrayList<>(idSpecificdataMap.values());
 	}
 
@@ -40,7 +41,8 @@ public class APIData1InMemory implements IAPIData1DAO {
 		var usersToRemove = findByName(name);
 
 		for (var user : usersToRemove) {
-			idSpecificdataMap.remove(user.getId());
+			idSpecificdataMap.remove(5000);
+			//idSpecificdataMap.remove(user.getId());
 		}
 	}
 

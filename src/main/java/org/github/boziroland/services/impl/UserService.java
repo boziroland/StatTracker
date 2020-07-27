@@ -108,10 +108,11 @@ public class UserService implements IUserService {
 	public void requestInformation(int id, IAPIService IAPIService, GeneralAPIData location) {
 		var user = findById(id);
 
-		if (user.isPresent())
-			IAPIService.requestInformation(user.get().getLeagueID(), location);
-		else
-			throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
+		//if (user.isPresent())
+			IAPIService.requestInformation("ad", location);
+			//IAPIService.requestInformation(user.get().getLeagueID(), location);
+	//	else
+		//	throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
 	}
 
 	@SneakyThrows
@@ -211,7 +212,7 @@ public class UserService implements IUserService {
 			user.getLeagueMilestones().put(milestone, value);
 		}
 
-		for (var m : user.getGameMilestones2().entrySet())
+		for (var m : user.getOverwatchMilestones().entrySet())
 			milestoneService.createOrUpdate(m.getKey());
 	}
 }

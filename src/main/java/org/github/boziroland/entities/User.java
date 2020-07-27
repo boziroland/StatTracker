@@ -28,7 +28,7 @@ public class User {
 	@CollectionTable(name = "Game2MilestonePointJoinTable")
 	@MapKeyColumn(name = "Milestone")
 	@JsonIgnore
-	private final Map<Milestone, Integer> gameMilestones2 = new HashMap<>();
+	private final Map<Milestone, Integer> overwatchMilestones = new HashMap<>();
 
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Comment> commentsOnProfile;
@@ -42,7 +42,7 @@ public class User {
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JsonIgnore
-	private SpecificAPIData1 specificPlayer = new SpecificAPIData1();
+	private OverwatchData overwatchData = new OverwatchData();
 
 	public User() {
 	}
@@ -54,10 +54,10 @@ public class User {
 
 		leagueData.setUsername(leagueID);
 
-		specificPlayer.setUsername(gameName2);
+		overwatchData.setUsername(gameName2);
 	}
 
-	public User(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String gameName2) {
+	public User(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String overwatchID) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
@@ -67,8 +67,8 @@ public class User {
 		leagueData = new LeagueData();
 		leagueData.setUsername(leagueID);
 
-		specificPlayer = new SpecificAPIData1();
-		specificPlayer.setUsername(gameName2);
+		overwatchData = new OverwatchData();
+		overwatchData.setUsername(overwatchID);
 
 		initLeagueMilestones();
 		initGame2Milestones();
@@ -126,12 +126,12 @@ public class User {
 		this.leagueData = leagueData;
 	}
 
-	public SpecificAPIData1 getSpecificPlayer() {
-		return specificPlayer;
+	public OverwatchData getOverwatchData() {
+		return overwatchData;
 	}
 
-	public void setSpecificPlayer(SpecificAPIData1 specificPlayer) {
-		this.specificPlayer = specificPlayer;
+	public void setOverwatchData(OverwatchData overwatchData) {
+		this.overwatchData = overwatchData;
 	}
 
 	public String getLeagueID() {
@@ -143,11 +143,11 @@ public class User {
 	}
 
 	public String getGameName2() {
-		return specificPlayer.getUsername();
+		return overwatchData.getUsername();
 	}
 
 	public void setGameName2(String gameName2) {
-		specificPlayer.setUsername(gameName2);
+		overwatchData.setUsername(gameName2);
 	}
 
 	public List<Comment> getCommentsOnProfile() {
@@ -162,8 +162,8 @@ public class User {
 		return leagueMilestones;
 	}
 
-	public Map<Milestone, Integer> getGameMilestones2() {
-		return gameMilestones2;
+	public Map<Milestone, Integer> getOverwatchMilestones() {
+		return overwatchMilestones;
 	}
 
 	@Override
@@ -177,11 +177,11 @@ public class User {
 				Objects.equals(email, user.email) &&
 				Objects.equals(commentsSent, user.commentsSent) &&
 				Objects.equals(leagueData, user.leagueData) &&
-				Objects.equals(specificPlayer, user.specificPlayer);
+				Objects.equals(overwatchData, user.overwatchData);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name, password, email, commentsSent, leagueData, specificPlayer);
+		return Objects.hash(id, name, password, email, commentsSent, leagueData, overwatchData);
 	}
 }
