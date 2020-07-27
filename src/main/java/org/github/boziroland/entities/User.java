@@ -1,6 +1,8 @@
 package org.github.boziroland.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -22,43 +24,38 @@ public class User {
     @ElementCollection
     @CollectionTable(name = "LeagueMilestonePointJoinTable")
     @MapKeyColumn(name = "Milestone")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIgnore
     private Map<Milestone, Integer> leagueMilestones = new HashMap<>();
 
     @ElementCollection
     @CollectionTable(name = "Game2MilestonePointJoinTable")
     @MapKeyColumn(name = "Milestone")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIgnore
     private Map<Milestone, Integer> gameMilestones2 = new HashMap<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Comment> commentsOnProfile;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Comment> commentsSent;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LeagueData leagueData;
+    @JsonIgnore
+    private LeagueData leagueData = new LeagueData();
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private SpecificAPIData1 specificPlayer;
+    @JsonIgnore
+    private SpecificAPIData1 specificPlayer = new SpecificAPIData1();
 
-    public User() {
-    }
+    public User() {}
 
     public User(String name, String password, String email, String leagueID, String gameName2){
         this.name = name;
         this.password = password;
         this.email = email;
 
-        leagueData = new LeagueData();
         leagueData.setUsername(leagueID);
 
-        specificPlayer = new SpecificAPIData1();
         specificPlayer.setUsername(gameName2);
     }
 

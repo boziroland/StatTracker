@@ -58,14 +58,15 @@ public class UserService implements IUserService {
         return savedUser;
     }
 
-    @Override
-    public void update(User user) {
-        userRepository.save(user);
-    }
 
     @Override
     public User create(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
         return create(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+    }
+
+    @Override
+    public void update(User user) {
+        userRepository.save(user);
     }
 
     @Override
@@ -155,6 +156,12 @@ public class UserService implements IUserService {
     @Override
     public Optional<User> register(String name, String password, String email, String leagueName, String gameName2) throws RegistrationException {
         return register(name, password, email, List.of(), List.of(), leagueName, gameName2);
+    }
+
+    @Override
+    public Optional<User> register(User user) {
+        user.setPassword(securityService.hashPassword(user.getPassword()));
+        return Optional.of(create(user));
     }
 
     @Override

@@ -157,6 +157,13 @@ public interface IUserService {
     Optional<User> register(String name, String password, String email, String leagueName, String gameName2) throws RegistrationException;
 
     /**
+     * TODO
+     * @param user
+     * @return
+     */
+    Optional<User> register(User user);
+
+    /**
      * Logs the user in
      *
      * @param email    The email addresss of the user
@@ -181,7 +188,7 @@ public interface IUserService {
      * @return
      */
     default boolean isValidUsername(String username) {
-        return username.length() > 5;
+        return username.length() >= 5;
     }
 
     /**

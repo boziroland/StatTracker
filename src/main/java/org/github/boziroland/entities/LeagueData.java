@@ -1,5 +1,7 @@
 package org.github.boziroland.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import org.github.boziroland.entities.apiEntities.MyMatchReference;
@@ -16,9 +18,11 @@ import java.util.Objects;
 public class LeagueData extends GeneralAPIData {
 
     @OneToOne
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private MySummoner player;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<MyMatchReference> lastTenMatches;
 
     public LeagueData() {}
@@ -36,6 +40,7 @@ public class LeagueData extends GeneralAPIData {
         return lastTenMatches;
     }
 
+    @JsonIgnore
     public void setPlayer(MySummoner player) {
         this.player = player;
     }
