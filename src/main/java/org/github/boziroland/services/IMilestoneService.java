@@ -2,6 +2,7 @@ package org.github.boziroland.services;
 
 import org.github.boziroland.DAL.IMilestoneDAO;
 import org.github.boziroland.entities.Milestone;
+import org.github.boziroland.repositories.IMilestoneRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,20 +14,19 @@ public interface IMilestoneService {
 
 	/**
 	 * Creates a milestone instance and passes it to
-	 *
-	 * @param name
-	 * @param description
-	 * @param requirement
-	 * @return
-	 * @see IMilestoneDAO#createOrUpdate(Milestone)
+	 * @see IMilestoneRepository#save(Object)
+	 * @param name The name of the milestone
+	 * @param description The description of the milestone
+	 * @param requirement The point requiremnt of the milestone
+	 * @return The saved milestone
 	 */
 	Milestone createOrUpdate(String name, String description, int requirement, Milestone.Game game);
 
 	/**
-	 * TODO
-	 *
-	 * @param m
-	 * @return
+	 * Passes the milestone in the paramter to
+	 * @see IMilestoneRepository#save(Object)
+	 * @param m The milestone to store
+	 * @return The saved milestone
 	 */
 	Milestone createOrUpdate(Milestone m);
 

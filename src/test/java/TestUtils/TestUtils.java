@@ -31,7 +31,7 @@ public class TestUtils {
 	}
 
 	public static Optional<User> registerAndLoginUserWhoHasLeagueName(IUserService service) throws RegistrationException {
-		service.register("userWithLeagueName", "KAcsa11!", "unique@email.com", List.of(), List.of(), "meshons", null);
+		service.register("userWithLeagueName", "KAcsa11!", "unique@email.com", List.of(), List.of(), "meshons#EUNE", null);
 		return service.login("unique@email.com", "KAcsa11!");
 	}
 

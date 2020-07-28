@@ -1,39 +1,42 @@
 package org.github.boziroland.services;
 
-import org.github.boziroland.DAL.IAPIData1DAO;
 import org.github.boziroland.entities.OverwatchData;
 import org.github.boziroland.entities.apiEntities.OWPlayer;
+import org.github.boziroland.repositories.IOverwatchRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * The interface IAPIData1Service defines the performable CRUD operations on the SpecificAPIData1 class.
+ * The interface IOverwatchService defines the performable CRUD operations on the OverwatchData class.
  */
 public interface IOverwatchService extends IAPIService {
 
-	//TODO comments
-
 	/**
-	 * TODO
-	 * @param player
+	 * Creates an
+	 * @see OverwatchData fromthe player in the parameter and passes it to the
+	 * @see IOverwatchRepository#save(Object) function
+	 * @param player The player to store
 	 */
 	void createOrUpdate(OWPlayer player);
 
 	/**
-	 * @param id
-	 * @see IAPIData1DAO#findByID(int)
+	 * Finds an
+	 * @see OverwatchData by its id
+	 * @param id The id of the data to find
+	 * @return The data we found, wrapped in an Optional container
 	 */
 	Optional<OverwatchData> findById(int id);
 
 	/**
-	 * @see IAPIData1DAO#list()
+	 * Lists every stored
+	 * @see OverwatchData
 	 */
 	List<OverwatchData> list();
 
 	/**
-	 * @param id
-	 * @see IAPIData1DAO#deleteByID(int)
+	 * Removes the data with the id in the parameter
+	 * @param id The id of the data to remove
 	 */
 	void deleteById(int id);
 }

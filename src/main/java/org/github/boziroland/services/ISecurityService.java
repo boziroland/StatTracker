@@ -11,10 +11,10 @@ public interface ISecurityService {
 	String hashPassword(String password);
 
 	/**
-	 * TODO
-	 * @param password
-	 * @param hashedPassword
-	 * @return
+	 * Checks if the password in the parameter tallies in with the hashed password in parameter
+	 * @param password The password to check
+	 * @param hashedPassword The hashed password
+	 * @return True if the passwords tally, false otherwise
 	 */
 	boolean checkPassword(String password, String hashedPassword);
 }

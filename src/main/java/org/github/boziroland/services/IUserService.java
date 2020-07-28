@@ -159,10 +159,10 @@ public interface IUserService {
 	Optional<User> register(String name, String password, String email, String leagueName, String gameName2) throws RegistrationException;
 
 	/**
-	 * TODO
+	 * Registers the user in the parameter
 	 *
-	 * @param user
-	 * @return
+	 * @param user The user to register
+	 * @return The registered user, wrapped in an Optional container
 	 */
 	Optional<User> register(User user);
 
@@ -187,18 +187,29 @@ public interface IUserService {
 	}
 
 	/**
-	 * @param username TODO
-	 * @return
+	 * Checks the validity of a username
+	 * By default, a username has to be at least 5 characters long
+	 *
+	 * @param username The username to check
+	 * @return True, if the username is valid, false otherwise
 	 */
 	default boolean isValidUsername(String username) {
 		return username.length() >= 5;
 	}
 
 	/**
-	 * TODO
+	 * @throws RegistrationException
 	 *
-	 * @param password
-	 * @return
+	 * Checks the validity of a password
+	 * By default, a password is valid if:
+	 *  - It's at least 8 characters long
+	 *  - Contains at least 1 uppercase letter
+	 *  - Contains at least 1 lowercase letter
+	 *  - Contains at least 1 digit
+	 *  - Contains 0 whitespace characters
+	 *
+	 * @param password The password to check
+	 * @return True if the password is valid, throws an exception with the problems with the password otherwise
 	 */
 	default boolean isValidPassword(String password) {
 		PasswordValidator validator = new PasswordValidator(
@@ -224,12 +235,12 @@ public interface IUserService {
 	void checkMilestones(int id);
 
 	/**
-	 * TODO
+	 * Schedules the hourly lookup of the users who need to be queried in the next hour
 	 */
 	void scheduleHourlyQuery();
 
 	/**
-	 * TODO
+	 * Schedules the query of the users in the next hour
 	 */
 	void updateUsersToQuery();
 

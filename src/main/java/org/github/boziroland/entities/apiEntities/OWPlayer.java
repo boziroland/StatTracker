@@ -65,33 +65,25 @@ public class OWPlayer {
 		String[] quickplayTime = playtime.get("quickplay").split(":");
 		String[] competitiveTime = playtime.get("competitive").split(":");
 
-		playtimeQuickplay = Duration.ZERO;
-		playtimeCompetitive = Duration.ZERO;
+		playtimeQuickplay = timePlayed(quickplayTime);
+		playtimeCompetitive = timePlayed(competitiveTime);
+	}
 
-		switch (quickplayTime.length) {
-			case 1 -> this.playtimeQuickplay = playtimeQuickplay.plusSeconds(Integer.parseInt(quickplayTime[0]));
+	private Duration timePlayed(String[] timeAsStringArr) {
+		Duration ret = Duration.ZERO;
+		switch (timeAsStringArr.length) {
+			case 1 -> ret = ret.plusSeconds(Integer.parseInt(timeAsStringArr[0]));
 			case 2 -> {
-				this.playtimeQuickplay = playtimeQuickplay.plusMinutes(Integer.parseInt(quickplayTime[0]));
-				this.playtimeQuickplay = playtimeQuickplay.plusSeconds(Integer.parseInt(quickplayTime[1]));
+				ret = ret.plusMinutes(Integer.parseInt(timeAsStringArr[0]));
+				ret = ret.plusSeconds(Integer.parseInt(timeAsStringArr[1]));
 			}
 			case 3 -> {
-				this.playtimeQuickplay = playtimeQuickplay.plusHours(Integer.parseInt(quickplayTime[0]));
-				this.playtimeQuickplay = playtimeQuickplay.plusMinutes(Integer.parseInt(quickplayTime[1]));
-				this.playtimeQuickplay = playtimeQuickplay.plusSeconds(Integer.parseInt(quickplayTime[2]));
+				ret = ret.plusHours(Integer.parseInt(timeAsStringArr[0]));
+				ret = ret.plusMinutes(Integer.parseInt(timeAsStringArr[1]));
+				ret = ret.plusSeconds(Integer.parseInt(timeAsStringArr[2]));
 			}
 		}
 
-		switch (competitiveTime.length) {
-			case 1 -> this.playtimeCompetitive = playtimeCompetitive.plusSeconds(Integer.parseInt(competitiveTime[0]));
-			case 2 -> {
-				this.playtimeCompetitive = playtimeCompetitive.plusMinutes(Integer.parseInt(competitiveTime[0]));
-				this.playtimeCompetitive = playtimeCompetitive.plusSeconds(Integer.parseInt(competitiveTime[1]));
-			}
-			case 3 -> {
-				this.playtimeCompetitive = playtimeCompetitive.plusHours(Integer.parseInt(competitiveTime[0]));
-				this.playtimeCompetitive = playtimeCompetitive.plusMinutes(Integer.parseInt(competitiveTime[1]));
-				this.playtimeCompetitive = playtimeCompetitive.plusSeconds(Integer.parseInt(competitiveTime[2]));
-			}
-		}
+		return ret;
 	}
 }

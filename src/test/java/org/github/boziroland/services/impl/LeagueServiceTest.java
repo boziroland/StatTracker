@@ -25,17 +25,13 @@ class LeagueServiceTest {
 	ILeagueService leagueService;
 
 	@Test
-	void testRetrieveLeagueData() throws IOException {
+	void testRetrieveLeagueData(){
 		var user = TestUtils.registerAndLoginUserWhoHasLeagueName(userService);
 
 		if (user.isPresent()) {
 			userService.requestInformation(user.get().getId(), leagueService, user.get().getLeagueData());
 		}
-//
-//        user.ifPresent(value -> {
-//            userService.requestInformation(value.getId(), leagueService, value.getLeagueData());
-//        });
 
-		assertEquals(user.get().getLeagueData().getPlayer().getName(), user.get().getLeagueID());
+		assertEquals(user.get().getLeagueData().getPlayer().getName(), "meshons");
 	}
 }

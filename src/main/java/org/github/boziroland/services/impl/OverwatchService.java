@@ -50,7 +50,6 @@ public class OverwatchService implements IOverwatchService {
 	}
 
 	@Override
-	//TODO
 	public void requestInformation(User user, GeneralAPIData location) {
 		String accountId = user.getOverwatchID();
 		String name = accountId.substring(0, accountId.lastIndexOf("-"));
