@@ -146,8 +146,8 @@ public class User {
 		return overwatchData.getUsername();
 	}
 
-	public void setOverwatchID(String gameName2) {
-		overwatchData.setUsername(gameName2);
+	public void setOverwatchID(String overwatchID) {
+		overwatchData.setUsername(overwatchID);
 	}
 
 	public List<Comment> getCommentsOnProfile() {

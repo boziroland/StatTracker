@@ -9,4 +9,12 @@ public interface ISecurityService {
 	 * @return The hashed password
 	 */
 	String hashPassword(String password);
+
+	/**
+	 * TODO
+	 * @param password
+	 * @param hashedPassword
+	 * @return
+	 */
+	boolean checkPassword(String password, String hashedPassword);
 }

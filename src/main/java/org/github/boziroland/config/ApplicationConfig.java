@@ -6,6 +6,8 @@ import org.github.boziroland.services.*;
 import org.github.boziroland.services.impl.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 
@@ -86,4 +88,16 @@ public class ApplicationConfig {
 	public IUserService userService() {
 		return new UserService();
 	}
+
+	@Bean
+	public ISecurityService securityService() {
+		return new SecurityService();
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder(){
+		return new BCryptPasswordEncoder();
+	}
+
+
 }

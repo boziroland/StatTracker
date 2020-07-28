@@ -25,7 +25,8 @@ public class UserService implements IUserService {
 	@Autowired
 	IMilestoneService milestoneService;
 
-	ISecurityService securityService = new SecurityService();
+	@Autowired
+	ISecurityService securityService;
 
 	@Autowired
 	ILeagueService leagueService;
@@ -157,11 +158,10 @@ public class UserService implements IUserService {
 
 	@Override
 	public Optional<User> login(String email, String password) {
-		String hashedPassword = securityService.hashPassword(password);
 		Optional<User> user = findByEmail(email);
 
 		if (user.isPresent())
-			if (user.get().getPassword().equals(hashedPassword))
+			if (securityService.checkPassword(password, user.get().getPassword()))
 				return user;
 
 		return Optional.empty();
