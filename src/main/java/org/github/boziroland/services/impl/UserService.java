@@ -108,11 +108,10 @@ public class UserService implements IUserService {
 	public void requestInformation(int id, IAPIService IAPIService, GeneralAPIData location) {
 		var user = findById(id);
 
-		//if (user.isPresent())
-			IAPIService.requestInformation("ad", location);
-			//IAPIService.requestInformation(user.get().getLeagueID(), location);
-	//	else
-		//	throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
+		if (user.isPresent())
+			IAPIService.requestInformation(user.get(), location);
+		else
+			throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
 	}
 
 	@SneakyThrows

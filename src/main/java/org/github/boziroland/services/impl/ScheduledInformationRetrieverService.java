@@ -19,7 +19,7 @@ public class ScheduledInformationRetrieverService implements IScheduledInformati
 	public void retrieve(User user, IAPIService service) {
 		Runnable sender = new Runnable() {
 			public void run() {
-				service.requestInformation(user.getLeagueID(), user.getLeagueData());
+				service.requestInformation(user, user.getLeagueData());
 			}
 		};
 		long delay = ChronoUnit.SECONDS.between(LocalTime.now(), retrieveTime);

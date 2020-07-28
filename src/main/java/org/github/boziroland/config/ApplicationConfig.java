@@ -38,7 +38,7 @@ public class ApplicationConfig {
 	}
 
 	@Bean
-	public IOverwatchService apiData1Service(IAPIData1DAO apiData1DAO) {
+	public IOverwatchService overwatchService(IAPIData1DAO apiData1DAO) {
 		return new OverwatchService();
 	}
 
@@ -63,7 +63,7 @@ public class ApplicationConfig {
 	}
 
 	@Bean
-	public IOverwatchService apiData1Service() {
+	public IOverwatchService overwatchService() {
 		return new OverwatchService();
 	}
 

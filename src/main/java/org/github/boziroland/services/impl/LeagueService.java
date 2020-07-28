@@ -8,11 +8,17 @@ import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import net.rithms.riot.constant.Platform;
 import org.github.boziroland.entities.GeneralAPIData;
 import org.github.boziroland.entities.LeagueData;
+import org.github.boziroland.entities.User;
+import org.github.boziroland.entities.apiEntities.MyMatchReference;
+import org.github.boziroland.entities.apiEntities.MySummoner;
 import org.github.boziroland.repositories.ILeagueRepository;
+import org.github.boziroland.repositories.apiEntityRepositories.IMyMatchReferenceRepository;
+import org.github.boziroland.repositories.apiEntityRepositories.IMySummonerRepository;
 import org.github.boziroland.services.ILeagueService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +26,13 @@ public class LeagueService implements ILeagueService {
 
 	@Autowired
 	ILeagueRepository leagueRepository;
+
+	@Autowired
+	IMySummonerRepository summonerRepository;
+
+	@Autowired
+	IMyMatchReferenceRepository matchReferenceRepository;
+
 	RiotApi api;
 
 	public LeagueService() throws IOException {
@@ -37,7 +50,13 @@ public class LeagueService implements ILeagueService {
 
 	@Override
 	public void createOrUpdate(Summoner player, List<MatchReference> lastTenMatches) {
-		leagueRepository.save(new LeagueData(player, lastTenMatches));
+		MySummoner myPlayer = summonerRepository.save(new MySummoner(player));
+		List<MyMatchReference> myLastTenMatches = new ArrayList<>();
+
+		for(var match : lastTenMatches)
+			myLastTenMatches.add(matchReferenceRepository.save(new MyMatchReference(match)));
+
+		leagueRepository.save(new LeagueData(myPlayer, myLastTenMatches));
 	}
 
 	@Override
@@ -56,12 +75,15 @@ public class LeagueService implements ILeagueService {
 	}
 
 	@Override
-	public void requestInformation(String accountId, GeneralAPIData location) {
+	public void requestInformation(User user, GeneralAPIData location) {
+		String accountId = user.getLeagueID();
+		Platform platform = getRegion(accountId);
+		String riotName = accountId.substring(0, accountId.lastIndexOf("-"));
 
 		try {
 
-			Summoner summoner = api.getSummonerByName(Platform.EUNE, accountId);
-			List<MatchReference> matchList = api.getMatchListByAccountId(Platform.EUNE, summoner.getAccountId()).getMatches();
+			Summoner summoner = api.getSummonerByName(platform, riotName);
+			List<MatchReference> matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
 
 			((LeagueData) location).setPlayer(summoner);
 			((LeagueData) location).setLastTenMatches(matchList.subList(0, 10));
@@ -69,5 +91,23 @@ public class LeagueService implements ILeagueService {
 		} catch (RiotApiException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private Platform getRegion(String accountId) {
+		String region = accountId.substring(accountId.lastIndexOf("-") + 1);
+
+		return switch (region) {
+			case "EUNE" -> Platform.EUNE;
+			case "EUW" -> Platform.EUW;
+			case "BR" -> Platform.BR;
+			case "JP" -> Platform.JP;
+			case "KR" -> Platform.KR;
+			case "LAN" -> Platform.LAN;
+			case "LAS" -> Platform.LAS;
+			case "OCE" -> Platform.OCE;
+			case "NA" -> Platform.NA;
+			case "TR" -> Platform.TR;
+			default -> Platform.RU;
+		};
 	}
 }

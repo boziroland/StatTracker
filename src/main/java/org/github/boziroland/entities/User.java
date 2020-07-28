@@ -142,11 +142,11 @@ public class User {
 		leagueData.setUsername(leagueID);
 	}
 
-	public String getGameName2() {
+	public String getOverwatchID() {
 		return overwatchData.getUsername();
 	}
 
-	public void setGameName2(String gameName2) {
+	public void setOverwatchID(String gameName2) {
 		overwatchData.setUsername(gameName2);
 	}
 
@@ -171,7 +171,7 @@ public class User {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		User user = (User) o;
-		return id == user.id &&
+		return id.equals(user.id) &&
 				Objects.equals(name, user.name) &&
 				Objects.equals(password, user.password) &&
 				Objects.equals(email, user.email) &&

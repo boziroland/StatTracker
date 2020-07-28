@@ -2,6 +2,7 @@ package org.github.boziroland.services;
 
 import org.github.boziroland.DAL.IAPIData1DAO;
 import org.github.boziroland.entities.OverwatchData;
+import org.github.boziroland.entities.apiEntities.OWPlayer;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,14 +15,10 @@ public interface IOverwatchService extends IAPIService {
 	//TODO comments
 
 	/**
-	 * Creates a SpecificAPIData1 instance and passes it to
-	 *
-	 * @param token    The OAuth token of the player
-	 * @param username The username of the player
-	 * @param userID   The ID of the player
-	 * @see IAPIData1DAO#createOrUpdate(OverwatchData)
+	 * TODO
+	 * @param player
 	 */
-	void createOrUpdate(String token, String username, int userID);
+	void createOrUpdate(OWPlayer player);
 
 	/**
 	 * @param id

@@ -24,7 +24,7 @@ public class LeagueData extends GeneralAPIData {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private MySummoner player;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.MERGE)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private List<MyMatchReference> lastTenMatches;
 
@@ -34,6 +34,11 @@ public class LeagueData extends GeneralAPIData {
 	public LeagueData(Summoner player, List<MatchReference> lastTenMatches) {
 		setPlayer(player);
 		setLastTenMatches(lastTenMatches);
+	}
+
+	public LeagueData(MySummoner player, List<MyMatchReference> lastTenMatches) {
+		setPlayer(player);
+		this.lastTenMatches = lastTenMatches;
 	}
 
 	public MySummoner getPlayer() {

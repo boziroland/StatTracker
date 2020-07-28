@@ -44,20 +44,20 @@ public class OWPlayer {
 	private Integer competitiveSupportRank;
 
 	@JsonProperty(value = "competitive")
-	public void setCompetitive(Map<String, Object> competitive){
-		this.competitiveTankRank = ((Map<String, Integer>)competitive.get("tank")).get("rank");
-		this.competitiveDamageRank = ((Map<String, Integer>)competitive.get("damage")).get("rank");
-		this.competitiveSupportRank = ((Map<String, Integer>)competitive.get("support")).get("rank");
+	public void setCompetitive(Map<String, Object> competitive) {
+		this.competitiveTankRank = ((Map<String, Integer>) competitive.get("tank")).get("rank");
+		this.competitiveDamageRank = ((Map<String, Integer>) competitive.get("damage")).get("rank");
+		this.competitiveSupportRank = ((Map<String, Integer>) competitive.get("support")).get("rank");
 	}
 
 	@JsonProperty(value = "games")
-	public void setGames(Map<String, Object> games){
-		this.gamesQuickplayWon = ((Map<String, Integer>)games.get("quickplay")).get("won");
-		this.gamesCompetitiveWon = ((Map<String, Integer>)games.get("competitive")).get("won");
-		this.gamesCompetitiveLost = ((Map<String, Integer>)games.get("competitive")).get("lost");
-		this.gamesCompetitiveDraw = ((Map<String, Integer>)games.get("competitive")).get("draw");
-		this.gamesCompetitivePlayed = ((Map<String, Integer>)games.get("competitive")).get("played");
-		this.gamesCompetitiveWinRate = ((Map<String, Integer>)games.get("competitive")).get("win_rate");
+	public void setGames(Map<String, Object> games) {
+		this.gamesQuickplayWon = ((Map<String, Integer>) games.get("quickplay")).get("won");
+		this.gamesCompetitiveWon = ((Map<String, Integer>) games.get("competitive")).get("won");
+		this.gamesCompetitiveLost = ((Map<String, Integer>) games.get("competitive")).get("lost");
+		this.gamesCompetitiveDraw = ((Map<String, Integer>) games.get("competitive")).get("draw");
+		this.gamesCompetitivePlayed = ((Map<String, Integer>) games.get("competitive")).get("played");
+		this.gamesCompetitiveWinRate = ((Map<String, Integer>) games.get("competitive")).get("win_rate");
 	}
 
 	@JsonProperty(value = "playtime")
@@ -68,13 +68,30 @@ public class OWPlayer {
 		playtimeQuickplay = Duration.ZERO;
 		playtimeCompetitive = Duration.ZERO;
 
-		this.playtimeQuickplay = playtimeQuickplay.plusHours(Integer.parseInt(quickplayTime[0]));
-		this.playtimeQuickplay = playtimeQuickplay.plusMinutes(Integer.parseInt(quickplayTime[1]));
-		this.playtimeQuickplay = playtimeQuickplay.plusSeconds(Integer.parseInt(quickplayTime[2]));
+		switch (quickplayTime.length) {
+			case 1 -> this.playtimeQuickplay = playtimeQuickplay.plusSeconds(Integer.parseInt(quickplayTime[0]));
+			case 2 -> {
+				this.playtimeQuickplay = playtimeQuickplay.plusMinutes(Integer.parseInt(quickplayTime[0]));
+				this.playtimeQuickplay = playtimeQuickplay.plusSeconds(Integer.parseInt(quickplayTime[1]));
+			}
+			case 3 -> {
+				this.playtimeQuickplay = playtimeQuickplay.plusHours(Integer.parseInt(quickplayTime[0]));
+				this.playtimeQuickplay = playtimeQuickplay.plusMinutes(Integer.parseInt(quickplayTime[1]));
+				this.playtimeQuickplay = playtimeQuickplay.plusSeconds(Integer.parseInt(quickplayTime[2]));
+			}
+		}
 
-		this.playtimeCompetitive = playtimeCompetitive.plusHours(Integer.parseInt(competitiveTime[0]));
-		this.playtimeCompetitive = playtimeCompetitive.plusMinutes(Integer.parseInt(competitiveTime[1]));
-		//this.playtimeCompetitive = playtimeCompetitive.plusSeconds(Integer.parseInt(competitiveTime[2]));
-		//TODO
+		switch (competitiveTime.length) {
+			case 1 -> this.playtimeCompetitive = playtimeCompetitive.plusSeconds(Integer.parseInt(competitiveTime[0]));
+			case 2 -> {
+				this.playtimeCompetitive = playtimeCompetitive.plusMinutes(Integer.parseInt(competitiveTime[0]));
+				this.playtimeCompetitive = playtimeCompetitive.plusSeconds(Integer.parseInt(competitiveTime[1]));
+			}
+			case 3 -> {
+				this.playtimeCompetitive = playtimeCompetitive.plusHours(Integer.parseInt(competitiveTime[0]));
+				this.playtimeCompetitive = playtimeCompetitive.plusMinutes(Integer.parseInt(competitiveTime[1]));
+				this.playtimeCompetitive = playtimeCompetitive.plusSeconds(Integer.parseInt(competitiveTime[2]));
+			}
+		}
 	}
 }

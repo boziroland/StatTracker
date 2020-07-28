@@ -20,6 +20,7 @@ public abstract class GeneralAPIData {
 	}
 
 	public void setUsername(String username) {
+		username = username.replace("#", "-");
 		this.username = username;
 	}
 

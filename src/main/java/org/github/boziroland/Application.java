@@ -1,6 +1,10 @@
 package org.github.boziroland;
 
 import org.github.boziroland.entities.User;
+import org.github.boziroland.services.ILeagueService;
+import org.github.boziroland.services.IOverwatchService;
+import org.github.boziroland.services.IUserService;
+import org.github.boziroland.services.impl.LeagueService;
 import org.github.boziroland.services.impl.OverwatchService;
 import org.github.boziroland.services.impl.UserService;
 import org.slf4j.Logger;
@@ -23,12 +27,15 @@ public class Application {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(Application.class, args);
 
 		List<Optional<User>> users = new ArrayList<>();
-		UserService service = applicationContext.getBean(UserService.class);
-		service.register("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", "meshons", null);
-		users.add(service.login("bonifac.solyom@gmail.com", "KAcsa11&"));
-		service.requestInformation(123123, new OverwatchService(), users.get(0).get().getOverwatchData());
-		LOGGER.info(users.get(0).get().getOverwatchData().getPlayer().getLevel().toString());
-		LOGGER.info(users.get(0).get().getName());
+		IUserService userService = applicationContext.getBean(UserService.class);
+		ILeagueService leagueService = applicationContext.getBean(LeagueService.class);
+		IOverwatchService overwatchService = applicationContext.getBean(OverwatchService.class);
+		userService.register("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", "meshons#EUNE", "Spricsma#21972");
+		users.add(userService.login("bonifac.solyom@gmail.com", "KAcsa11&"));
+		userService.requestInformation(users.get(0).get().getId(), overwatchService, users.get(0).get().getOverwatchData());
+		userService.requestInformation(users.get(0).get().getId(), leagueService, users.get(0).get().getLeagueData());
+		LOGGER.info(users.get(0).get().getOverwatchData().getPlayer().getUsername());
+		LOGGER.info(users.get(0).get().getLeagueData().getPlayer().getName());
 
 	}
 }

@@ -2,7 +2,9 @@ package org.github.boziroland.repositories;
 
 import org.github.boziroland.entities.OverwatchData;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface IAPIData1Repository extends JpaRepository<OverwatchData, Integer> {
+@Repository
+public interface IOverwatchRepository extends JpaRepository<OverwatchData, Integer> {
 
 }
