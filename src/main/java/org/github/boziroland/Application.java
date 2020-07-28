@@ -13,7 +13,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +22,7 @@ public class Application {
 
 	static Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(Application.class, args);
 
 		List<Optional<User>> users = new ArrayList<>();
@@ -32,8 +31,8 @@ public class Application {
 		IOverwatchService overwatchService = applicationContext.getBean(OverwatchService.class);
 		userService.register("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", "meshons#EUNE", "Spricsma#21972");
 		users.add(userService.login("bonifac.solyom@gmail.com", "KAcsa11&"));
-		userService.requestInformation(users.get(0).get().getId(), overwatchService, users.get(0).get().getOverwatchData());
-		userService.requestInformation(users.get(0).get().getId(), leagueService, users.get(0).get().getLeagueData());
+		userService.requestInformation(users.get(0).get(), overwatchService);
+		userService.requestInformation(users.get(0).get(), leagueService);
 		LOGGER.info(users.get(0).get().getOverwatchData().getPlayer().getUsername());
 		LOGGER.info(users.get(0).get().getLeagueData().getPlayer().getName());
 

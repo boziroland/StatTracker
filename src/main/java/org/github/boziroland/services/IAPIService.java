@@ -1,6 +1,5 @@
 package org.github.boziroland.services;
 
-import org.github.boziroland.entities.GeneralAPIData;
 import org.github.boziroland.entities.User;
 
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.util.Optional;
 
 public interface IAPIService {
 
-	void requestInformation(User user, GeneralAPIData location);
+	void requestInformation(User user);
 
 	default Optional<String> readKeyFromFile(String file) throws IOException {
 		List<String> lines;

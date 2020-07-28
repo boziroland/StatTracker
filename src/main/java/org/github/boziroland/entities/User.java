@@ -174,14 +174,11 @@ public class User {
 		return id.equals(user.id) &&
 				Objects.equals(name, user.name) &&
 				Objects.equals(password, user.password) &&
-				Objects.equals(email, user.email) &&
-				Objects.equals(commentsSent, user.commentsSent) &&
-				Objects.equals(leagueData, user.leagueData) &&
-				Objects.equals(overwatchData, user.overwatchData);
+				Objects.equals(email, user.email);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name, password, email, commentsSent, leagueData, overwatchData);
+		return Objects.hash(id, name, password, email);
 	}
 }

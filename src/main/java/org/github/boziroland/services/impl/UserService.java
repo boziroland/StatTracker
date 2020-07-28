@@ -1,13 +1,15 @@
 package org.github.boziroland.services.impl;
 
+import com.sun.xml.bind.v2.TODO;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
 import org.github.boziroland.entities.Comment;
-import org.github.boziroland.entities.GeneralAPIData;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.repositories.IUserRepository;
 import org.github.boziroland.services.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalTime;
@@ -18,6 +20,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class UserService implements IUserService {
+
+	Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	@Autowired
 	IUserRepository userRepository;
@@ -31,13 +35,17 @@ public class UserService implements IUserService {
 	@Autowired
 	ILeagueService leagueService;
 
+	@Autowired
+	IOverwatchService overwatchService;
+
 	ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
 
 	Map<User, LocalTime> userQueryTimeMap = new HashMap<>();
 
-	ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
 
 	public UserService() {
+		LOGGER.info("Constructor");
 		scheduleHourlyQuery();
 	}
 
@@ -106,13 +114,18 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void requestInformation(int id, IAPIService IAPIService, GeneralAPIData location) {
+	public void requestInformation(int id, IAPIService apiService) {
 		var user = findById(id);
 
 		if (user.isPresent())
-			IAPIService.requestInformation(user.get(), location);
+			apiService.requestInformation(user.get());
 		else
 			throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
+	}
+
+	@Override
+	public void requestInformation(User user, IAPIService apiService) {
+		apiService.requestInformation(user);
 	}
 
 	@SneakyThrows
@@ -129,7 +142,7 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Optional<User> register(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueID, String gameName2) throws RegistrationException {
+	public Optional<User> register(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueID, String overwatchName) {
 		if (findByEmail(email).isPresent()) {
 			throw new RegistrationException("Email cím foglalt!");
 		} else {
@@ -138,7 +151,7 @@ public class UserService implements IUserService {
 			} else if (!isValidEmail(email)) {
 				throw new RegistrationException("Rossz email!");
 			} else if (isValidPassword(password)) {
-				Optional<User> user = Optional.of(new User(name, securityService.hashPassword(password), email, commentsOnProfile, comments, leagueID, gameName2));
+				Optional<User> user = Optional.of(new User(name, securityService.hashPassword(password), email, commentsOnProfile, comments, leagueID, overwatchName));
 				return Optional.of(create(user.get()));
 			}
 		}
@@ -146,14 +159,14 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Optional<User> register(String name, String password, String email, String leagueName, String gameName2) throws RegistrationException {
-		return register(name, password, email, List.of(), List.of(), leagueName, gameName2);
+	public Optional<User> register(String name, String password, String email, String leagueName, String overwatchName) throws RegistrationException {
+		return register(name, password, email, List.of(), List.of(), leagueName, overwatchName);
 	}
 
 	@Override
 	public Optional<User> register(User user) {
 		user.setPassword(securityService.hashPassword(user.getPassword()));
-		return Optional.of(create(user));
+		return register(user.getName(), user.getPassword(), user.getEmail(), user.getLeagueID(), user.getOverwatchID());
 	}
 
 	@Override
@@ -184,7 +197,8 @@ public class UserService implements IUserService {
 			updateUsersToQuery();
 			scheduleHourlyQuery();
 		};
-		long delay = ChronoUnit.SECONDS.between(LocalTime.now(), LocalTime.now().plusHours(1));
+		long delay = ChronoUnit.SECONDS.between(LocalTime.now(), LocalTime.now().plusMinutes(1));
+		LOGGER.info("Next hourly query at: " + LocalTime.now().plusMinutes(1));
 		scheduler.schedule(command, delay, TimeUnit.SECONDS);
 	}
 
@@ -192,14 +206,27 @@ public class UserService implements IUserService {
 	public void updateUsersToQuery() {
 		for (var entry : userQueryTimeMap.entrySet()) {
 			LocalTime queryTime = entry.getValue();
-			sirs.setRetrieveTime(queryTime);
-			sirs.retrieve(entry.getKey(), leagueService);
+			if(queryTime.minusMinutes(1).isBefore(LocalTime.now())) {
+				LOGGER.info("Next query at: " + queryTime);
+				sirs.setRetrieveTime(queryTime);
+				sirs.retrieve(entry.getKey(), leagueService);
+				sirs.retrieve(entry.getKey(), overwatchService);
+				userQueryTimeMap.put(entry.getKey(), LocalTime.now().plusSeconds(60));
+			}
 		}
+		LOGGER.info("========================");
+		LOGGER.info("SCHEDULES");
+		for(var entry : userQueryTimeMap.entrySet()){
+			LOGGER.info("User " + entry.getKey() + " is scheduled to query at: " + entry.getValue());
+		}
+		LOGGER.info("========================");
+		//TODO
 	}
 
 	private void addUserToScheduler(User user){
-		int secondsInADay = 24 * 60 * 60;
-		userQueryTimeMap.put(user, LocalTime.ofSecondOfDay(new Random().nextInt(secondsInADay)));
+		int secondsInADay = 60;//24 * 60 * 60;
+		LOGGER.info("Adding user " + user.getName() + " to scheduler");
+		userQueryTimeMap.put(user, LocalTime.now().plusSeconds(90));//LocalTime.ofSecondOfDay(new Random().nextInt(secondsInADay)));
 	}
 
 	private void generateMilestoneIDs(User user){

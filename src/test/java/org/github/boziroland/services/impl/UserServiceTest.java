@@ -2,7 +2,6 @@ package org.github.boziroland.services.impl;
 
 import TestUtils.TestUtils;
 import jdk.jshell.spi.ExecutionControl;
-import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.services.ILeagueService;
@@ -48,7 +47,7 @@ class UserServiceTest {
 
 	@Test
 	void testRequestInformationButCantBecauseNoSuchUserExists() throws IOException, RegistrationException {
-		assertThrows(RuntimeException.class, () -> userService.requestInformation(-1, leagueService, new LeagueData()));
+		assertThrows(RuntimeException.class, () -> userService.requestInformation(-1, leagueService));
 	}
 
 	@Test

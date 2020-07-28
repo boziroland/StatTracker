@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.github.boziroland.DAL.IUserDAO;
 import org.github.boziroland.entities.Comment;
-import org.github.boziroland.entities.GeneralAPIData;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.passay.*;
@@ -117,12 +116,17 @@ public interface IUserService {
 
 	/**
 	 * Requests information about the user from the GeneralAPIDataSource.
-	 *
-	 * @param id       The id of the user whose information we want to request
+	 *  @param id       The id of the user whose information we want to request
 	 * @param gap      The data source service
-	 * @param location Where to save the data
 	 */
-	void requestInformation(int id, IAPIService gap, GeneralAPIData location);
+	void requestInformation(int id, IAPIService gap);
+
+	/**
+	 * TODO
+	 * @param user
+	 * @param gap
+	 */
+	void requestInformation(User user, IAPIService gap);
 
 	/**
 	 * Send an email to the user.

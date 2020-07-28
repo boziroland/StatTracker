@@ -9,8 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
@@ -29,7 +27,7 @@ class LeagueServiceTest {
 		var user = TestUtils.registerAndLoginUserWhoHasLeagueName(userService);
 
 		if (user.isPresent()) {
-			userService.requestInformation(user.get().getId(), leagueService, user.get().getLeagueData());
+			userService.requestInformation(user.get().getId(), leagueService);
 		}
 
 		assertEquals(user.get().getLeagueData().getPlayer().getName(), "meshons");

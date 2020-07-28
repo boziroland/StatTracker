@@ -6,7 +6,6 @@ import net.rithms.riot.api.RiotApiException;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import net.rithms.riot.constant.Platform;
-import org.github.boziroland.entities.GeneralAPIData;
 import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.entities.apiEntities.MyMatchReference;
@@ -15,6 +14,8 @@ import org.github.boziroland.repositories.ILeagueRepository;
 import org.github.boziroland.repositories.apiEntityRepositories.IMyMatchReferenceRepository;
 import org.github.boziroland.repositories.apiEntityRepositories.IMySummonerRepository;
 import org.github.boziroland.services.ILeagueService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -23,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class LeagueService implements ILeagueService {
+
+	Logger LOGGER = LoggerFactory.getLogger(LeagueService.class);
 
 	@Autowired
 	ILeagueRepository leagueRepository;
@@ -75,18 +78,23 @@ public class LeagueService implements ILeagueService {
 	}
 
 	@Override
-	public void requestInformation(User user, GeneralAPIData location) {
+	public void requestInformation(User user) {
+		LeagueData location = new LeagueData();
 		String accountId = user.getLeagueID();
 		Platform platform = getRegion(accountId);
 		String riotName = accountId.substring(0, accountId.lastIndexOf("-"));
+
+		LOGGER.info("Getting League information for: " + accountId);
 
 		try {
 
 			Summoner summoner = api.getSummonerByName(platform, riotName);
 			List<MatchReference> matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
 
-			((LeagueData) location).setPlayer(summoner);
-			((LeagueData) location).setLastTenMatches(matchList.subList(0, 10));
+			location.setPlayer(summoner);
+			location.setLastTenMatches(matchList.subList(0, 10));
+
+			user.setLeagueData(location);
 			createOrUpdate(summoner, matchList.subList(0, 10));
 		} catch (RiotApiException e) {
 			e.printStackTrace();
