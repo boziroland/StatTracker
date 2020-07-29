@@ -3,6 +3,7 @@ package org.github.boziroland.services.impl;
 import com.sun.xml.bind.v2.TODO;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
+import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
@@ -40,14 +41,7 @@ public class UserService implements IUserService {
 
 	ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
 
-	Map<User, LocalTime> userQueryTimeMap = new HashMap<>();
-
-	ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
-
-	public UserService() {
-		LOGGER.info("Constructor");
-		scheduleHourlyQuery();
-	}
+	public UserService() {}
 
 	@Override
 	public User create(User user) {
@@ -191,42 +185,11 @@ public class UserService implements IUserService {
 				sendEmail(id, "Gratulálok! A(z) " + m.getKey().getName() + " nevű mérföldkő követelményét teljesítetted!");
 	}
 
-	@Override
-	public void scheduleHourlyQuery() {
-		Runnable command = () -> {
-			updateUsersToQuery();
-			scheduleHourlyQuery();
-		};
-		long delay = ChronoUnit.SECONDS.between(LocalTime.now(), LocalTime.now().plusMinutes(1));
-		LOGGER.info("Next hourly query at: " + LocalTime.now().plusMinutes(1));
-		scheduler.schedule(command, delay, TimeUnit.SECONDS);
-	}
-
-	@Override
-	public void updateUsersToQuery() {
-		for (var entry : userQueryTimeMap.entrySet()) {
-			LocalTime queryTime = entry.getValue();
-			if(queryTime.minusMinutes(1).isBefore(LocalTime.now())) {
-				LOGGER.info("Next query at: " + queryTime);
-				sirs.setRetrieveTime(queryTime);
-				sirs.retrieve(entry.getKey(), leagueService);
-				sirs.retrieve(entry.getKey(), overwatchService);
-				userQueryTimeMap.put(entry.getKey(), LocalTime.now().plusSeconds(60));
-			}
-		}
-		LOGGER.info("========================");
-		LOGGER.info("SCHEDULES");
-		for(var entry : userQueryTimeMap.entrySet()){
-			LOGGER.info("User " + entry.getKey() + " is scheduled to query at: " + entry.getValue());
-		}
-		LOGGER.info("========================");
-		//TODO
-	}
-
 	private void addUserToScheduler(User user){
-		int secondsInADay = 60;//24 * 60 * 60;
-		LOGGER.info("Adding user " + user.getName() + " to scheduler");
-		userQueryTimeMap.put(user, LocalTime.now().plusSeconds(90));//LocalTime.ofSecondOfDay(new Random().nextInt(secondsInADay)));
+		Random random = new Random();
+		sirs.retrieve(user, leagueService, random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS)));
+		sirs.retrieve(user, overwatchService, random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS)));
+		LOGGER.info("Added user " + user.getName() + " to schedulers");
 	}
 
 	private void generateMilestoneIDs(User user){

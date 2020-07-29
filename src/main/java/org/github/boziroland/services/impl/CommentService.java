@@ -61,6 +61,7 @@ public class CommentService implements ICommentService {
 	@Override
 	public void sendComment(User from, User to, String message) {
 		Comment comment = new Comment(-1, from, to, message, LocalDateTime.now());
+		create(comment);
 		from.getCommentsSent().add(comment);
 		to.getCommentsOnProfile().add(comment);
 	}

@@ -54,7 +54,7 @@ public class OverwatchService implements IOverwatchService {
 
 	@Override
 	public void requestInformation(User user) {
-		OverwatchData location = new OverwatchData();
+		OverwatchData location = new OverwatchData(user.getOverwatchID());
 		String accountId = user.getOverwatchID();
 		String name = accountId.substring(0, accountId.lastIndexOf("-"));
 		String region = accountId.substring(name.length());

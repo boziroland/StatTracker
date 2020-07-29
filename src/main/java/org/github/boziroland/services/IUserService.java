@@ -238,14 +238,4 @@ public interface IUserService {
 	 */
 	void checkMilestones(int id);
 
-	/**
-	 * Schedules the hourly lookup of the users who need to be queried in the next hour
-	 */
-	void scheduleHourlyQuery();
-
-	/**
-	 * Schedules the query of the users in the next hour
-	 */
-	void updateUsersToQuery();
-
 }

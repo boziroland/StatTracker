@@ -79,7 +79,7 @@ public class LeagueService implements ILeagueService {
 
 	@Override
 	public void requestInformation(User user) {
-		LeagueData location = new LeagueData();
+		LeagueData location = new LeagueData(user.getLeagueID());
 		String accountId = user.getLeagueID();
 		Platform platform = getRegion(accountId);
 		String riotName = accountId.substring(0, accountId.lastIndexOf("-"));

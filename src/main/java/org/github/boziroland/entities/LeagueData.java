@@ -2,6 +2,10 @@ package org.github.boziroland.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import org.github.boziroland.entities.apiEntities.MyMatchReference;
@@ -18,6 +22,10 @@ import java.util.Objects;
 //Ezt felhasználva: https://github.com/taycaldwell/riot-api-java
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class LeagueData extends GeneralAPIData {
 
 	@OneToOne
@@ -28,25 +36,13 @@ public class LeagueData extends GeneralAPIData {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private List<MyMatchReference> lastTenMatches;
 
-	public LeagueData() {
+	public LeagueData(String accountName) {
+		username = accountName;
 	}
 
 	public LeagueData(Summoner player, List<MatchReference> lastTenMatches) {
 		setPlayer(player);
 		setLastTenMatches(lastTenMatches);
-	}
-
-	public LeagueData(MySummoner player, List<MyMatchReference> lastTenMatches) {
-		setPlayer(player);
-		this.lastTenMatches = lastTenMatches;
-	}
-
-	public MySummoner getPlayer() {
-		return player;
-	}
-
-	public List<MyMatchReference> getLastTenMatches() {
-		return lastTenMatches;
 	}
 
 	@JsonIgnore
@@ -65,23 +61,5 @@ public class LeagueData extends GeneralAPIData {
 			myLastThenMatches.add(new MyMatchReference(match));
 
 		this.lastTenMatches = myLastThenMatches;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		LeagueData that = (LeagueData) o;
-		return player.equals(that.player) &&
-				lastTenMatches.equals(that.lastTenMatches);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(player, lastTenMatches);
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 }

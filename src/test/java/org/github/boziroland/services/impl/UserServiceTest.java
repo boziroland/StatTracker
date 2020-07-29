@@ -79,11 +79,9 @@ class UserServiceTest {
 		assertTrue(userService.login(user.getEmail(), "incorrectPassword").isEmpty());
 	}
 
-	@Test
+	//@Test
 	void testScheduling() {
-		userService.scheduleHourlyQuery();
-		await().atLeast(4, TimeUnit.SECONDS).atMost(10, TimeUnit.SECONDS);
-		userService.scheduleHourlyQuery();
+		//TODO
 		await().atLeast(4, TimeUnit.SECONDS).atMost(10, TimeUnit.SECONDS);
 	}
 
