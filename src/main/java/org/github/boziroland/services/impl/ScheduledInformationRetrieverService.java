@@ -17,8 +17,6 @@ public class ScheduledInformationRetrieverService implements IScheduledInformati
 
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
 
-	private LocalTime retrieveTime;
-
 	@Override
 	public void retrieve(User user, IAPIService service, long delay) {
 
@@ -29,13 +27,5 @@ public class ScheduledInformationRetrieverService implements IScheduledInformati
 			}
 		};
 		scheduler.scheduleAtFixedRate(sender, 0L, delay, TimeUnit.SECONDS);
-	}
-
-	public void setRetrieveTime(LocalTime retrieveTime) {
-		this.retrieveTime = retrieveTime;
-	}
-
-	public LocalTime getRetrieveTime() {
-		return retrieveTime;
 	}
 }

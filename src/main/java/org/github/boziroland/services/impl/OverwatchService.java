@@ -28,8 +28,7 @@ public class OverwatchService implements IOverwatchService {
 
 	private final RestTemplate restTemplate = new RestTemplateBuilder().build();
 
-	public OverwatchService() {
-	}
+	public OverwatchService() {}
 
 	@Override
 	public void createOrUpdate(OWPlayer player) {
@@ -59,7 +58,7 @@ public class OverwatchService implements IOverwatchService {
 		String name = accountId.substring(0, accountId.lastIndexOf("-"));
 		String region = accountId.substring(name.length());
 
-		LOGGER.info("Getting Overwatch information for: " + accountId);
+		LOGGER.info("Getting Overwatch information for: " + accountId + " (" + user.getName() + ")");
 
 		ResponseEntity<OWPlayer> response = restTemplate.getForEntity("http://owapi.io/profile/pc/" + region + "/" + accountId, OWPlayer.class);
 		location.setPlayer(response.getBody());

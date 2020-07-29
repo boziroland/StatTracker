@@ -5,6 +5,7 @@ import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
 import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Comment;
+import org.github.boziroland.entities.Milestone;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.repositories.IUserRepository;
@@ -120,6 +121,11 @@ public class UserService implements IUserService {
 	@Override
 	public void requestInformation(User user, IAPIService apiService) {
 		apiService.requestInformation(user);
+		updateMilestonePoints(user);
+	}
+
+	private void updateMilestonePoints(User user) {
+
 	}
 
 	@SneakyThrows
@@ -141,7 +147,7 @@ public class UserService implements IUserService {
 			throw new RegistrationException("Email cím foglalt!");
 		} else {
 			if (!isValidUsername(name)) {
-				throw new RegistrationException("A felhasználónévnek legalább 5 hosszúnak kell lennie!");
+				throw new RegistrationException("A felhasználónévnek legalább 5 karakter hosszúnak kell lennie!");
 			} else if (!isValidEmail(email)) {
 				throw new RegistrationException("Rossz email!");
 			} else if (isValidPassword(password)) {
@@ -187,21 +193,26 @@ public class UserService implements IUserService {
 
 	private void addUserToScheduler(User user){
 		Random random = new Random();
-		sirs.retrieve(user, leagueService, random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS)));
-		sirs.retrieve(user, overwatchService, random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS)));
-		LOGGER.info("Added user " + user.getName() + " to schedulers");
+		int leagueDelay = random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS));
+		int owDelay = random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS));
+		sirs.retrieve(user, leagueService, leagueDelay);
+		sirs.retrieve(user, overwatchService, owDelay);
+		//TODO possibly átírni h napi 1x updateljen csak
+		LOGGER.info("Added user " + user.getName() + " to for scheduling, League in " + LocalTime.ofSecondOfDay(leagueDelay) + ", OW in " + LocalTime.ofSecondOfDay(owDelay));
 	}
 
 	private void generateMilestoneIDs(User user){
 
 		//TODO ezt valahogy jobban kéne
-		for (var m : user.getLeagueMilestones().entrySet()) {
-			var milestone = milestoneService.createOrUpdate(m.getKey());
-			int value = user.getLeagueMilestones().remove(m.getKey());
-			user.getLeagueMilestones().put(milestone, value);
-		}
+		generateSpecificID(user.getLeagueMilestones());
+		generateSpecificID(user.getOverwatchMilestones());
+	}
 
-		for (var m : user.getOverwatchMilestones().entrySet())
-			milestoneService.createOrUpdate(m.getKey());
+	private void generateSpecificID(Map<Milestone, Integer> milestones){
+		for (var m : milestones.entrySet()){
+			var milestone = milestoneService.createOrUpdate(m.getKey());
+			int value = milestones.remove(m.getKey());
+			milestones.put(milestone, value);
+		}
 	}
 }

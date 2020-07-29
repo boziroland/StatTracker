@@ -3,6 +3,7 @@ package org.github.boziroland.services;
 import org.github.boziroland.DAL.ICommentDAO;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.User;
+import org.github.boziroland.repositories.ICommentRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,19 +14,21 @@ import java.util.Optional;
  */
 public interface ICommentService {
 
-	void create(Comment comment);
+	//TODO comment this class
+
+	Comment create(Comment comment);
 
 	/**
 	 * Creates a Comment instance and passes it to
-	 *
-	 * @param sender   The User who wrote the comment
+	 * @see ICommentRepository#save(Object)
+	 *@param sender   The User who wrote the comment
 	 * @param receiver The User whose comment section this comment was sent to
 	 * @param message  The text of the message
 	 * @param ID       The message's id
 	 * @param time     The time at which the comment was sent
-	 * @see ICommentDAO#create(Comment)
+	 * @return The saved comment
 	 */
-	void create(User sender, User receiver, String message, int ID, LocalDateTime time);
+	Comment create(User sender, User receiver, String message, int ID, LocalDateTime time);
 
 	/**
 	 * @param id The id

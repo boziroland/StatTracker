@@ -34,7 +34,7 @@ public class Application {
 		ICommentService commentService = applicationContext.getBean(CommentService.class);
 		userService.register("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", "meshons#EUNE", "Spricsma#21972");
 		users.add(userService.login("bonifac.solyom@gmail.com", "KAcsa11&"));
-		Thread.sleep(5000);
+		Thread.sleep(2000);
 		userService.register("amy99", "KAcsa11&", "amy.glassires@gmail.com", "meshons#EUNE", "Spricsma#21972");
 		users.add(userService.login("amy.glassires@gmail.com", "KAcsa11&"));
 //		userService.requestInformation(users.get(0).get(), overwatchService);
@@ -43,7 +43,7 @@ public class Application {
 //		LOGGER.info(users.get(0).get().getLeagueData().getPlayer().getName());
 		User bonifac = users.get(0).get();
 		User amy = users.get(1).get();
-		commentService.sendComment(bonifac, amy, "Miss you!");
+		commentService.sendComment(bonifac, amy, "Miss you Amy!");
 
 	}
 }

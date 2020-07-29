@@ -5,6 +5,7 @@ import org.github.boziroland.repositories.IMilestoneRepository;
 import org.github.boziroland.services.IMilestoneService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,14 @@ public class MilestoneService implements IMilestoneService {
 	@Autowired
 	IMilestoneRepository milestoneRepository;
 
+	List<Milestone> milestones = new ArrayList<>();
+
 	public MilestoneService() {
+		/*
+			... achievement létrehozás/beolvasás
+		 */
+
+
 	}
 
 	@Override

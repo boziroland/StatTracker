@@ -26,7 +26,7 @@ public class User {
 	private final Map<Milestone, Integer> leagueMilestones = new HashMap<>();
 
 	@ElementCollection
-	@CollectionTable(name = "Game2MilestonePointJoinTable")
+	@CollectionTable(name = "OverwatchMilestonePointJoinTable")
 	@MapKeyColumn(name = "Milestone")
 	@JsonIgnore
 	private final Map<Milestone, Integer> overwatchMilestones = new HashMap<>();
@@ -73,11 +73,11 @@ public class User {
 	}
 
 	private void initLeagueMilestones() {
-		leagueMilestones.put(new Milestone("teszt", "teszt teszt", 100, Milestone.Game.LEAGUE), 0);
+		leagueMilestones.put(new Milestone("League_Milestone_name", "League_Milestone_description", 100, Milestone.Game.LEAGUE), 0);
 	}
 
 	private void initGame2Milestones() {
-
+		overwatchMilestones.put(new Milestone("OW_Milestone_name", "OW_Milestone_description", 120, Milestone.Game.OVERWATCH), 0);
 	}
 
 	public String getLeagueID() {
