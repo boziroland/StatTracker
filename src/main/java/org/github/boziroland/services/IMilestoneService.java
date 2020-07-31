@@ -2,6 +2,7 @@ package org.github.boziroland.services;
 
 import org.github.boziroland.DAL.IMilestoneDAO;
 import org.github.boziroland.entities.Milestone;
+import org.github.boziroland.entities.User;
 import org.github.boziroland.repositories.IMilestoneRepository;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface IMilestoneService {
 	 * @param requirement The point requiremnt of the milestone
 	 * @return The saved milestone
 	 */
-	Milestone createOrUpdate(String name, String description, int requirement, Milestone.Game game);
+	Milestone createOrUpdate(String name, String description, Integer requirement, Milestone.Game game);
 
 	/**
 	 * Passes the milestone in the paramter to
@@ -61,14 +62,14 @@ public interface IMilestoneService {
 	 * @param game        The game which the Milestone is associated with
 	 * @see IMilestoneDAO#delete(Milestone)
 	 */
-	void delete(String name, String description, int requirement, Milestone.Game game);
+	void delete(String name, String description, Integer requirement, Milestone.Game game);
 
 	/**
-	 * Checks whether the given score is above or equal to the achievement's requirement
+	 * Returns a list of the completed achievements
 	 *
-	 * @param userScore The user's score
-	 * @param m         The achievement we are checking
-	 * @return True if it's above or equal, false otherwise
+	 * @param user The user whose achievements are to be checked
+	 * @return The completed achievements
 	 */
-	boolean checkAchievement(int userScore, Milestone m);
+	List<String> checkAchievements(User user);
+
 }

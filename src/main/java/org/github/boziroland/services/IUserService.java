@@ -131,10 +131,10 @@ public interface IUserService {
 	/**
 	 * Send an email to the user.
 	 *
-	 * @param id      The user's id whom we want to send the email to
+	 * @param user The user whom we want to email
 	 * @param message The message to send
 	 */
-	void sendEmail(int id, String message);
+	void sendEmail(User user, String message);
 
 	/**
 	 * Registers a user.
@@ -234,8 +234,8 @@ public interface IUserService {
 	/**
 	 * Checks a user's milestones, if one's requirements are fulfilled, it sends an email
 	 *
-	 * @param id The user's id whose milestone we want to check
+	 * @param user The users whose milestones we want to check
 	 */
-	void checkMilestones(int id);
+	void checkMilestones(User user);
 
 }

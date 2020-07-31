@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,42 +23,47 @@ public class OWPlayer {
 	private Integer id;
 
 	private String username;
-	private Integer level;
+	private MutableInt level;
 	private String portrait;
 
 	@JsonProperty(value = "private")
 	private Boolean isPrivate;
 
-	private Integer gamesQuickplayWon;
+	private MutableInt gamesQuickplayWon;
 
-	private Integer gamesCompetitiveWon;
-	private Integer gamesCompetitiveLost;
-	private Integer gamesCompetitiveDraw;
-	private Integer gamesCompetitivePlayed;
-	private Integer gamesCompetitiveWinRate;
+	private MutableInt gamesCompetitiveWon;
+	private MutableInt gamesCompetitiveLost;
+	private MutableInt gamesCompetitiveDraw;
+	private MutableInt gamesCompetitivePlayed;
+	private MutableInt gamesCompetitiveWinRate;
 
 	private Duration playtimeQuickplay;
 	private Duration playtimeCompetitive;
 
-	private Integer competitiveTankRank;
-	private Integer competitiveDamageRank;
-	private Integer competitiveSupportRank;
+	private MutableInt competitiveTankRank;
+	private MutableInt competitiveDamageRank;
+	private MutableInt competitiveSupportRank;
+
+	@JsonProperty(value = "level")
+	public void setLevel(Integer level){
+		this.level = makeMutableInt(level);
+	}
 
 	@JsonProperty(value = "competitive")
 	public void setCompetitive(Map<String, Object> competitive) {
-		this.competitiveTankRank = ((Map<String, Integer>) competitive.get("tank")).get("rank");
-		this.competitiveDamageRank = ((Map<String, Integer>) competitive.get("damage")).get("rank");
-		this.competitiveSupportRank = ((Map<String, Integer>) competitive.get("support")).get("rank");
+		this.competitiveTankRank = makeMutableInt(((Map<String, Integer>) competitive.get("tank")).get("rank"));
+		this.competitiveDamageRank = makeMutableInt(((Map<String, Integer>) competitive.get("damage")).get("rank"));
+		this.competitiveSupportRank = makeMutableInt(((Map<String, Integer>) competitive.get("support")).get("rank"));
 	}
 
 	@JsonProperty(value = "games")
 	public void setGames(Map<String, Object> games) {
-		this.gamesQuickplayWon = ((Map<String, Integer>) games.get("quickplay")).get("won");
-		this.gamesCompetitiveWon = ((Map<String, Integer>) games.get("competitive")).get("won");
-		this.gamesCompetitiveLost = ((Map<String, Integer>) games.get("competitive")).get("lost");
-		this.gamesCompetitiveDraw = ((Map<String, Integer>) games.get("competitive")).get("draw");
-		this.gamesCompetitivePlayed = ((Map<String, Integer>) games.get("competitive")).get("played");
-		this.gamesCompetitiveWinRate = ((Map<String, Integer>) games.get("competitive")).get("win_rate");
+		this.gamesQuickplayWon = makeMutableInt(((Map<String, Integer>) games.get("quickplay")).get("won"));
+		this.gamesCompetitiveWon = makeMutableInt(((Map<String, Integer>) games.get("competitive")).get("won"));
+		this.gamesCompetitiveLost = makeMutableInt(((Map<String, Integer>) games.get("competitive")).get("lost"));
+		this.gamesCompetitiveDraw = makeMutableInt(((Map<String, Integer>) games.get("competitive")).get("draw"));
+		this.gamesCompetitivePlayed = makeMutableInt(((Map<String, Integer>) games.get("competitive")).get("played"));
+		this.gamesCompetitiveWinRate = makeMutableInt(((Map<String, Integer>) games.get("competitive")).get("win_rate"));
 	}
 
 	@JsonProperty(value = "playtime")
@@ -86,4 +92,12 @@ public class OWPlayer {
 
 		return ret;
 	}
+
+	private MutableInt makeMutableInt(Integer number){
+		if(number == null)
+			return new MutableInt(-1);
+
+		return new MutableInt(number);
+	}
+
 }

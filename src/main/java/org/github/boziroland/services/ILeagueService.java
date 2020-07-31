@@ -18,9 +18,10 @@ public interface ILeagueService extends IAPIService {
 	 * @see ILeagueRepository#save(Object)
 	 * @param player         The League account of the player
 	 * @param lastTenMatches The last ten matches of the player
+	 * @param username
 	 * @return The saved Leaguedata instance
 	 */
-	LeagueData createOrUpdate(Summoner player, List<MatchReference> lastTenMatches);
+	LeagueData createOrUpdate(Summoner player, List<MatchReference> lastTenMatches, String username);
 
 	/**
 	 * Finds a

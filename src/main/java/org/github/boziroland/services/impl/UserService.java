@@ -1,8 +1,8 @@
 package org.github.boziroland.services.impl;
 
-import com.sun.xml.bind.v2.TODO;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.Milestone;
@@ -15,11 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class UserService implements IUserService {
 
@@ -42,13 +38,18 @@ public class UserService implements IUserService {
 
 	ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
 
-	public UserService() {}
+	public UserService() {
+	}
 
 	@Override
 	public User create(User user) {
-		generateMilestoneIDs(user);
+
+		requestInformation(user, leagueService);
+		requestInformation(user, overwatchService);
 
 		User savedUser = userRepository.save(user);
+
+		addMilestones(savedUser);
 
 		addUserToScheduler(savedUser);
 
@@ -62,6 +63,11 @@ public class UserService implements IUserService {
 
 	@Override
 	public void update(User user) {
+		var foundUser = userRepository.findById(user.getId());
+
+		if (foundUser.isPresent())
+			userRepository.deleteById(user.getId());
+
 		userRepository.save(user);
 	}
 
@@ -112,33 +118,27 @@ public class UserService implements IUserService {
 	public void requestInformation(int id, IAPIService apiService) {
 		var user = findById(id);
 
-		if (user.isPresent())
+		if (user.isPresent()) {
 			apiService.requestInformation(user.get());
-		else
+			checkMilestones(user.get());
+		} else {
 			throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
+		}
 	}
 
 	@Override
 	public void requestInformation(User user, IAPIService apiService) {
 		apiService.requestInformation(user);
-		updateMilestonePoints(user);
-	}
-
-	private void updateMilestonePoints(User user) {
-
+		//updateMilestonePoints(user);TODO
 	}
 
 	@SneakyThrows
 	@Override
-	public void sendEmail(int id, String message) {
-		var user = findById(id);
+	public void sendEmail(User user, String message) {
 
-		if (user.isPresent()) {
-			var userEmail = user.get().getEmail();
-			throw new ExecutionControl.NotImplementedException("should have sent an email");
-		} else {
-			throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
-		}
+		var userEmail = user.getEmail();
+		throw new ExecutionControl.NotImplementedException("should have sent an email");
+
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Optional<User> register(String name, String password, String email, String leagueName, String overwatchName) throws RegistrationException {
+	public Optional<User> register(String name, String password, String email, String leagueName, String overwatchName) {
 		return register(name, password, email, List.of(), List.of(), leagueName, overwatchName);
 	}
 
@@ -181,17 +181,16 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void checkMilestones(int id) {
-		var user = findById(id);
+	public void checkMilestones(User user) {
+		var completedMilestones = milestoneService.checkAchievements(user);
 
-		var milestones = user.get();
-
-		for (var m : milestones.getLeagueMilestones().entrySet())
-			if (milestoneService.checkAchievement(m.getValue(), m.getKey()))
-				sendEmail(id, "Gratulálok! A(z) " + m.getKey().getName() + " nevű mérföldkő követelményét teljesítetted!");
+		for(var m : completedMilestones){
+			sendEmail(user, "Gratulálok!\n\n Teljesítetted a(z) " + m + " nevű teljesítmény követelményeit!");
+			user.getMilestoneNameUserPointMap().remove(m);
+		}
 	}
 
-	private void addUserToScheduler(User user){
+	private void addUserToScheduler(User user) {
 		Random random = new Random();
 		int leagueDelay = random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS));
 		int owDelay = random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS));
@@ -201,18 +200,33 @@ public class UserService implements IUserService {
 		LOGGER.info("Added user " + user.getName() + " to for scheduling, League in " + LocalTime.ofSecondOfDay(leagueDelay) + ", OW in " + LocalTime.ofSecondOfDay(owDelay));
 	}
 
-	private void generateMilestoneIDs(User user){
+	private void generateMilestoneIDs(User user) {
 
 		//TODO ezt valahogy jobban kéne
-		generateSpecificID(user.getLeagueMilestones());
-		generateSpecificID(user.getOverwatchMilestones());
+//		generateSpecificID(user.getLeagueMilestones());
+//		generateSpecificID(user.getOverwatchMilestones());
 	}
 
-	private void generateSpecificID(Map<Milestone, Integer> milestones){
-		for (var m : milestones.entrySet()){
+	private void generateSpecificID(Map<Milestone, Integer> milestones) {
+		for (var m : milestones.entrySet()) {
 			var milestone = milestoneService.createOrUpdate(m.getKey());
 			int value = milestones.remove(m.getKey());
 			milestones.put(milestone, value);
 		}
+	}
+
+	public void addMilestones(User user) {
+		List<Milestone> milestones = Constants.getMilestonesAsList();
+
+		Map<String, MutableInt> idPointMap = new HashMap<>();
+
+		if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
+			idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
+
+		if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getCompetitiveDamageRank().getValue())
+			idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getCompetitiveDamageRank());
+
+		user.setMilestoneNameUserPointMap(idPointMap);
+
 	}
 }

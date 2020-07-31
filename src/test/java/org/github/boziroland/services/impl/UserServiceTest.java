@@ -42,7 +42,7 @@ class UserServiceTest {
 
 	@Test
 	void testSendEmailButCantBecauseNoSuchUserExists() {
-		assertThrows(RuntimeException.class, () -> userService.sendEmail(-1, "teszt"));
+		assertThrows(RuntimeException.class, () -> userService.sendEmail(TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0),"teszt"));
 	}
 
 	@Test
@@ -95,9 +95,9 @@ class UserServiceTest {
 	@Test
 	void testUserAchievesMilestoneRequirement() {
 		User user = TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0);
-		for (var m : user.getLeagueMilestones().entrySet())
-			m.setValue(150);
+		//for (var m : user.getLeagueMilestones().entrySet())
+		//	m.setValue(150);
 
-		assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.checkMilestones(user.getId()));
+		assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.checkMilestones(user));
 	}
 }

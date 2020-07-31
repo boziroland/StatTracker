@@ -6,4 +6,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ILeagueRepository extends JpaRepository<LeagueData, Integer> {
+
+	LeagueData findByUsername(String username);
+
+	void deleteByUsername(String username);
+
 }

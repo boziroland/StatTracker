@@ -17,7 +17,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 //Ezt felhasználva: https://github.com/taycaldwell/riot-api-java
 
@@ -40,9 +39,16 @@ public class LeagueData extends GeneralAPIData {
 		username = accountName;
 	}
 
-	public LeagueData(Summoner player, List<MatchReference> lastTenMatches) {
+	public LeagueData(Summoner player, List<MatchReference> lastTenMatches, String accountName) {
+		username = accountName;
 		setPlayer(player);
 		setLastTenMatches(lastTenMatches);
+	}
+
+	public LeagueData(MySummoner player, List<MyMatchReference> lastTenMatches, String accountName) {
+		username = accountName;
+		setPlayer(player);
+		this.lastTenMatches = lastTenMatches;
 	}
 
 	@JsonIgnore
@@ -61,5 +67,13 @@ public class LeagueData extends GeneralAPIData {
 			myLastThenMatches.add(new MyMatchReference(match));
 
 		this.lastTenMatches = myLastThenMatches;
+	}
+
+	@Override
+	public String toString() {
+		return "LeagueData{" +
+				"id=" + id +
+				", username='" + username + '\'' +
+				'}';
 	}
 }

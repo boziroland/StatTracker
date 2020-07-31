@@ -25,4 +25,16 @@ public class OverwatchData extends GeneralAPIData {
 		this.username = username;
 	}
 
+	public OverwatchData(OWPlayer owPlayer, String username) {
+		this.username = username;
+		this.player = owPlayer;
+	}
+
+	@Override
+	public String toString() {
+		return "OverwatchData{" +
+				"id=" + id +
+				", username='" + username + '\'' +
+				'}';
+	}
 }

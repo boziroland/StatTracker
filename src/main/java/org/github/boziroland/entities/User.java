@@ -3,6 +3,7 @@ package org.github.boziroland.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import javax.persistence.*;
 import java.util.*;
@@ -20,16 +21,10 @@ public class User {
 	private String email;
 
 	@ElementCollection
-	@CollectionTable(name = "LeagueMilestonePointJoinTable")
+	@CollectionTable(name = "MilestoneNamePointJoinTable")
 	@MapKeyColumn(name = "Milestone")
 	@JsonIgnore
-	private final Map<Milestone, Integer> leagueMilestones = new HashMap<>();
-
-	@ElementCollection
-	@CollectionTable(name = "OverwatchMilestonePointJoinTable")
-	@MapKeyColumn(name = "Milestone")
-	@JsonIgnore
-	private final Map<Milestone, Integer> overwatchMilestones = new HashMap<>();
+	Map<String, MutableInt> milestoneNameUserPointMap = new HashMap<>();
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Comment> commentsOnProfile = new ArrayList<>();
@@ -37,11 +32,11 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Comment> commentsSent = new ArrayList<>();
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.DETACH})
 	@JsonIgnore
 	private LeagueData leagueData = new LeagueData();
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.DETACH})
 	@JsonIgnore
 	private OverwatchData overwatchData = new OverwatchData();
 
@@ -67,17 +62,6 @@ public class User {
 
 		overwatchData = new OverwatchData();
 		overwatchData.setUsername(overwatchID);
-
-		initLeagueMilestones();
-		initGame2Milestones();
-	}
-
-	private void initLeagueMilestones() {
-		leagueMilestones.put(new Milestone("League_Milestone_name", "League_Milestone_description", 100, Milestone.Game.LEAGUE), 0);
-	}
-
-	private void initGame2Milestones() {
-		overwatchMilestones.put(new Milestone("OW_Milestone_name", "OW_Milestone_description", 120, Milestone.Game.OVERWATCH), 0);
 	}
 
 	public String getLeagueID() {
@@ -94,5 +78,31 @@ public class User {
 
 	public void setOverwatchID(String overwatchID) {
 		overwatchData.setUsername(overwatchID);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		User user = (User) o;
+		return Objects.equals(id, user.id) &&
+				Objects.equals(name, user.name) &&
+				Objects.equals(password, user.password) &&
+				Objects.equals(email, user.email);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, password, email);
+	}
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", password='" + password + '\'' +
+				", email='" + email + '\'' +
+				'}';
 	}
 }

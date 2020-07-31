@@ -14,11 +14,13 @@ public interface IOverwatchService extends IAPIService {
 
 	/**
 	 * Creates an
-	 * @see OverwatchData fromthe player in the parameter and passes it to the
+	 * @see OverwatchData from the player in the parameter and passes it to the
 	 * @see IOverwatchRepository#save(Object) function
 	 * @param player The player to store
+	 * @param username The name of the player
+	 * @return The saved data
 	 */
-	void createOrUpdate(OWPlayer player);
+	OverwatchData createOrUpdate(OWPlayer player, String username);
 
 	/**
 	 * Finds an

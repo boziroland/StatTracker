@@ -25,19 +25,26 @@ public class Milestone {
 
 	private String description;
 
-	private int requirement;
+	private Integer requirement;
 
 	@Enumerated
 	private Game game;
 
-	private boolean doneAlready;
+	private Boolean doneAlready = false;
 
 	public Milestone(String name, String description, int requirement, Game game) {
 		this.name = name;
 		this.description = description;
 		this.requirement = requirement;
 		this.game = game;
-		this.doneAlready = false;
+	}
+
+	public Boolean isDoneAlready() {
+		return doneAlready;
+	}
+
+	public void setDoneAlready(Boolean doneAlready) {
+		this.doneAlready = doneAlready;
 	}
 }
 

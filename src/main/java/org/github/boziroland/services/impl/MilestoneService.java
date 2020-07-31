@@ -1,31 +1,39 @@
 package org.github.boziroland.services.impl;
 
+import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Milestone;
+import org.github.boziroland.entities.User;
 import org.github.boziroland.repositories.IMilestoneRepository;
 import org.github.boziroland.services.IMilestoneService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 public class MilestoneService implements IMilestoneService {
 
 	@Autowired
 	IMilestoneRepository milestoneRepository;
 
-	List<Milestone> milestones = new ArrayList<>();
+	public MilestoneService() {}
 
-	public MilestoneService() {
+	@PostConstruct
+	void init(){
 		/*
 			... achievement létrehozás/beolvasás
 		 */
 
+		List<Milestone> milestones = new ArrayList<>();
 
+		milestones.add(createOrUpdate("100-as szint", "Érd el a 100-as szintet", 100, Milestone.Game.LEAGUE));
+		milestones.add(createOrUpdate("100-as szint", "Érd el a 100-as szintet", 100, Milestone.Game.OVERWATCH));
+		// ...
+
+		Constants.setMilestones(Collections.unmodifiableList(milestones));
 	}
 
 	@Override
-	public Milestone createOrUpdate(String name, String description, int requirement, Milestone.Game game) {
+	public Milestone createOrUpdate(String name, String description, Integer requirement, Milestone.Game game) {
 		return milestoneRepository.save(new Milestone(name, description, requirement, game));
 	}
 
@@ -50,16 +58,23 @@ public class MilestoneService implements IMilestoneService {
 	}
 
 	@Override
-	public void delete(String name, String description, int requirement, Milestone.Game game) {
+	public void delete(String name, String description, Integer requirement, Milestone.Game game) {
 		milestoneRepository.delete(new Milestone(name, description, requirement, game));
 	}
 
 	@Override
-	public boolean checkAchievement(int userScore, Milestone m) {
-		if (userScore >= m.getRequirement() && !m.isDoneAlready()) {
-			m.setDoneAlready(true);
-			return true;
+	public List<String> checkAchievements(User user) {
+		List<String> ret = new ArrayList<>();
+
+		var userMilestones = user.getMilestoneNameUserPointMap();
+
+		for(var entry : Constants.getMilestonesAsSet()){
+			if(userMilestones.containsKey(entry.getName())){
+				if(userMilestones.get(entry.getName()).getValue() >= entry.getRequirement()){
+					ret.add(entry.getName());
+				}
+			}
 		}
-		return false;
+		return ret;
 	}
 }

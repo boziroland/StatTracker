@@ -31,9 +31,9 @@ public class OverwatchService implements IOverwatchService {
 	public OverwatchService() {}
 
 	@Override
-	public void createOrUpdate(OWPlayer player) {
+	public OverwatchData createOrUpdate(OWPlayer player, String username) {
 		var myOwPlayer = owPlayerReposity.save(player);
-		overwatchRepository.save(new OverwatchData(myOwPlayer));
+		return overwatchRepository.save(new OverwatchData(myOwPlayer, username));
 	}
 
 	@Override
@@ -53,15 +53,14 @@ public class OverwatchService implements IOverwatchService {
 
 	@Override
 	public void requestInformation(User user) {
-		OverwatchData location = new OverwatchData(user.getOverwatchID());
-		String accountId = user.getOverwatchID();
-		String name = accountId.substring(0, accountId.lastIndexOf("-"));
-		String region = accountId.substring(name.length());
+		String owAccountId = user.getOverwatchID();
+		String name = owAccountId.substring(0, owAccountId.lastIndexOf("-"));
+		String region = owAccountId.substring(name.length());
 
-		LOGGER.info("Getting Overwatch information for: " + accountId + " (" + user.getName() + ")");
+		LOGGER.info("Getting Overwatch information for: " + owAccountId + " (" + user.getName() + ")");
 
-		ResponseEntity<OWPlayer> response = restTemplate.getForEntity("http://owapi.io/profile/pc/" + region + "/" + accountId, OWPlayer.class);
-		location.setPlayer(response.getBody());
-		user.setOverwatchData(location);
+		ResponseEntity<OWPlayer> response = restTemplate.getForEntity("http://owapi.io/profile/pc/" + region + "/" + owAccountId, OWPlayer.class);
+		var savedData = createOrUpdate(response.getBody(), owAccountId);
+		user.setOverwatchData(savedData);
 	}
 }

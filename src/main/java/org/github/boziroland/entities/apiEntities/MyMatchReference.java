@@ -3,6 +3,8 @@ package org.github.boziroland.entities.apiEntities;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.mutable.MutableLong;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,22 +19,22 @@ public class MyMatchReference {
 	@GeneratedValue
 	private Integer id;
 
-	private long gameId;
-	private int champion;
+	private MutableLong gameId;
+	private MutableInt champion;
 	private String lane;
 	private String platformId;
-	private int queue;
-	private int season;
-	private long timestamp;
+	private MutableInt queue;
+	private MutableInt season;
+	private MutableLong timestamp;
 
 	public MyMatchReference(MatchReference m) {
-		gameId = m.getGameId();
-		champion = m.getChampion();
+		gameId = new MutableLong(m.getGameId());
+		champion = new MutableInt(m.getChampion());
 		lane = m.getLane();
 		platformId = m.getPlatformId();
-		queue = m.getQueue();
-		season = m.getSeason();
-		timestamp = m.getTimestamp();
+		queue = new MutableInt(m.getQueue());
+		season = new MutableInt(m.getSeason());
+		timestamp = new MutableLong(m.getTimestamp());
 	}
 
 }

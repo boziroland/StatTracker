@@ -52,14 +52,16 @@ public class LeagueService implements ILeagueService {
 	}
 
 	@Override
-	public LeagueData createOrUpdate(Summoner player, List<MatchReference> lastTenMatches) {
+	public LeagueData createOrUpdate(Summoner player, List<MatchReference> lastTenMatches, String username) {
+
 		MySummoner myPlayer = summonerRepository.save(new MySummoner(player));
+
 		List<MyMatchReference> myLastTenMatches = new ArrayList<>();
 
 		for(var match : lastTenMatches)
 			myLastTenMatches.add(matchReferenceRepository.save(new MyMatchReference(match)));
 
-		return leagueRepository.save(new LeagueData(myPlayer, myLastTenMatches));
+		return leagueRepository.save(new LeagueData(myPlayer, myLastTenMatches, username));
 	}
 
 	@Override
@@ -79,19 +81,18 @@ public class LeagueService implements ILeagueService {
 
 	@Override
 	public void requestInformation(User user) {
-		String accountId = user.getLeagueID();
-		Platform platform = getRegion(accountId);
-		String riotName = accountId.substring(0, accountId.lastIndexOf("-"));
+		String leagueAccountId = user.getLeagueID();
+		Platform platform = getRegion(leagueAccountId);
+		String riotName = leagueAccountId.substring(0, leagueAccountId.lastIndexOf("-"));
 
-		LOGGER.info("Getting League information for: " + accountId + " (" + user.getName() + ")");
+		LOGGER.info("Getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
 
 		try {
 
 			Summoner summoner = api.getSummonerByName(platform, riotName);
 			List<MatchReference> matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
 
-			var savedData = createOrUpdate(summoner, matchList.subList(0, 10));
-			savedData.setUsername(accountId);
+			var savedData = createOrUpdate(summoner, matchList.subList(0, 10), leagueAccountId);
 
 			user.setLeagueData(savedData);
 		} catch (RiotApiException e) {
