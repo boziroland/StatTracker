@@ -1,23 +1,25 @@
 package org.github.boziroland.entities;
 
-import java.util.Objects;
+import lombok.Data;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass
+@Data
 public abstract class GeneralAPIData {
 
-    protected String URL;
-    protected String userName;
+	@Id
+	@GeneratedValue
+	protected Integer id;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GeneralAPIData that = (GeneralAPIData) o;
-        return URL.equals(that.URL) &&
-                userName.equals(that.userName);
-    }
+	protected String username;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(URL, userName);
-    }
+	public void setUsername(String username) {
+		if (username != null) {
+			username = username.replace("#", "-");
+			this.username = username;
+		}
+	}
 }

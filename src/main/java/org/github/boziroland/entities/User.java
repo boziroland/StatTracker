@@ -1,129 +1,112 @@
 package org.github.boziroland.entities;
 
-import java.util.List;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.mutable.MutableInt;
 
+import javax.persistence.*;
+import java.util.*;
+
+@Entity
+@Data
+@NoArgsConstructor
 public class User {
 
-    private final int id;
-    private String name;
-    private String password;
-    private String email;
-    private MilestoneHolder milestones;
-    private List<Comment> comments;
-    private String leagueID;
-    private String gameName2;
+	@Id
+	@GeneratedValue
+	private Integer id;
+	private String name;
+	private String password;
+	private String email;
 
-    private LeagueData leagueData;
-    private SpecificAPIData1 specificPlayer;
+	@ElementCollection
+	@CollectionTable(name = "MilestoneNamePointJoinTable")
+	@MapKeyColumn(name = "Milestone")
+	@JsonIgnore
+	Map<String, MutableInt> milestoneNameUserPointMap = new HashMap<>();
 
-    public User(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueID, String gameName2) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.milestones = milestones;
-        this.comments = comments;
-        this.leagueID = leagueID;
-        this.gameName2 = gameName2;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<Comment> commentsOnProfile = new ArrayList<>();
 
-        leagueData = new LeagueData();
-        specificPlayer = new SpecificAPIData1();
-    }
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<Comment> commentsSent = new ArrayList<>();
 
-    public int getId() {
-        return id;
-    }
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private LeagueData leagueData;
 
-    public String getName() {
-        return name;
-    }
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private OverwatchData overwatchData;
 
-    public String getPassword() {
-        return password;
-    }
+	public User(String name, String password, String email, String leagueID, String gameName2) {
+		this.name = name;
+		this.password = password;
+		this.email = email;
 
-    public String getEmail() {
-        return email;
-    }
+		leagueData.setUsername(leagueID);
 
-    public MilestoneHolder getMilestones() {
-        return milestones;
-    }
+		overwatchData.setUsername(gameName2);
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public User(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String overwatchID) {
+		this.name = name;
+		this.password = password;
+		this.email = email;
+		this.commentsOnProfile = commentsOnProfile;
+		this.commentsSent = commentsSent;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+		if(leagueID != null) {
+			leagueData = new LeagueData();
+			leagueData.setUsername(leagueID);
+		}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+		if (overwatchID != null) {
+			overwatchData = new OverwatchData();
+			overwatchData.setUsername(overwatchID);
+		}
+	}
 
-    public void setMilestones(MilestoneHolder milestones) {
-        this.milestones = milestones;
-    }
+	public String getLeagueID() {
+		return leagueData == null ? null : leagueData.getUsername();
+	}
 
-    public List<Comment> getComments() {
-        return comments;
-    }
+	public void setLeagueID(String leagueID) {
+		leagueData.setUsername(leagueID);
+	}
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
+	public String getOverwatchID() {
+		return overwatchData == null ? null : overwatchData.getUsername();
+	}
 
-    public LeagueData getLeagueData() {
-        return leagueData;
-    }
+	public void setOverwatchID(String overwatchID) {
+		overwatchData.setUsername(overwatchID);
+	}
 
-    public void setLeagueData(LeagueData leagueData) {
-        this.leagueData = leagueData;
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		User user = (User) o;
+		return Objects.equals(id, user.id) &&
+				Objects.equals(name, user.name) &&
+				Objects.equals(password, user.password) &&
+				Objects.equals(email, user.email);
+	}
 
-    public SpecificAPIData1 getSpecificPlayer() {
-        return specificPlayer;
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, password, email);
+	}
 
-    public void setSpecificPlayer(SpecificAPIData1 specificPlayer) {
-        this.specificPlayer = specificPlayer;
-    }
-
-    public String getLeagueID() {
-        return leagueID;
-    }
-
-    public void setLeagueID(String leagueID) {
-        this.leagueID = leagueID;
-    }
-
-    public String getGameName2() {
-        return gameName2;
-    }
-
-    public void setGameName2(String gameName2) {
-        this.gameName2 = gameName2;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(milestones, user.milestones) &&
-                Objects.equals(comments, user.comments) &&
-                Objects.equals(leagueData, user.leagueData) &&
-                Objects.equals(specificPlayer, user.specificPlayer);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, password, email, milestones, comments, leagueData, specificPlayer);
-    }
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", password='" + password + '\'' +
+				", email='" + email + '\'' +
+				'}';
+	}
 }

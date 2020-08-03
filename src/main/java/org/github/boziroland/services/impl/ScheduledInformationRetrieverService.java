@@ -1,38 +1,31 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.DAL.ILeagueDAO;
+import org.github.boziroland.Constants;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.services.IAPIService;
-import org.github.boziroland.services.ILeagueService;
-import org.github.boziroland.services.impl.LeagueService;
+import org.github.boziroland.services.IScheduledInformationRetrieverService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ScheduledInformationRetrieverService {
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+public class ScheduledInformationRetrieverService implements IScheduledInformationRetrieverService {
 
-    private LocalTime remindTime;
+	static Logger LOGGER = LoggerFactory.getLogger(ScheduledInformationRetrieverService.class);
 
-    public void retrieve(User user, IAPIService service){
-        Runnable sender = new Runnable(){
-            public void run(){
-                service.requestInformation(user.getLeagueID(), user.getLeagueData());
-            }
-        };
-        long delay = ChronoUnit.SECONDS.between(LocalTime.now(), remindTime);
-        scheduler.schedule(sender, delay, TimeUnit.SECONDS);
-    }
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
 
-    public void setRemindTime(LocalTime remindTime) {
-        this.remindTime = remindTime;
-    }
+	@Override
+	public void retrieve(User user, IAPIService service, long delay) {
 
-    public LocalTime getRemindTime() {
-        return remindTime;
-    }
+		Runnable sender = new Runnable() {
+			public void run() {
+				LOGGER.info("Getting data for " + user.getName() + " from service " + service.toString());
+				service.requestInformation(user);
+			}
+		};
+		scheduler.scheduleAtFixedRate(sender, Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS, delay, TimeUnit.SECONDS);
+	}
 }

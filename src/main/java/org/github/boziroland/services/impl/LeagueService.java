@@ -6,94 +6,119 @@ import net.rithms.riot.api.RiotApiException;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import net.rithms.riot.constant.Platform;
-import org.github.boziroland.DAL.ILeagueDAO;
-import org.github.boziroland.entities.GeneralAPIData;
 import org.github.boziroland.entities.LeagueData;
+import org.github.boziroland.entities.User;
+import org.github.boziroland.entities.apiEntities.MyMatchReference;
+import org.github.boziroland.entities.apiEntities.MySummoner;
+import org.github.boziroland.repositories.ILeagueRepository;
+import org.github.boziroland.repositories.apiEntityRepositories.IMyMatchReferenceRepository;
+import org.github.boziroland.repositories.apiEntityRepositories.IMySummonerRepository;
 import org.github.boziroland.services.ILeagueService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class LeagueService implements ILeagueService {
 
-    ILeagueDAO dao;
-    RiotApi api;
+	Logger LOGGER = LoggerFactory.getLogger(LeagueService.class);
 
-    public LeagueService() throws IOException{
-        init();
-    }
+	@Autowired
+	ILeagueRepository leagueRepository;
 
-    public LeagueService(ILeagueDAO dao) throws IOException {
-        this.dao = dao;
-        init();
-    }
+	@Autowired
+	IMySummonerRepository summonerRepository;
 
-    void init() throws IOException {
-        Optional<String> key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
+	@Autowired
+	IMyMatchReferenceRepository matchReferenceRepository;
 
-        if(key.isPresent()){
-            ApiConfig config = new ApiConfig().setKey(key.get());
-            api = new RiotApi(config);
-        }
-    }
+	RiotApi api;
 
-    @Override
-    public void createOrUpdate(Summoner player, List<MatchReference> lastTenMatches) {
-        dao.createOrUpdate(new LeagueData(player, lastTenMatches));
-    }
+	public LeagueService() throws IOException {
+		init();
+	}
 
-    @Override
-    public List<LeagueData> findByUsername(String name) {
-        return dao.findByUsername(name);
-    }
+	void init() throws IOException {
+		Optional<String> key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
 
-    @Override
-    public Optional<LeagueData> findByUserID(String id) {
-        return dao.findByUserId(id);
-    }
+		if (key.isPresent()) {
+			ApiConfig config = new ApiConfig().setKey(key.get());
+			api = new RiotApi(config);
+		}
+	}
 
-    @Override
-    public List<LeagueData> list() {
-        return dao.list();
-    }
+	@Override
+	public LeagueData createOrUpdate(Summoner player, List<MatchReference> lastTenMatches, String username) {
 
-    @Override
-    public void deleteByName(String name) {
-        dao.deleteByName(name);
-    }
+			MySummoner myPlayer = summonerRepository.save(new MySummoner(player));
 
-    @Override
-    public void deleteById(String id) {
-        dao.deleteById(id);
-    }
+			List<MyMatchReference> myLastTenMatches = new ArrayList<>();
 
-    @Override
-    public void requestInformation(String accountId, GeneralAPIData location) {
+			for (var match : lastTenMatches)
+				myLastTenMatches.add(matchReferenceRepository.save(new MyMatchReference(match)));
 
-        try {
+			return leagueRepository.save(new LeagueData(myPlayer, myLastTenMatches, username));
+	}
 
-            Summoner summoner = api.getSummonerByName(Platform.EUNE, accountId);
-            List<MatchReference> matchList = api.getMatchListByAccountId(Platform.EUNE, summoner.getAccountId()).getMatches();
+	@Override
+	public Optional<LeagueData> findById(int id) {
+		return leagueRepository.findById(id);
+	}
 
-            ((LeagueData)location).setPlayer(summoner);
-            ((LeagueData)location).setLastTenMatches(matchList.subList(0, 10));
-            createOrUpdate(summoner, matchList.subList(0, 10));
-        } catch (RiotApiException e) {
-            e.printStackTrace();
-        }
-    }
+	@Override
+	public List<LeagueData> list() {
+		return leagueRepository.findAll();
+	}
 
-    @Override
-    public Optional<String> readKeyFromFile(String file) throws IOException {
-        List<String> lines;
-        lines = Files.readAllLines(Paths.get(file));
-        return Optional.of(lines.get(0));
-    }
+	@Override
+	public void deleteById(int id) {
+		leagueRepository.deleteById(id);
+	}
 
-    public ILeagueDAO getDao() {
-        return dao;
-    }
+	@Override
+	public void requestInformation(User user) {
+		String leagueAccountId = user.getLeagueID();
+		if (leagueAccountId != null) {
+			Platform platform = getRegion(leagueAccountId);
+			String riotName = leagueAccountId.substring(0, leagueAccountId.lastIndexOf("-"));
+
+			LOGGER.info("Getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
+
+			try {
+
+				Summoner summoner = api.getSummonerByName(platform, riotName);
+				List<MatchReference> matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
+
+				//var savedData = createOrUpdate(summoner, matchList.subList(0, 10), leagueAccountId);
+
+				user.setLeagueData(new LeagueData(summoner, matchList.subList(0, 10), leagueAccountId));
+			} catch (RiotApiException e) {
+				e.printStackTrace();
+			}
+		} else {
+			user.setLeagueData(new LeagueData());
+		}
+	}
+
+	private Platform getRegion(String accountId) {
+		String region = accountId.substring(accountId.lastIndexOf("-") + 1);
+
+		return switch (region) {
+			case "EUNE" -> Platform.EUNE;
+			case "EUW" -> Platform.EUW;
+			case "BR" -> Platform.BR;
+			case "JP" -> Platform.JP;
+			case "KR" -> Platform.KR;
+			case "LAN" -> Platform.LAN;
+			case "LAS" -> Platform.LAS;
+			case "OCE" -> Platform.OCE;
+			case "NA" -> Platform.NA;
+			case "TR" -> Platform.TR;
+			default -> Platform.RU;
+		};
+	}
 }

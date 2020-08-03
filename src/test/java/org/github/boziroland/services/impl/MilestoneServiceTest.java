@@ -1,57 +1,49 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.DAL.impl.MilestoneInMemory;
-import org.github.boziroland.entities.Milestone;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.github.boziroland.entities.User;
+import org.github.boziroland.services.IMilestoneService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.annotation.DirtiesContext;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+@DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ComponentScan("org.github.boziroland")
 class MilestoneServiceTest {
 
-    @Test
-    void testMilestoneNotDone(){
-        MilestoneService service = new MilestoneService(new MilestoneInMemory());
-        Milestone milestone = Mockito.mock(Milestone.class);
+	@Autowired
+	IMilestoneService milestoneService;
 
-        when(milestone.getRequirement()).thenReturn(100);
-        when(milestone.isDoneAlready()).thenReturn(false);
+	@Test
+	void testMilestoneNotDone() {
+		User user = Mockito.mock(User.class);
+		Map<String, MutableInt> userMilestones = new HashMap<>();
+		userMilestones.put("100-as szint", new MutableInt(10));
 
-        assertFalse(service.checkAchievement(50, milestone));
-    }
+		when(user.getMilestoneNameUserPointMap()).thenReturn(userMilestones);
 
-    @Test
-    void testMilestoneDone(){
-        MilestoneService service = new MilestoneService(new MilestoneInMemory());
-        Milestone milestone = Mockito.mock(Milestone.class);
+		assertEquals(0, milestoneService.checkAchievements(user).size());
+	}
 
-        when(milestone.getRequirement()).thenReturn(100);
-        when(milestone.isDoneAlready()).thenReturn(false);
+	@Test
+	void testMilestoneDone() {
+		User user = Mockito.mock(User.class);
+		Map<String, MutableInt> userMilestones = new HashMap<>();
+		userMilestones.put("100-as szint", new MutableInt(100));
 
-        assertTrue(service.checkAchievement(100, milestone));
-    }
+		when(user.getMilestoneNameUserPointMap()).thenReturn(userMilestones);
 
-    @Test
-    void testMilestoneDoneButWasAlreadyDone(){
-        MilestoneService service = new MilestoneService(new MilestoneInMemory());
-        Milestone milestone = Mockito.mock(Milestone.class);
-
-        when(milestone.getRequirement()).thenReturn(100);
-        when(milestone.isDoneAlready()).thenReturn(true);
-
-        assertFalse(service.checkAchievement(100, milestone));
-    }
-
-    @Test
-    void testMilestoneNotDoneAlthoughItWasAlreadyDone(){
-        MilestoneService service = new MilestoneService(new MilestoneInMemory());
-        Milestone milestone = Mockito.mock(Milestone.class);
-
-        when(milestone.getRequirement()).thenReturn(100);
-        when(milestone.isDoneAlready()).thenReturn(true);
-
-        assertFalse(service.checkAchievement(10, milestone));
-    }
+		assertEquals(2, milestoneService.checkAchievements(user).size());
+	}
 
 }

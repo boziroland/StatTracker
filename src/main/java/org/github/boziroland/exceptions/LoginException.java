@@ -1,12 +1,12 @@
 package org.github.boziroland.exceptions;
 
-public class LoginException extends RuntimeException{
+public class LoginException extends RuntimeException {
 
-    public LoginException(){
-        super();
-    }
+	public LoginException() {
+		super();
+	}
 
-    public LoginException(String message){
-        super(message);
-    }
+	public LoginException(String message) {
+		super(message);
+	}
 }

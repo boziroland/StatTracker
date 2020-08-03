@@ -1,60 +1,69 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.DAL.ICommentDAO;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.User;
+import org.github.boziroland.repositories.ICommentRepository;
 import org.github.boziroland.services.ICommentService;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public class CommentService implements ICommentService {
 
-    ICommentDAO dao;
+	@Autowired
+	ICommentRepository commentRepository;
 
-    public CommentService(ICommentDAO dao) {
-        this.dao = dao;
-    }
+	public CommentService() {
+	}
 
-    @Override
-    public void create(User sender, String message, String ID) {
-        dao.create(new Comment(sender, message, ID));
-    }
+	@Override
+	public Comment create(Comment comment) {
+		return commentRepository.save(comment);
+	}
 
-    @Override
-    public Optional<Comment> findById(String id) {
-        return dao.findById(id);
-    }
+	@Override
+	public Comment create(User sender, User receiver, String message, int ID, LocalDateTime time) {
+		return create(new Comment(sender, receiver, message, time));
+	}
 
-    @Override
-    public List<Comment> findByUser(User user) {
-        return dao.findByUser(user);
-    }
+	@Override
+	public Optional<Comment> findById(int id) {
+		return commentRepository.findById(id);
+	}
 
-    @Override
-    public List<Comment> list() {
-        return dao.list();
-    }
+	@Override
+	public List<Comment> findByUser(User user) {
+		return commentRepository.findBySender(user);
+	}
 
-    @Override
-    public void deleteById(String id) {
-        dao.deleteById(id);
-    }
+	@Override
+	public List<Comment> list() {
+		return commentRepository.findAll();
+	}
 
-    @Override
-    public void deleteByUser(User user) {
-        dao.deleteByUser(user);
-    }
+	@Override
+	public void deleteById(int id) {
+		commentRepository.deleteById(id);
+	}
 
-    @Override
-    public void delete(User sender, String message, String ID) {
-        dao.delete(new Comment(sender, message, ID));
-    }
+	@Override
+	public void deleteByUser(User user) {
+		commentRepository.deleteBySender(user);
+	}
 
-    @Override
-    public void getProfileComments(User user) {
-        //TODO
-    }
+	@Override
+	public void delete(int ID) {
+		commentRepository.deleteById(ID);
+	}
 
+	@Override
+	public void sendComment(User from, User to, String message) {
+		Comment comment = new Comment(from, to, message, LocalDateTime.now());
+		create(comment);
+		from.getCommentsSent().add(comment);
+		to.getCommentsOnProfile().add(comment);
+	}
 
 }

@@ -2,17 +2,20 @@ package org.github.boziroland.services.impl;
 
 import org.github.boziroland.services.ISecurityService;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class SecurityService implements ISecurityService {
 
-    private final String salt;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    public SecurityService() {
-        salt = BCrypt.gensalt();
-    }
+	@Override
+	public String hashPassword(String password) {
+		return passwordEncoder.encode(password);
+	}
 
-    @Override
-    public String hashPassword(String password) {
-        return BCrypt.hashpw(password, salt);
-    }
+	public boolean checkPassword(String password, String hashedPassword){
+		return passwordEncoder.matches(password, hashedPassword);
+	}
 }

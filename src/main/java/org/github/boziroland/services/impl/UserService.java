@@ -1,188 +1,228 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.DAL.IUserDAO;
-import org.github.boziroland.DAL.impl.MilestoneInMemory;
-import org.github.boziroland.entities.*;
+import jdk.jshell.spi.ExecutionControl;
+import lombok.SneakyThrows;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.github.boziroland.Constants;
+import org.github.boziroland.entities.Comment;
+import org.github.boziroland.entities.Milestone;
+import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
+import org.github.boziroland.repositories.IUserRepository;
 import org.github.boziroland.services.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-public class UserService implements IUserService, Runnable {
+public class UserService implements IUserService {
 
-    IUserDAO userDao;
+	Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-    IMilestoneService milestoneService = new MilestoneService(new MilestoneInMemory());
-    ISecurityService securityService = new SecurityService();
+	@Autowired
+	IUserRepository userRepository;
 
-    ILeagueService leagueService;
+	@Autowired
+	IMilestoneService milestoneService;
 
-    ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
+	@Autowired
+	ISecurityService securityService;
 
-    Map<User, LocalTime> userQueryTimeMap = new HashMap<>();
+	@Autowired
+	ILeagueService leagueService;
 
-    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	@Autowired
+	IOverwatchService overwatchService;
 
-    public UserService(IUserDAO userDao) {
-        scheduleHourlyQuery();
-        this.userDao = userDao;
-    }
+	ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
 
-    public UserService(IUserDAO userDao, ILeagueService leagueService) {//TODO inject other api service too
-        scheduleHourlyQuery();
-        this.userDao = userDao;
-        this.leagueService = leagueService;
-    }
+	public UserService() {
+	}
 
-    @Override
-    public void create(User user) {
-        userDao.createOrUpdate(user);
-        int secondsInADay = 24 * 60 * 60;
-        userQueryTimeMap.put(user, LocalTime.ofSecondOfDay(new Random().nextInt(secondsInADay)));
-    }
+	@Override
+	public User create(User user) {
 
-    @Override
-    public void update(User user) {
-        userDao.createOrUpdate(user);
-    }
+		requestInformation(user, leagueService);
+		requestInformation(user, overwatchService);
 
-    @Override
-    public void create(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) {
-        create(new User(id, name, password, email, milestones, comments, leagueName, gameName2));
-    }
+		User savedUser = userRepository.save(user);
 
-    @Override
-    public void update(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) {
-        update(new User(id, name, password, email, milestones, comments, leagueName, gameName2));
-    }
+		addMilestones(savedUser);
 
-    @Override
-    public Optional<User> findById(int ID) {
-        return userDao.findById(ID);
-    }
+		addUserToScheduler(savedUser);
 
-    @Override
-    public Optional<User> findByEmail(String email) {
-        if(isValidEmail(email))
-            return userDao.findByEmail(email);
+		return savedUser;
+	}
 
-        return Optional.empty();
-    }
+	@Override
+	public User create(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
+		return create(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+	}
 
-    @Override
-    public List<User> findByName(String name) {
-        return userDao.findByName(name);
-    }
+	@Override
+	public void update(User user) {
+		var foundUser = userRepository.findById(user.getId());
 
-    @Override
-    public List<User> list() {
-        return userDao.list();
-    }
+		if (foundUser.isPresent())
+			userRepository.deleteById(user.getId());
 
-    @Override
-    public void delete(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueName, String gameName2) {
-        userDao.delete(new User(id, name, password, email, milestones, comments, leagueName, gameName2));
-    }
+		userRepository.save(user);
+	}
 
-    @Override
-    public void requestInformation(int id, IAPIService IAPIService, GeneralAPIData location) {
-        var user = userDao.findById(id);
+	@Override
+	public void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
+		update(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+	}
 
-        if(user.isPresent()){
-            IAPIService.requestInformation(user.get().getLeagueID(), location);
+	@Override
+	public Optional<User> findById(int ID) {
+		return userRepository.findById(ID);
+	}
 
-            //user.get().setLeagueData(); TODO
+	@Override
+	public Optional<User> findByEmail(String email) {
+		if (isValidEmail(email))
+			return Optional.ofNullable(userRepository.findByEmail(email));
 
-        }else{
-            throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
-        }
-    }
+		return Optional.empty();
+	}
 
-    @Override
-    public void sendEmail(int id, String message) {
-        var user = userDao.findById(id);
+	@Override
+	public List<User> findByName(String name) {
+		return userRepository.findByName(name);
+	}
 
-        if(user.isPresent()){
-            var userEmail = user.get().getEmail();
-                //TODO send email
-        }else{
-            throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
-        }
-    }
+	@Override
+	public List<User> list() {
+		return userRepository.findAll();
+	}
 
-    @Override
-    public Optional<User> register(int id, String name, String password, String email, MilestoneHolder milestones, List<Comment> comments, String leagueID, String gameName2) throws RegistrationException {
-        if(userDao.findByEmail(email).isPresent()){
-            throw new RegistrationException("Email cím foglalt!");
-        }else{
-            if(!password.matches("^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$")){
-                throw new RegistrationException("Túl gyenge jelszó! A jelszónak tartalmaznia kell legalább 2 nagybetűt, 3 kisbetűt, 2 számot, 1 speciális karaktert és legalább 8 hosszúnak kell lennie!");
-            }else if(!isValidEmail(email)){
-                throw new RegistrationException("Rossz email!");
-            }else{
-                Optional<User> user = Optional.of(new User(id, name, securityService.hashPassword(password), email, milestones, comments, leagueID, gameName2));
-                create(user.get());
-                return user;
-            }
-        }
-    }
+	@Override
+	public void delete(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
+		userRepository.delete(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+	}
 
-    @Override
-    public Optional<User> login(String email, String password) {
-        String hashedPassword = securityService.hashPassword(password);
-        Optional<User> user = findByEmail(email);
+	@Override
+	public void delete(User user) {
+		userRepository.deleteById(user.getId());
+	}
 
-        if(user.isPresent())
-            if (user.get().getPassword().equals(hashedPassword))
-                return user;
+	@Override
+	public void deleteById(int id) {
+		userRepository.deleteById(id);
+	}
 
-        return Optional.empty();
-    }
+	@Override
+	public void requestInformation(int id, IAPIService apiService) {
+		var user = findById(id);
 
-    @Override
-    public void checkMilestones(int id) {
-        var user = userDao.findById(id);
+		if (user.isPresent()) {
+			apiService.requestInformation(user.get());
+			checkMilestones(user.get());
+		} else {
+			throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
+		}
+	}
 
-        var milestones = user.get().getMilestones();
+	@Override
+	public void requestInformation(User user, IAPIService apiService) {
+		apiService.requestInformation(user);
+	}
 
-        for(var m : milestones.getLeagueMilestones().entrySet())
-            if(milestoneService.checkAchievement(m.getValue(), m.getKey()))
-                sendEmail(id, "Gratulálok! A(z) " + m.getKey().getName() + " nevű mérföldkő követelményét teljesítetted!");
-    }
+	@SneakyThrows
+	@Override
+	public void sendEmail(User user, String message) {
 
-    @Override
-    public void run() {
+		var userEmail = user.getEmail();
+		throw new ExecutionControl.NotImplementedException("should have sent an email");
 
-    }
+	}
 
-    void scheduleHourlyQuery(){
-        Runnable command = new Runnable() {
-            @Override
-            public void run() {
-                updateUsersToQuery();
-                scheduleHourlyQuery();
-            }
-        };
-        System.out.println(LocalTime.now().toString());
-        long delay = ChronoUnit.SECONDS.between(LocalTime.now(), LocalTime.now().plusHours(1));
-        scheduler.schedule(command, delay, TimeUnit.SECONDS);
-    }
+	@Override
+	public Optional<User> register(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueID, String overwatchName) {
+		if (findByEmail(email).isPresent()) {
+			throw new RegistrationException("Email cím foglalt!");
+		} else {
+			if (!isValidUsername(name)) {
+				throw new RegistrationException("A felhasználónévnek legalább 5 karakter hosszúnak kell lennie!");
+			} else if (!isValidEmail(email)) {
+				throw new RegistrationException("Rossz email!");
+			} else if (isValidPassword(password)) {
+				Optional<User> user = Optional.of(new User(name, securityService.hashPassword(password), email, commentsOnProfile, comments, leagueID, overwatchName));
+				return Optional.of(create(user.get()));
+			}
+		}
+		return Optional.empty();
+	}
 
-    void updateUsersToQuery(){
-        for(var entry : userQueryTimeMap.entrySet()){
-            LocalTime queryTime = entry.getValue();
-            sirs.setRemindTime(queryTime);
-            sirs.retrieve(entry.getKey(), leagueService);
-        }
+	@Override
+	public Optional<User> register(String name, String password, String email, String leagueName, String overwatchName) {
+		return register(name, password, email, List.of(), List.of(), leagueName, overwatchName);
+	}
 
-    }
+	@Override
+	public Optional<User> register(User user) {
+		user.setPassword(securityService.hashPassword(user.getPassword()));
+		return register(user.getName(), user.getPassword(), user.getEmail(), user.getLeagueID(), user.getOverwatchID());
+	}
 
-    public void setLeagueService(ILeagueService leagueService) {
-        this.leagueService = leagueService;
-    }
+	@Override
+	public Optional<User> login(String email, String password) {
+		Optional<User> user = findByEmail(email);
+
+		if (user.isPresent())
+			if (securityService.checkPassword(password, user.get().getPassword()))
+				return user;
+
+		return Optional.empty();
+	}
+
+	@Override
+	public void checkMilestones(User user) {
+		var completedMilestones = milestoneService.checkAchievements(user);
+
+		for(var m : completedMilestones){
+			sendEmail(user, "Gratulálok!\n\n Teljesítetted a(z) " + m + " nevű teljesítmény követelményeit!");
+			user.getMilestoneNameUserPointMap().remove(m);
+		}
+	}
+
+	private void addUserToScheduler(User user) {
+		Random random = new Random();
+		int leagueDelay = random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS));
+		int owDelay = random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS));
+		sirs.retrieve(user, leagueService, leagueDelay);
+		sirs.retrieve(user, overwatchService, owDelay);
+		//TODO possibly átírni h napi 1x updateljen csak
+		LOGGER.info("Added user " + user.getName() + " to for scheduling, League in " + LocalTime.ofSecondOfDay(leagueDelay) + ", OW in " + LocalTime.ofSecondOfDay(owDelay));
+	}
+
+	public void addMilestones(User user) {
+		List<Milestone> milestones = Constants.getMilestonesAsList();
+
+		Map<String, MutableInt> idPointMap = new HashMap<>();
+
+		if(user.getLeagueData().getPlayer() != null) {
+			if (user.getLeagueData().getUsername() != null) {//TODO
+				if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
+					idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
+				// ...
+			}
+		}
+
+			if (user.getOverwatchData() != null) {
+				if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getCompetitiveDamageRank().getValue())
+					idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getCompetitiveDamageRank());
+				// ...
+		}
+
+		user.setMilestoneNameUserPointMap(idPointMap);
+
+	}
+
+	public ScheduledInformationRetrieverService getSirs() {
+		return sirs;
+	}
 }

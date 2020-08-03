@@ -1,51 +1,80 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.DAL.IMilestoneDAO;
+import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Milestone;
+import org.github.boziroland.entities.User;
+import org.github.boziroland.repositories.IMilestoneRepository;
 import org.github.boziroland.services.IMilestoneService;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.Optional;
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 public class MilestoneService implements IMilestoneService {
 
-    IMilestoneDAO dao;
+	@Autowired
+	IMilestoneRepository milestoneRepository;
 
-    public MilestoneService(IMilestoneDAO dao) {
-        this.dao = dao;
-    }
+	public MilestoneService() {}
 
-    @Override
-    public void createOrUpdate(String name, String description, int requirement, Milestone.Game game) {
-        dao.createOrUpdate(new Milestone(name, description, requirement, game));
-    }
+	@PostConstruct
+	void init(){
+		/*
+			... achievement létrehozás/beolvasás
+		 */
 
-    @Override
-    public Optional<Milestone> findByName(String name) {
-        return dao.findByName(name);
-    }
+		List<Milestone> milestones = new ArrayList<>();
 
-    @Override
-    public List<Milestone> list() {
-        return dao.list();
-    }
+		milestones.add(createOrUpdate("100-as szint", "Érd el a 100-as szintet", 100, Milestone.Game.LEAGUE));
+		milestones.add(createOrUpdate("100-as szint", "Érd el a 100-as szintet", 100, Milestone.Game.OVERWATCH));
+		// ...
 
-    @Override
-    public void deleteByName(String name) {
-        dao.deleteByName(name);
-    }
+		Constants.setMilestones(Collections.unmodifiableList(milestones));
+	}
 
-    @Override
-    public void delete(String name, String description, int requirement, Milestone.Game game) {
-        dao.delete(new Milestone(name, description, requirement, game));
-    }
+	@Override
+	public Milestone createOrUpdate(String name, String description, Integer requirement, Milestone.Game game) {
+		return milestoneRepository.save(new Milestone(name, description, requirement, game));
+	}
 
-    public boolean checkAchievement(int userScore, Milestone m){
-        if(userScore >= m.getRequirement() && !m.isDoneAlready()) {
-            m.setDoneAlready(true);
-            return true;
-        }
-        return false;
-    }
+	@Override
+	public Milestone createOrUpdate(Milestone m) {
+		return createOrUpdate(m.getName(), m.getDescription(), m.getRequirement(), m.getGame());
+	}
 
+	@Override
+	public Optional<Milestone> findByName(String name) {
+		return milestoneRepository.findById(name);
+	}
+
+	@Override
+	public List<Milestone> list() {
+		return milestoneRepository.findAll();
+	}
+
+	@Override
+	public void deleteByName(String name) {
+		milestoneRepository.deleteById(name);
+	}
+
+	@Override
+	public void delete(String name, String description, Integer requirement, Milestone.Game game) {
+		milestoneRepository.delete(new Milestone(name, description, requirement, game));
+	}
+
+	@Override
+	public List<String> checkAchievements(User user) {
+		List<String> ret = new ArrayList<>();
+
+		var userMilestones = user.getMilestoneNameUserPointMap();
+
+		for(var entry : Constants.getMilestonesAsSet()){
+			if(userMilestones.containsKey(entry.getName())){
+				if(userMilestones.get(entry.getName()).getValue() >= entry.getRequirement()){
+					ret.add(entry.getName());
+				}
+			}
+		}
+		return ret;
+	}
 }

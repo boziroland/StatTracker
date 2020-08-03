@@ -1,25 +1,38 @@
 package org.github.boziroland.services.impl;
 
 import TestUtils.TestUtils;
-import org.github.boziroland.DAL.impl.LeagueDataInMemory;
-import org.github.boziroland.DAL.impl.UserInMemory;
+import org.github.boziroland.services.ILeagueService;
+import org.github.boziroland.services.IMilestoneService;
+import org.github.boziroland.services.IUserService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.annotation.DirtiesContext;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+@DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ComponentScan("org.github.boziroland")
 class LeagueServiceTest {
 
-    @Test
-    void testRetrieveLeagueData() throws IOException {
-        UserService service = new UserService(new UserInMemory());
-        var user = TestUtils.registerAndLoginUserWhoHasLeagueName(service);
+	@Autowired
+	IUserService userService;
 
-        LeagueService leagueService = new LeagueService(new LeagueDataInMemory());
+	@Autowired
+	ILeagueService leagueService;
 
-        user.ifPresent(value -> service.requestInformation(value.getId(), leagueService, value.getLeagueData()));
+	@Autowired
+	IMilestoneService milestoneService;
 
-        assertEquals(user.get().getLeagueData().getPlayer().getName(), user.get().getLeagueID());
-    }
+	@Test
+	void testRetrieveLeagueData(){
+		//TODO TESZTEK
+		var user = TestUtils.registerAndLoginUserWhoHasLeagueName(userService);
+
+		user.ifPresent(value -> userService.requestInformation(value, leagueService));
+
+		assertEquals(user.get().getLeagueData().getPlayer().getName(), "meshons");
+	}
 }

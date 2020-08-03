@@ -1,65 +1,40 @@
 package org.github.boziroland.entities;
 
-import java.util.Objects;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
+@Data
+@NoArgsConstructor
 public class Milestone {
 
-    public enum Game{
-        LEAGUE, OTHERGAME
-    }
+	public enum Game {
+		LEAGUE, OVERWATCH
+	}
 
-    private final String name;
-    private final String description;
-    private final int requirement;
-    private final Game game;
-    private boolean doneAlready;
+	@Id
+	@GeneratedValue
+	private Integer id;
 
-    public Milestone(String name, String description, int requirement, Game game) {
-        this.name = name;
-        this.description = description;
-        this.requirement = requirement;
-        this.game = game;
-        this.doneAlready = false;
-    }
+	private String name;
 
-    public String getName() {
-        return name;
-    }
+	private String description;
 
-    public String getDescription() {
-        return description;
-    }
+	private Integer requirement;
 
-    public int getRequirement() {
-        return requirement;
-    }
+	@Enumerated
+	private Game game;
 
-    public Game getGame() {
-        return game;
-    }
-
-    public boolean isDoneAlready() {
-        return doneAlready;
-    }
-
-    public void setDoneAlready(boolean doneAlready) {
-        this.doneAlready = doneAlready;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Milestone milestone = (Milestone) o;
-        return requirement == milestone.requirement &&
-                name.equals(milestone.name) &&
-                description.equals(milestone.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description, requirement);
-    }
-
+	public Milestone(String name, String description, int requirement, Game game) {
+		this.name = name;
+		this.description = description;
+		this.requirement = requirement;
+		this.game = game;
+	}
 }
 

@@ -1,51 +1,79 @@
 package org.github.boziroland.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
+import org.github.boziroland.entities.apiEntities.MyMatchReference;
+import org.github.boziroland.entities.apiEntities.MySummoner;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 //Ezt felhasználva: https://github.com/taycaldwell/riot-api-java
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class LeagueData extends GeneralAPIData {
 
-    private Summoner player;
-    private List<MatchReference> lastTenMatches;
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private MySummoner player;
 
-    public LeagueData() {}
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) //MERGE??
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private List<MyMatchReference> lastTenMatches;
 
-    public LeagueData(Summoner player, List<MatchReference> lastTenMatches) {
-        this.player = player;
-        this.lastTenMatches = lastTenMatches;
-    }
+	public LeagueData(String accountName) {
+		username = accountName;
+	}
 
-    public Summoner getPlayer() {
-        return player;
-    }
+	public LeagueData(Summoner player, List<MatchReference> lastTenMatches, String accountName) {
+		username = accountName;
+		setPlayer(player);
+		setLastTenMatches(lastTenMatches);
+	}
 
-    public List<MatchReference> getLastTenMatches() {
-        return lastTenMatches;
-    }
+	public LeagueData(MySummoner player, List<MyMatchReference> lastTenMatches, String accountName) {
+		username = accountName;
+		setPlayer(player);
+		this.lastTenMatches = lastTenMatches;
+	}
 
-    public void setPlayer(Summoner player) {
-        this.player = player;
-    }
+	@JsonIgnore
+	public void setPlayer(MySummoner player) {
+		this.player = player;
+	}
 
-    public void setLastTenMatches(List<MatchReference> lastTenMatches) {
-        this.lastTenMatches = lastTenMatches;
-    }
+	public void setPlayer(Summoner player) {
+		this.player = new MySummoner(player);
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LeagueData that = (LeagueData) o;
-        return player.equals(that.player) &&
-                lastTenMatches.equals(that.lastTenMatches);
-    }
+	public void setLastTenMatches(List<MatchReference> lastTenMatches) {
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(player, lastTenMatches);
-    }
+		List<MyMatchReference> myLastThenMatches = new ArrayList<>();
+		for (var match : lastTenMatches)
+			myLastThenMatches.add(new MyMatchReference(match));
+
+		this.lastTenMatches = myLastThenMatches;
+	}
+
+	@Override
+	public String toString() {
+		return "LeagueData{" +
+				"id=" + id +
+				", username='" + username + '\'' +
+				'}';
+	}
 }
