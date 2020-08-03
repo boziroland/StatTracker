@@ -26,6 +26,6 @@ public class ScheduledInformationRetrieverService implements IScheduledInformati
 				service.requestInformation(user);
 			}
 		};
-		scheduler.scheduleAtFixedRate(sender, Constants.DATA_RETRIEVE_DELAY_IN_SECONDS / 2, delay, TimeUnit.SECONDS);
+		scheduler.scheduleAtFixedRate(sender, Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS, delay, TimeUnit.SECONDS);
 	}
 }

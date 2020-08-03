@@ -129,7 +129,6 @@ public class UserService implements IUserService {
 	@Override
 	public void requestInformation(User user, IAPIService apiService) {
 		apiService.requestInformation(user);
-		//updateMilestonePoints(user);TODO
 	}
 
 	@SneakyThrows
@@ -200,33 +199,30 @@ public class UserService implements IUserService {
 		LOGGER.info("Added user " + user.getName() + " to for scheduling, League in " + LocalTime.ofSecondOfDay(leagueDelay) + ", OW in " + LocalTime.ofSecondOfDay(owDelay));
 	}
 
-	private void generateMilestoneIDs(User user) {
-
-		//TODO ezt valahogy jobban kéne
-//		generateSpecificID(user.getLeagueMilestones());
-//		generateSpecificID(user.getOverwatchMilestones());
-	}
-
-	private void generateSpecificID(Map<Milestone, Integer> milestones) {
-		for (var m : milestones.entrySet()) {
-			var milestone = milestoneService.createOrUpdate(m.getKey());
-			int value = milestones.remove(m.getKey());
-			milestones.put(milestone, value);
-		}
-	}
-
 	public void addMilestones(User user) {
 		List<Milestone> milestones = Constants.getMilestonesAsList();
 
 		Map<String, MutableInt> idPointMap = new HashMap<>();
 
-		if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
-			idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
+		if(user.getLeagueData().getPlayer() != null) {
+			if (user.getLeagueData().getUsername() != null) {//TODO
+				if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
+					idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
+				// ...
+			}
+		}
 
-		if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getCompetitiveDamageRank().getValue())
-			idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getCompetitiveDamageRank());
+			if (user.getOverwatchData() != null) {
+				if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getCompetitiveDamageRank().getValue())
+					idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getCompetitiveDamageRank());
+				// ...
+		}
 
 		user.setMilestoneNameUserPointMap(idPointMap);
 
+	}
+
+	public ScheduledInformationRetrieverService getSirs() {
+		return sirs;
 	}
 }

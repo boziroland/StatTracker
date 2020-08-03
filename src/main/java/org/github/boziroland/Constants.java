@@ -11,7 +11,8 @@ import java.util.Set;
 public class Constants {
 
 	private static final long SECONDS_IN_A_DAY = Duration.ofDays(1).getSeconds();
-	public static final long DATA_RETRIEVE_DELAY_IN_SECONDS = SECONDS_IN_A_DAY;
+	public static long DATA_RETRIEVE_DELAY_IN_SECONDS = SECONDS_IN_A_DAY;
+	public static long INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS = SECONDS_IN_A_DAY / 2;
 
 	private static Set<Milestone> milestones;
 

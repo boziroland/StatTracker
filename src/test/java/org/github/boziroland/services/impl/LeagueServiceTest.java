@@ -2,6 +2,7 @@ package org.github.boziroland.services.impl;
 
 import TestUtils.TestUtils;
 import org.github.boziroland.services.ILeagueService;
+import org.github.boziroland.services.IMilestoneService;
 import org.github.boziroland.services.IUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,15 @@ class LeagueServiceTest {
 	@Autowired
 	ILeagueService leagueService;
 
+	@Autowired
+	IMilestoneService milestoneService;
+
 	@Test
 	void testRetrieveLeagueData(){
+		//TODO TESZTEK
 		var user = TestUtils.registerAndLoginUserWhoHasLeagueName(userService);
 
-		if (user.isPresent()) {
-			userService.requestInformation(user.get().getId(), leagueService);
-		}
+		user.ifPresent(value -> userService.requestInformation(value, leagueService));
 
 		assertEquals(user.get().getLeagueData().getPlayer().getName(), "meshons");
 	}

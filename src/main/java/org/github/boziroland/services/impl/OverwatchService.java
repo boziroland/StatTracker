@@ -1,5 +1,6 @@
 package org.github.boziroland.services.impl;
 
+import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.entities.OverwatchData;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.entities.apiEntities.OWPlayer;
@@ -28,7 +29,8 @@ public class OverwatchService implements IOverwatchService {
 
 	private final RestTemplate restTemplate = new RestTemplateBuilder().build();
 
-	public OverwatchService() {}
+	public OverwatchService() {
+	}
 
 	@Override
 	public OverwatchData createOrUpdate(OWPlayer player, String username) {
@@ -54,13 +56,15 @@ public class OverwatchService implements IOverwatchService {
 	@Override
 	public void requestInformation(User user) {
 		String owAccountId = user.getOverwatchID();
-		String name = owAccountId.substring(0, owAccountId.lastIndexOf("-"));
-		String region = owAccountId.substring(name.length());
+			LOGGER.info("Trying to get Overwatch information for: " + owAccountId + " (" + user.getName() + ")");
+		if (owAccountId != null) {
+			String name = owAccountId.substring(0, owAccountId.lastIndexOf("-"));
+			String region = owAccountId.substring(owAccountId.lastIndexOf("-") + 1);
 
-		LOGGER.info("Getting Overwatch information for: " + owAccountId + " (" + user.getName() + ")");
+			LOGGER.info("Getting Overwatch information for: " + owAccountId + " (" + user.getName() + ")");
 
-		ResponseEntity<OWPlayer> response = restTemplate.getForEntity("http://owapi.io/profile/pc/" + region + "/" + owAccountId, OWPlayer.class);
-		var savedData = createOrUpdate(response.getBody(), owAccountId);
-		user.setOverwatchData(savedData);
+			ResponseEntity<OWPlayer> response = restTemplate.getForEntity("http://owapi.io/profile/pc/" + region + "/" + name, OWPlayer.class);
+			user.setOverwatchData(new OverwatchData(response.getBody(), owAccountId));
+		}
 	}
 }

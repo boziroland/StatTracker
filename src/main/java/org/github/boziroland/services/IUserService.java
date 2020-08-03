@@ -210,7 +210,7 @@ public interface IUserService {
 	 *  - Contains at least 1 uppercase letter
 	 *  - Contains at least 1 lowercase letter
 	 *  - Contains at least 1 digit
-	 *  - Contains 0 whitespace characters
+	 *  - Contains no whitespace characters
 	 *
 	 * @param password The password to check
 	 * @return True if the password is valid, throws an exception with the problems with the password otherwise

@@ -32,13 +32,13 @@ public class User {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Comment> commentsSent = new ArrayList<>();
 
-	@OneToOne(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.DETACH})
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
-	private LeagueData leagueData = new LeagueData();
+	private LeagueData leagueData;
 
-	@OneToOne(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.DETACH})
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
-	private OverwatchData overwatchData = new OverwatchData();
+	private OverwatchData overwatchData;
 
 	public User(String name, String password, String email, String leagueID, String gameName2) {
 		this.name = name;
@@ -57,15 +57,19 @@ public class User {
 		this.commentsOnProfile = commentsOnProfile;
 		this.commentsSent = commentsSent;
 
-		leagueData = new LeagueData();
-		leagueData.setUsername(leagueID);
+		if(leagueID != null) {
+			leagueData = new LeagueData();
+			leagueData.setUsername(leagueID);
+		}
 
-		overwatchData = new OverwatchData();
-		overwatchData.setUsername(overwatchID);
+		if (overwatchID != null) {
+			overwatchData = new OverwatchData();
+			overwatchData.setUsername(overwatchID);
+		}
 	}
 
 	public String getLeagueID() {
-		return leagueData.getUsername();
+		return leagueData == null ? null : leagueData.getUsername();
 	}
 
 	public void setLeagueID(String leagueID) {
@@ -73,7 +77,7 @@ public class User {
 	}
 
 	public String getOverwatchID() {
-		return overwatchData.getUsername();
+		return overwatchData == null ? null : overwatchData.getUsername();
 	}
 
 	public void setOverwatchID(String overwatchID) {

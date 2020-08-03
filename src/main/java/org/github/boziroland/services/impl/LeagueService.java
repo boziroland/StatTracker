@@ -54,14 +54,14 @@ public class LeagueService implements ILeagueService {
 	@Override
 	public LeagueData createOrUpdate(Summoner player, List<MatchReference> lastTenMatches, String username) {
 
-		MySummoner myPlayer = summonerRepository.save(new MySummoner(player));
+			MySummoner myPlayer = summonerRepository.save(new MySummoner(player));
 
-		List<MyMatchReference> myLastTenMatches = new ArrayList<>();
+			List<MyMatchReference> myLastTenMatches = new ArrayList<>();
 
-		for(var match : lastTenMatches)
-			myLastTenMatches.add(matchReferenceRepository.save(new MyMatchReference(match)));
+			for (var match : lastTenMatches)
+				myLastTenMatches.add(matchReferenceRepository.save(new MyMatchReference(match)));
 
-		return leagueRepository.save(new LeagueData(myPlayer, myLastTenMatches, username));
+			return leagueRepository.save(new LeagueData(myPlayer, myLastTenMatches, username));
 	}
 
 	@Override
@@ -82,21 +82,25 @@ public class LeagueService implements ILeagueService {
 	@Override
 	public void requestInformation(User user) {
 		String leagueAccountId = user.getLeagueID();
-		Platform platform = getRegion(leagueAccountId);
-		String riotName = leagueAccountId.substring(0, leagueAccountId.lastIndexOf("-"));
+		if (leagueAccountId != null) {
+			Platform platform = getRegion(leagueAccountId);
+			String riotName = leagueAccountId.substring(0, leagueAccountId.lastIndexOf("-"));
 
-		LOGGER.info("Getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
+			LOGGER.info("Getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
 
-		try {
+			try {
 
-			Summoner summoner = api.getSummonerByName(platform, riotName);
-			List<MatchReference> matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
+				Summoner summoner = api.getSummonerByName(platform, riotName);
+				List<MatchReference> matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
 
-			var savedData = createOrUpdate(summoner, matchList.subList(0, 10), leagueAccountId);
+				//var savedData = createOrUpdate(summoner, matchList.subList(0, 10), leagueAccountId);
 
-			user.setLeagueData(savedData);
-		} catch (RiotApiException e) {
-			e.printStackTrace();
+				user.setLeagueData(new LeagueData(summoner, matchList.subList(0, 10), leagueAccountId));
+			} catch (RiotApiException e) {
+				e.printStackTrace();
+			}
+		} else {
+			user.setLeagueData(new LeagueData());
 		}
 	}
 

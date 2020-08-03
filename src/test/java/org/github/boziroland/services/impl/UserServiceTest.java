@@ -2,6 +2,8 @@ package org.github.boziroland.services.impl;
 
 import TestUtils.TestUtils;
 import jdk.jshell.spi.ExecutionControl;
+import org.awaitility.proxy.AwaitilityClassProxy;
+import org.github.boziroland.Constants;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.services.ILeagueService;
@@ -42,7 +44,7 @@ class UserServiceTest {
 
 	@Test
 	void testSendEmailButCantBecauseNoSuchUserExists() {
-		assertThrows(RuntimeException.class, () -> userService.sendEmail(TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0),"teszt"));
+		assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.sendEmail(TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0),"teszt"));
 	}
 
 	@Test
@@ -81,8 +83,10 @@ class UserServiceTest {
 
 	//@Test
 	void testScheduling() {
-		//TODO
-		await().atLeast(4, TimeUnit.SECONDS).atMost(10, TimeUnit.SECONDS);
+		Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS = 2;
+		Constants.DATA_RETRIEVE_DELAY_IN_SECONDS = 5;
+		User user = TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0);
+		//await().atMost(10, TimeUnit.SECONDS).untilCall(AwaitilityClassProxy.to(userService));
 	}
 
 	@Test
@@ -90,14 +94,5 @@ class UserServiceTest {
 		User user = TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0);
 		userService.delete(user);
 		assertEquals(userService.list().size(), 0);
-	}
-
-	@Test
-	void testUserAchievesMilestoneRequirement() {
-		User user = TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0);
-		//for (var m : user.getLeagueMilestones().entrySet())
-		//	m.setValue(150);
-
-		assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.checkMilestones(user));
 	}
 }
