@@ -11,17 +11,19 @@ import java.util.*;
 @Entity
 @Data
 @NoArgsConstructor
+@Table(name = "RUser")
 public class User {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ID_SEQUENCE")
+	@SequenceGenerator(name="ID_SEQUENCE", sequenceName="ID_SEQUENCE", allocationSize=1)
 	private Integer id;
 	private String name;
 	private String password;
 	private String email;
 
 	@ElementCollection
-	@CollectionTable(name = "MilestoneNamePointJoinTable")
+	@CollectionTable(name = "MilestonePointJoinTable")
 	@MapKeyColumn(name = "Milestone")
 	@JsonIgnore
 	Map<String, MutableInt> milestoneNameUserPointMap = new HashMap<>();

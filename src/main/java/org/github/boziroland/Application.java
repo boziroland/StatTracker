@@ -1,6 +1,5 @@
 package org.github.boziroland;
 
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.services.*;
 import org.github.boziroland.services.impl.*;
@@ -26,15 +25,15 @@ public class Application {
 		IOverwatchService overwatchService = applicationContext.getBean(OverwatchService.class);
 		ICommentService commentService = applicationContext.getBean(CommentService.class);
 
-		userService.register("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", "meshons#EUNE", null);
-		users.add(userService.login("bonifac.solyom@gmail.com", "KAcsa11&"));
-		Thread.sleep(2000);
-		userService.register("amy99", "KAcsa11&", "amy.glassires@gmail.com", "meshons#EUNE", "Spricsma#21972-eu");
-		users.add(userService.login("amy.glassires@gmail.com", "KAcsa11&"));
-
-		User bonifac = users.get(0).get();
-		User amy = users.get(1).get();
-		commentService.sendComment(bonifac, amy, "Miss you Amy!");
+//		userService.register("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", "meshons#EUNE", null);
+//		users.add(userService.login("bonifac.solyom@gmail.com", "KAcsa11&"));
+//		Thread.sleep(2000);
+//		userService.register("amy99", "KAcsa11&", "amy.glassires@gmail.com", "meshons#EUNE", "Spricsma#21972-eu");
+//		users.add(userService.login("amy.glassires@gmail.com", "KAcsa11&"));
+//
+//		User bonifac = users.get(0).get();
+//		User amy = users.get(1).get();
+//		commentService.sendComment(bonifac, amy, "Miss you Amy!");
 
 		LOGGER.info("main end");
 	}

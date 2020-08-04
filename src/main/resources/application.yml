@@ -1,13 +1,14 @@
 spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
   datasource:
-    url: jdbc:h2:file:./data
-    username: admin
-    password: admin
-
-#    jpa:
-#      hibernate:
-#        ddl-auto: update
+    url: jdbc:oracle:thin:@192.168.99.100:49161:xe
+    username: system
+    password: oracle
+  liquibase:
+    enabled: true
+    change-log: classpath:output_dbchangelog.xml
+#  jpa:
+#    show-sql: true
+#
+#    generate-ddl: true
+#    hibernate:
+#      ddl-auto: create

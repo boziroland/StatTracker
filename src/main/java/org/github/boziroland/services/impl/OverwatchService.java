@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.entities.OverwatchData;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.entities.apiEntities.OWPlayer;
