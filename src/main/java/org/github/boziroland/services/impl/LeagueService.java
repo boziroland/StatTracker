@@ -43,6 +43,7 @@ public class LeagueService implements ILeagueService {
 	}
 
 	void init() throws IOException {
+		//TODO: Így is megoldható, de ekkor az api key be van égetve az alkamazásba, tehát nem módosítható, célszerű ezt propertybe felvenni és arra hivatkozni
 		Optional<String> key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
 
 		if (key.isPresent()) {

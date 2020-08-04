@@ -41,7 +41,7 @@ public class APIData1InMemory implements IAPIData1DAO {
 		var usersToRemove = findByName(name);
 
 		for (var user : usersToRemove) {
-			idSpecificdataMap.remove(5000);
+			idSpecificdataMap.remove(5000); //TODO: miért pont 5000?
 			//idSpecificdataMap.remove(user.getId());
 		}
 	}

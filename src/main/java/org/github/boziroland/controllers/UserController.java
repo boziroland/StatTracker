@@ -17,8 +17,10 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
 
+	//TODO: logger az osztályszintű változó szokott lenni
 	Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
+	//TODO: Mindig a legszűkebb elégséges láthatóságot adjuk meg.
 	@Autowired
 	IUserService userService;
 
@@ -30,12 +32,15 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<User> users(@PathVariable("id") Integer id) {
-		LOGGER.info("GET Request: /users/" + id);
+		LOGGER.info("GET Request: /users/" + id); //TODO: Így is lehet, de Formatted string-el egyszerübb a használat, nem kell konkatenálgatni,
+						//jelent esetben LOGGER.info("GET Request: users{}", id);
 		Optional<User> user = userService.findById(id);
 		if (user.isPresent()) {
 			LOGGER.info("User found");
 			return ResponseEntity.ok(userService.findById(id).get());
 		} else {
+			//TODO: Így is meglehet oldani a hibakezelést, de ilyenkor sok duplikáció keletkezik és nincs centralizálva. Az általános hibakezelésre esetleg jó
+			//		lehet a @ExceptionHandler mechanizmus. Ha van időd akkor esetleg érdemes utánanézni, akár csak ismeret szinten.
 			LOGGER.info("No user found");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}

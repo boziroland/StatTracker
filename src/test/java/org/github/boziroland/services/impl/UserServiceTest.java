@@ -77,6 +77,11 @@ class UserServiceTest {
 
 	@Test
 	void testLoginFailureBecauseThePasswordWasIncorrect() throws RegistrationException {
+		//TODO: Nagyon compact, de nehezen olvasható,
+		// User u = new User(x,y);
+		// service.registerUser(u)
+		// User expected = service.login(a,b);
+		// expeted not found, Itt egyértelműen látszik hogy mi volt a szándék. Teszteknél nem szükséges a fancy-zés, mindig a legegyszerübb a legtisztább.
 		User user = TestUtils.registerNDifferentUsers(userService, 1).get(0);
 		assertTrue(userService.login(user.getEmail(), "incorrectPassword").isEmpty());
 	}

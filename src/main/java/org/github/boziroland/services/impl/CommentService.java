@@ -58,10 +58,12 @@ public class CommentService implements ICommentService {
 		commentRepository.deleteById(ID);
 	}
 
+	//TODO: Mi a különbség a create és a sendComment között?
 	@Override
 	public void sendComment(User from, User to, String message) {
 		Comment comment = new Comment(from, to, message, LocalDateTime.now());
 		create(comment);
+		//TODO: Ilyekor szükség lenne a Usereket updatelni.
 		from.getCommentsSent().add(comment);
 		to.getCommentsOnProfile().add(comment);
 	}

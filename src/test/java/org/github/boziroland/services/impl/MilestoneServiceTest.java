@@ -43,6 +43,8 @@ class MilestoneServiceTest {
 
 		when(user.getMilestoneNameUserPointMap()).thenReturn(userMilestones);
 
+		//TODO: nekem itt annyira nem egyértelmű hogy miért 2 a helyes érték, változó nevekkel, a teszt nevével lehetne játszani, esetleg kommentel hogy
+		//		egyértelmű legyen, másnak is.
 		assertEquals(2, milestoneService.checkAchievements(user).size());
 	}
 

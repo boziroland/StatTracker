@@ -1,4 +1,4 @@
-package TestUtils;
+package TestUtils;//TODO: ez is nyugodtan mehet a org.github.... package alá
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.github.boziroland.entities.User;
@@ -12,6 +12,8 @@ import java.util.Optional;
 
 public class TestUtils {
 
+	//TODO: Lehetne ilyen random generált usereket használni tesztelésre, és ez egy okés megodás, de ha jól látom mindig csak 1 user van létrehozva, ilyen
+	//		esetben overkill, és csak nehezen olvashatóvá teszi a tesztet.
 	public static List<User> registerNDifferentUsers(IUserService service, int n) throws RegistrationException {
 		List<User> ret = new ArrayList<>();
 		for (int i = 0; i < n; i++) {

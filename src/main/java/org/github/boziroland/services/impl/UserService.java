@@ -66,7 +66,7 @@ public class UserService implements IUserService {
 		var foundUser = userRepository.findById(user.getId());
 
 		if (foundUser.isPresent())
-			userRepository.deleteById(user.getId());
+			userRepository.deleteById(user.getId()); //TODO: Nem szükséges törölni a user-t, Ha ismert az id- akkor a save, automatikusan update-ként működik.
 
 		userRepository.save(user);
 	}
@@ -115,6 +115,7 @@ public class UserService implements IUserService {
 	}
 
 	@Override
+	//TODO: Service ne paraméter legyen, hanem a service ismerje és tudja mikor kell használni.
 	public void requestInformation(int id, IAPIService apiService) {
 		var user = findById(id);
 

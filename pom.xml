@@ -27,6 +27,7 @@
 		</repository>
 	</repositories>
 
+    <!-- TODO: Érdemes átnézni a függőségeket néha, mert feleslegessé tudnak válni a tranzitív dependenciák miatt.	-->
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.security</groupId>

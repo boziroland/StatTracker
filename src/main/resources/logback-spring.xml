@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--TODO: +1, érdekességként: ezeket a beállításokat spring property konfigurációból is meg lehet adni. -->
 <configuration>
 
 	<property name="LOGS" value="./logs"/>
@@ -38,6 +39,8 @@
 		<appender-ref ref="Console"/>
 	</root>
 
+    <!-- TODO: az okés ha tutoriálból felhasználsz valamit, de azt célszerű a saját projectünkre szabni, vagy ha
+               Már nem kell akkor törölni. -->
 	<!-- LOG "com.baeldung*" at TRACE level -->
 	<logger name="com.baeldung" level="trace" additivity="false">
 		<appender-ref ref="RollingFile"/>

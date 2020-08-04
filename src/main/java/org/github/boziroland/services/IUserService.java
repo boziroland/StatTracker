@@ -177,6 +177,8 @@ public interface IUserService {
 	 * @param password The password of the user
 	 * @return The logged in user, wrapped in an Optional container
 	 */
+	//TODO: Ezzel a megoldással egy baj van, hogy nem derül ki, hogy miért nem kapok vissza user-t,
+	//		pl: Lejárt volna a jelszavam? esetleg hibás felhasználónév vagy jelszó? Vagy lock-olták a userem?
 	Optional<User> login(String email, String password);
 
 	/**
