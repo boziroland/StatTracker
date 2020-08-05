@@ -2,6 +2,8 @@ package org.github.boziroland.controllers;
 
 import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.entities.User;
+import org.github.boziroland.exceptions.LoginException;
+import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.services.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +20,19 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
 
-	Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
-	IUserService userService;
+	private IUserService userService;
+
+	@ExceptionHandler
+	private ModelAndView exceptionHandler(Exception e){
+		LOGGER.info(e.getMessage());
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("error");
+		modelAndView.addObject("message", e.getMessage());
+		return modelAndView;
+	}
 
 	@GetMapping
 	public List<User> users() {
@@ -30,15 +42,13 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<User> users(@PathVariable("id") Integer id) {
-		LOGGER.info("GET Request: /users/" + id);
+		LOGGER.info("GET Request: /users/{}", id);
 		Optional<User> user = userService.findById(id);
 		if (user.isPresent()) {
 			LOGGER.info("User found");
 			return ResponseEntity.ok(userService.findById(id).get());
-		} else {
-			LOGGER.info("No user found");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
+		throw new IllegalArgumentException("No user found with id " + id);
 	}
 
 	@PostMapping("/register")
@@ -46,11 +56,10 @@ public class UserController {
 		LOGGER.info("POST Request: /register");
 		Optional<User> registeredUser = userService.register(user);
 		if (registeredUser.isPresent()) {
-			LOGGER.info("User " + registeredUser.get().getName() + " registered with id: " + registeredUser.get().getId());
+			LOGGER.info("User {} registered with id: {}", registeredUser.get().getName(), registeredUser.get().getId());
 			return ResponseEntity.ok(registeredUser.get());
 		}
-		LOGGER.info("Registration failure!");
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		throw new RegistrationException("Registration failure!");
 	}
 
 	@PostMapping("/login")
@@ -58,21 +67,19 @@ public class UserController {
 		LOGGER.info("POST Request: /login");
 		Optional<User> loggedInUser = userService.login(email, password);
 		if (loggedInUser.isPresent()) {
-			LOGGER.info("User " + loggedInUser.get().getName() + " logged in");
+			LOGGER.info("User {} logged in", loggedInUser.get().getName());
 			return ResponseEntity.ok(loggedInUser.get());
 		}
-		LOGGER.info("Login failure for User with email " + email);
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		throw new LoginException("Login failure for User with email " + email);
 	}
 
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<String> removeUserById(@PathVariable("id") Integer id) {
-		LOGGER.info("DELETE Request: /delete/" + id);
+		LOGGER.info("DELETE Request: /delete/{}", id);
 		try {
 			userService.deleteById(id);
 		} catch (Exception e) {
-			LOGGER.info("Deletion failure!");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+			throw new IllegalArgumentException("Deletion failure!");
 		}
 		LOGGER.info("Deletion successful");
 		return ResponseEntity.ok("Sikeres törlés!");
@@ -80,14 +87,13 @@ public class UserController {
 
 	@GetMapping("/league/{id}")
 	public ResponseEntity<LeagueData> getLeagueData(@PathVariable("id") Integer id) {
-		LOGGER.info("GET Request: /league/" + id);
+		LOGGER.info("GET Request: /league/{}", id);
 		var foundUser = userService.findById(id);
 		if (foundUser.isPresent()) {
 			LOGGER.info("User league name found!");
 			return ResponseEntity.ok(foundUser.get().getLeagueData());
 		}
-		LOGGER.info("User league name not found!");
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+		throw new IllegalArgumentException("User league name not found!");
 	}
 
 }

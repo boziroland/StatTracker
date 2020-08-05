@@ -1,7 +1,6 @@
 package org.github.boziroland.services.impl;
 
 import org.github.boziroland.services.ISecurityService;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -15,7 +14,7 @@ public class SecurityService implements ISecurityService {
 		return passwordEncoder.encode(password);
 	}
 
-	public boolean checkPassword(String password, String hashedPassword){
+	public boolean checkPassword(String password, String hashedPassword) {
 		return passwordEncoder.matches(password, hashedPassword);
 	}
 }

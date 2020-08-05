@@ -13,7 +13,7 @@ import java.util.Optional;
 public class CommentService implements ICommentService {
 
 	@Autowired
-	ICommentRepository commentRepository;
+	private ICommentRepository commentRepository;
 
 	public CommentService() {
 	}

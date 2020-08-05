@@ -11,8 +11,7 @@ public class APIData1InMemory implements IAPIData1DAO {
 
 	@Override
 	public void createOrUpdate(OverwatchData player) {
-		idSpecificdataMap.put(5000, player);
-		//idSpecificdataMap.put(player.getId(), player);
+		idSpecificdataMap.put(player.getId(), player);
 	}
 
 	@Override
@@ -41,8 +40,7 @@ public class APIData1InMemory implements IAPIData1DAO {
 		var usersToRemove = findByName(name);
 
 		for (var user : usersToRemove) {
-			idSpecificdataMap.remove(5000);
-			//idSpecificdataMap.remove(user.getId());
+			idSpecificdataMap.remove(user.getId());
 		}
 	}
 

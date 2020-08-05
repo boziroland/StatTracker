@@ -18,13 +18,13 @@ import java.util.Optional;
 
 public class OverwatchService implements IOverwatchService {
 
-	Logger LOGGER = LoggerFactory.getLogger(OverwatchService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OverwatchService.class);
 
 	@Autowired
-	IOverwatchRepository overwatchRepository;
+	private IOverwatchRepository overwatchRepository;
 
 	@Autowired
-	IOWPlayerRepository owPlayerReposity;
+	private IOWPlayerRepository owPlayerReposity;
 
 	private final RestTemplate restTemplate = new RestTemplateBuilder().build();
 

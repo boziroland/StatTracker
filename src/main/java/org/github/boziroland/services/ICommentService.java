@@ -21,7 +21,7 @@ public interface ICommentService {
 	/**
 	 * Creates a Comment instance and passes it to
 	 * @see ICommentRepository#save(Object)
-	 *@param sender   The User who wrote the comment
+	 * @param sender   The User who wrote the comment
 	 * @param receiver The User whose comment section this comment was sent to
 	 * @param message  The text of the message
 	 * @param ID       The message's id

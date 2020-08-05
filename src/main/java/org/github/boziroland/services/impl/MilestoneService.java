@@ -13,7 +13,7 @@ import java.util.*;
 public class MilestoneService implements IMilestoneService {
 
 	@Autowired
-	IMilestoneRepository milestoneRepository;
+	private IMilestoneRepository milestoneRepository;
 
 	public MilestoneService() {}
 

@@ -115,23 +115,25 @@ public interface IUserService {
 	void deleteById(int id);
 
 	/**
-	 * Requests information about the user from the GeneralAPIDataSource.
-	 *  @param id       The id of the user whose information we want to request
-	 * @param gap      The data source service
+	 * Requests information about the user from the API service given in the parameter
+	 *
+	 * @param id  The id of the user whose information we want to request
+	 * @param service The api service
 	 */
-	void requestInformation(int id, IAPIService gap);
+	void requestInformation(int id, IAPIService service);
 
 	/**
-	 * TODO
-	 * @param user
-	 * @param gap
+	 * Requests information about the user from the API service given in the parameter
+	 *
+	 * @param user The user whose information we want to request
+	 * @param service The api service
 	 */
-	void requestInformation(User user, IAPIService gap);
+	void requestInformation(User user, IAPIService service);
 
 	/**
 	 * Send an email to the user.
 	 *
-	 * @param user The user whom we want to email
+	 * @param user    The user whom we want to email
 	 * @param message The message to send
 	 */
 	void sendEmail(User user, String message);
@@ -202,18 +204,15 @@ public interface IUserService {
 	}
 
 	/**
-	 * @throws RegistrationException
-	 *
-	 * Checks the validity of a password
-	 * By default, a password is valid if:
-	 *  - It's at least 8 characters long
-	 *  - Contains at least 1 uppercase letter
-	 *  - Contains at least 1 lowercase letter
-	 *  - Contains at least 1 digit
-	 *  - Contains no whitespace characters
-	 *
 	 * @param password The password to check
 	 * @return True if the password is valid, throws an exception with the problems with the password otherwise
+	 * @throws RegistrationException Checks the validity of a password
+	 *                               By default, a password is valid if:
+	 *                               - It's at least 8 characters long
+	 *                               - Contains at least 1 uppercase letter
+	 *                               - Contains at least 1 lowercase letter
+	 *                               - Contains at least 1 digit
+	 *                               - Contains no whitespace characters
 	 */
 	default boolean isValidPassword(String password) {
 		PasswordValidator validator = new PasswordValidator(

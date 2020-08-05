@@ -7,36 +7,42 @@ import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.Milestone;
 import org.github.boziroland.entities.User;
+import org.github.boziroland.exceptions.LoginException;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.repositories.IUserRepository;
 import org.github.boziroland.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.time.LocalTime;
 import java.util.*;
 
 public class UserService implements IUserService {
 
-	Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	@Autowired
-	IUserRepository userRepository;
+	private IUserRepository userRepository;
 
 	@Autowired
-	IMilestoneService milestoneService;
+	private IMilestoneService milestoneService;
 
 	@Autowired
-	ISecurityService securityService;
+	private ISecurityService securityService;
 
 	@Autowired
-	ILeagueService leagueService;
+	private ILeagueService leagueService;
 
 	@Autowired
-	IOverwatchService overwatchService;
+	private IOverwatchService overwatchService;
 
-	ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
+	@Autowired
+	private JavaMailSender emailSender;
+
+	private ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
 
 	public UserService() {
 	}
@@ -64,9 +70,6 @@ public class UserService implements IUserService {
 	@Override
 	public void update(User user) {
 		var foundUser = userRepository.findById(user.getId());
-
-		if (foundUser.isPresent())
-			userRepository.deleteById(user.getId());
 
 		userRepository.save(user);
 	}
@@ -115,11 +118,11 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void requestInformation(int id, IAPIService apiService) {
+	public void requestInformation(int id, IAPIService service) {
 		var user = findById(id);
 
 		if (user.isPresent()) {
-			apiService.requestInformation(user.get());
+			service.requestInformation(user.get());
 			checkMilestones(user.get());
 		} else {
 			throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
@@ -127,8 +130,8 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void requestInformation(User user, IAPIService apiService) {
-		apiService.requestInformation(user);
+	public void requestInformation(User user, IAPIService service) {
+		service.requestInformation(user);
 	}
 
 	@SneakyThrows
@@ -136,7 +139,13 @@ public class UserService implements IUserService {
 	public void sendEmail(User user, String message) {
 
 		var userEmail = user.getEmail();
-		throw new ExecutionControl.NotImplementedException("should have sent an email");
+
+		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+		simpleMailMessage.setFrom("noreply@stattracker.com");
+		simpleMailMessage.setTo(userEmail);
+		simpleMailMessage.setSubject("Teljesítmény elérve!");
+		simpleMailMessage.setText(message);
+		emailSender.send(simpleMailMessage);
 
 	}
 
@@ -172,18 +181,22 @@ public class UserService implements IUserService {
 	public Optional<User> login(String email, String password) {
 		Optional<User> user = findByEmail(email);
 
-		if (user.isPresent())
-			if (securityService.checkPassword(password, user.get().getPassword()))
+		if (user.isPresent()) {
+			if (securityService.checkPassword(password, user.get().getPassword())) {
 				return user;
-
-		return Optional.empty();
+			}else{
+				throw new LoginException("Rossz jelszó!");
+			}
+		}else{
+			throw new LoginException("Rossz email cím!");
+		}
 	}
 
 	@Override
 	public void checkMilestones(User user) {
 		var completedMilestones = milestoneService.checkAchievements(user);
 
-		for(var m : completedMilestones){
+		for (var m : completedMilestones) {
 			sendEmail(user, "Gratulálok!\n\n Teljesítetted a(z) " + m + " nevű teljesítmény követelményeit!");
 			user.getMilestoneNameUserPointMap().remove(m);
 		}
@@ -204,18 +217,16 @@ public class UserService implements IUserService {
 
 		Map<String, MutableInt> idPointMap = new HashMap<>();
 
-		if(user.getLeagueData().getPlayer() != null) {
-			if (user.getLeagueData().getUsername() != null) {//TODO
+		if (user.getLeagueData() != null) {
 				if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
 					idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
 				// ...
-			}
 		}
 
-			if (user.getOverwatchData() != null) {
-				if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getCompetitiveDamageRank().getValue())
-					idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getCompetitiveDamageRank());
-				// ...
+		if (user.getOverwatchData() != null) {
+			if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getCompetitiveDamageRank().getValue())
+				idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getCompetitiveDamageRank());
+			// ...
 		}
 
 		user.setMilestoneNameUserPointMap(idPointMap);

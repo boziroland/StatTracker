@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import TestUtils.TestUtils;
 import jdk.jshell.spi.ExecutionControl;
 import org.github.boziroland.Constants;
 import org.github.boziroland.entities.User;

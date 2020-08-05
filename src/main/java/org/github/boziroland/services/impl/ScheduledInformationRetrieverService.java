@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ScheduledInformationRetrieverService implements IScheduledInformationRetrieverService {
 
-	static Logger LOGGER = LoggerFactory.getLogger(ScheduledInformationRetrieverService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledInformationRetrieverService.class);
 
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
 

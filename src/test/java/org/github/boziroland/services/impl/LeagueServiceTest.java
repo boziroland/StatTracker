@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import TestUtils.TestUtils;
 import org.github.boziroland.services.ILeagueService;
 import org.github.boziroland.services.IMilestoneService;
 import org.github.boziroland.services.IUserService;

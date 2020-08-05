@@ -1,8 +1,8 @@
 .idea
 *.iml
 target
-src/main/resources/riotAPIkey.txt
-src/main/resources/steamWebAPIkey.txt
+src/main/resources/properties/email.properties
+src/main/resources/properties/riotAPI.properties
 logs
 data.mv.db
 data.trace.db

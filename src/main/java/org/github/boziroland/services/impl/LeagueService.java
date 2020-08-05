@@ -18,35 +18,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 public class LeagueService implements ILeagueService {
 
-	Logger LOGGER = LoggerFactory.getLogger(LeagueService.class);
+	static Logger LOGGER = LoggerFactory.getLogger(LeagueService.class);
 
 	@Autowired
-	ILeagueRepository leagueRepository;
+	private ILeagueRepository leagueRepository;
 
 	@Autowired
-	IMySummonerRepository summonerRepository;
+	private IMySummonerRepository summonerRepository;
 
 	@Autowired
-	IMyMatchReferenceRepository matchReferenceRepository;
+	private IMyMatchReferenceRepository matchReferenceRepository;
 
-	RiotApi api;
+	private RiotApi api;
 
 	public LeagueService() throws IOException {
 		init();
 	}
 
 	void init() throws IOException {
-		Optional<String> key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
+		FileReader reader = new FileReader("src/main/resources/properties/riotAPI.properties");
+		Properties p = new Properties();
+		p.load(reader);
 
-		if (key.isPresent()) {
-			ApiConfig config = new ApiConfig().setKey(key.get());
+		if (p.containsKey("key")) {
+			ApiConfig config = new ApiConfig().setKey(p.getProperty("key"));
 			api = new RiotApi(config);
 		}
 	}
