@@ -15,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,11 +42,11 @@ class UserServiceTest {
 
 	@Test
 	void testSendEmailButCantBecauseNoSuchUserExists() {
-		assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.sendEmail(TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0),"teszt"));
+		assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.sendEmail(TestUtils.registerAndLoginOneUser(userService),"teszt"));
 	}
 
 	@Test
-	void testRequestInformationButCantBecauseNoSuchUserExists() throws IOException, RegistrationException {
+	void testRequestInformationButCantBecauseNoSuchUserExists() throws RegistrationException {
 		assertThrows(RuntimeException.class, () -> userService.requestInformation(-1, leagueService));
 	}
 
@@ -64,7 +65,10 @@ class UserServiceTest {
 	@Test
 	void testLoginSuccess() throws RegistrationException {
 		var registeredUser = userService.register("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", List.of(), List.of(), null, null);
-		assertEquals(userService.login("bonifac.solyom@gmail.com", "KAcsa11&").get().getId(), registeredUser.get().getId());
+		int registeredUserId = registeredUser.get().getId();
+		Optional<User> loggedInUser = userService.login("bonifac.solyom@gmail.com", "KAcsa11&");
+		int loggedInuserId = loggedInUser.get().getId();
+		assertEquals(loggedInuserId, registeredUserId);
 	}
 
 	@Test
@@ -74,21 +78,22 @@ class UserServiceTest {
 
 	@Test
 	void testLoginFailureBecauseThePasswordWasIncorrect() throws RegistrationException {
-		User user = TestUtils.registerNDifferentUsers(userService, 1).get(0);
-		assertTrue(userService.login(user.getEmail(), "incorrectPassword").isEmpty());
+		User user = TestUtils.registerOneUser(userService);
+		Optional<User> expected = userService.login(user.getEmail(), "incorrectPassword");
+		assertTrue(expected.isEmpty());
 	}
 
 	//@Test
 	void testScheduling() {
 		Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS = 2;
 		Constants.DATA_RETRIEVE_DELAY_IN_SECONDS = 5;
-		User user = TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0);
+		User user = TestUtils.registerAndLoginOneUser(userService);
 		//await().atMost(10, TimeUnit.SECONDS).untilCall(AwaitilityClassProxy.to(userService));
 	}
 
 	@Test
 	void testRemoveUser() {
-		User user = TestUtils.registerAndLoginNDifferentusers(userService, 1).get(0);
+		User user = TestUtils.registerAndLoginOneUser(userService);
 		userService.delete(user);
 		assertEquals(userService.list().size(), 0);
 	}

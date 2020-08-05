@@ -1,6 +1,7 @@
 package org.github.boziroland.controllers;
 
 import org.github.boziroland.entities.LeagueData;
+import org.github.boziroland.entities.OverwatchData;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.LoginException;
 import org.github.boziroland.exceptions.RegistrationException;
@@ -8,12 +9,13 @@ import org.github.boziroland.services.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -26,7 +28,7 @@ public class UserController {
 	private IUserService userService;
 
 	@ExceptionHandler
-	private ModelAndView exceptionHandler(Exception e){
+	private ModelAndView exceptionHandler(Exception e) {
 		LOGGER.info(e.getMessage());
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("error");
@@ -35,9 +37,9 @@ public class UserController {
 	}
 
 	@GetMapping
-	public List<User> users() {
+	public ResponseEntity<List<User>> users() {
 		LOGGER.info("GET Request: /users");
-		return userService.list();
+		return ResponseEntity.ok(userService.list());
 	}
 
 	@GetMapping("/{id}")
@@ -94,6 +96,35 @@ public class UserController {
 			return ResponseEntity.ok(foundUser.get().getLeagueData());
 		}
 		throw new IllegalArgumentException("User league name not found!");
+	}
+
+	@GetMapping("/ow/{id}")
+	public ResponseEntity<OverwatchData> getOWData(@PathVariable("id") Integer id) {
+		LOGGER.info("GET Request: /ow/{}", id);
+		var foundUser = userService.findById(id);
+		if (foundUser.isPresent()) {
+			LOGGER.info("User overwatch name found!");
+			return ResponseEntity.ok(foundUser.get().getOverwatchData());
+		}
+		throw new IllegalArgumentException("User overwatch name not found!");
+	}
+
+	@GetMapping("/milestones/{id}")
+	public ResponseEntity<Map<String, Integer>> getMilestones(@PathVariable("id") Integer id) {
+		LOGGER.info("GET Request: /milestones/{}", id);
+		var foundUser = userService.findById(id);
+		if (foundUser.isPresent()) {
+			LOGGER.info("User milestones found!");
+
+			var milestoneMap = foundUser.get().getMilestoneNameUserPointMap();
+			Map<String, Integer> milestoneMapWithIntValues = new HashMap<>();
+
+			for (var m : milestoneMap.entrySet())
+				milestoneMapWithIntValues.put(m.getKey(), m.getValue().getValue());
+
+			return ResponseEntity.ok(milestoneMapWithIntValues);
+		}
+		throw new IllegalArgumentException("User overwatch name not found!");
 	}
 
 }

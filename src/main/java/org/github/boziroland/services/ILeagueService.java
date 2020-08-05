@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The interface ILeagueService defines the performable CRUD operations on the LeaguePlayer class.
+ * The interface ILeagueService defines the performable CRUD operations on the LeagueData class.
  */
 public interface ILeagueService extends IAPIService {
 
@@ -38,7 +38,7 @@ public interface ILeagueService extends IAPIService {
 	/**
 	 * Deletes a
 	 * @see LeagueData by its id
-	 * @param id the id of the leagueData to remove
+	 * @param id the id of the LeagueData to remove
 	 */
 	void deleteById(int id);
 

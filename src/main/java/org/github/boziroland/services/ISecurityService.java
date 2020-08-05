@@ -1,5 +1,8 @@
 package org.github.boziroland.services;
 
+/**
+ * The ISecurityService interface provides a way to securely hash and check user passwords.
+ */
 public interface ISecurityService {
 
 	/**

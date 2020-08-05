@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.github.boziroland.Constants;
@@ -184,10 +183,10 @@ public class UserService implements IUserService {
 		if (user.isPresent()) {
 			if (securityService.checkPassword(password, user.get().getPassword())) {
 				return user;
-			}else{
+			} else {
 				throw new LoginException("Rossz jelszó!");
 			}
-		}else{
+		} else {
 			throw new LoginException("Rossz email cím!");
 		}
 	}
@@ -218,9 +217,9 @@ public class UserService implements IUserService {
 		Map<String, MutableInt> idPointMap = new HashMap<>();
 
 		if (user.getLeagueData() != null) {
-				if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
-					idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
-				// ...
+			if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
+				idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
+			// ...
 		}
 
 		if (user.getOverwatchData() != null) {
