@@ -22,7 +22,7 @@ public class ScheduledInformationRetrieverService implements IScheduledInformati
 
 		Runnable sender = new Runnable() {
 			public void run() {
-				LOGGER.info("Getting data for " + user.getName() + " from service " + service.toString());
+				LOGGER.info("Getting data for " + user.getName() + " from service " + service.toString().substring(service.toString().lastIndexOf(".")));
 				service.requestInformation(user);
 			}
 		};

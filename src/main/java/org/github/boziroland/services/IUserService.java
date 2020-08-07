@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The interface IUserService defines the performable CRUD and other operations on the User class.
+ * The interface IUserService defines the performable CRUD and other operations on the
+ * @see User class.
  */
 public interface IUserService {
 
@@ -33,31 +34,65 @@ public interface IUserService {
 	void update(User user);
 
 	/**
-	 * Creates a User instance, and passes it to
-	 *
-	 * @param name       The user's name
-	 * @param password   The user's password
-	 * @param email      The user's email
-	 * @param comments   The user's comments
-	 * @param leagueName The user's League account name
-	 * @param gameName2  The user's <i>Specific</i> account name
-	 * @see IUserDAO#createOrUpdate(User)
+	 * Updates the name which will be used to retrieve League information about the user
+	 * @param id The id of the user whose League name is to be updated
+	 * @param name The name which the name shall be updated to
+	 * @return True if the user was found, and therefore their name got updated, false otherwise
 	 */
-	User create(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
+	default boolean updateLeagueName(Integer id, String name){
+		Optional<User> user = findById(id);
+		if(user.isPresent()){
+			user.get().setLeagueID(name);
+			update(user.get());
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Updates the name which will be used to retrieve Overwatch information about the user
+	 * @param id The id of the user whose Overwatch name is to be updated
+	 * @param name The name which the name shall be updated to
+	 * @return True if the user was found, and therefore their name got updated, false otherwise
+	 */
+	default boolean updateOWName(Integer id, String name){
+		Optional<User> user = findById(id);
+		if(user.isPresent()){
+			user.get().setOverwatchID(name);
+			update(user.get());
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Creates a User instance, and passes it to
 	 *
-	 * @param id         The user's ID
-	 * @param name       The user's name
-	 * @param password   The user's password
-	 * @param email      The user's email
-	 * @param comments   The user's comments
-	 * @param leagueName The user's League account name
-	 * @param gameName2  The user's <i>Specific</i> account name
+	 * @param name       		The user's name
+	 * @param password   		The user's password
+	 * @param email      		The user's email
+	 * @param comments   		The user's comments
+	 * @param commentsOnProfile The comments on the user's profile
+	 * @param leagueName 		The user's League account name
+	 * @param overwatchName 	The user's Overwatch account name
 	 * @see IUserDAO#createOrUpdate(User)
 	 */
-	void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
+	User create(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName);
+
+	/**
+	 * Creates a User instance, and passes it to
+	 *
+	 * @param id         		The user's ID
+	 * @param name       		The user's name
+	 * @param password   		The user's password
+	 * @param email      		The user's email
+	 * @param comments   		The user's comments
+	 * @param commentsOnProfile The comments on the user's profile
+	 * @param leagueName 		The user's League account name
+	 * @param overwatchName 	The user's Overwatch account name
+	 * @see IUserDAO#createOrUpdate(User)
+	 */
+	void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName);
 
 	/**
 	 * Finds a user by their ID
@@ -93,16 +128,17 @@ public interface IUserService {
 	/**
 	 * Creates a User instance, and passes it to
 	 *
-	 * @param id         The user's ID
-	 * @param name       The user's name
-	 * @param password   The user's password
-	 * @param email      The user's email
-	 * @param comments   The user's comments
-	 * @param leagueName The user's League account name
-	 * @param gameName2  The user's <i>Specific</i> account name
+	 * @param id         		The user's ID
+	 * @param name       		The user's name
+	 * @param password   		The user's password
+	 * @param email      		The user's email
+	 * @param commentsOnProfile The comments on the user's profile
+	 * @param comments   		The user's comments
+	 * @param leagueName 		The user's League account name
+	 * @param overwatchName  	The user's Overwatch account name
 	 * @see IUserDAO#createOrUpdate(User)
 	 */
-	void delete(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2);
+	void delete(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName);
 
 	/**
 	 * @param user The user to delete
@@ -144,13 +180,13 @@ public interface IUserService {
 	 * @param name              The user's name
 	 * @param password          The user's password
 	 * @param email             The user's email
-	 * @param commentsOnProfile The comments on the user's comments
+	 * @param commentsOnProfile The comments on the user's profile
 	 * @param comments          The user's comments
 	 * @param leagueName        The user's League account name
-	 * @param gameName2         The user's <i>Specific</i> account name
+	 * @param overwatchName     The user's Overwatch account name
 	 * @return The registered user, wrapped in an Optional container
 	 */
-	Optional<User> register(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) throws RegistrationException;
+	Optional<User> register(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName);
 
 	/**
 	 * Registers a user.
@@ -159,10 +195,10 @@ public interface IUserService {
 	 * @param password   The user's password
 	 * @param email      The user's email
 	 * @param leagueName The user's League account name
-	 * @param gameName2  The user's <i>Specific</i> account name
+	 * @param overwatchName  The user's Overwatch account name
 	 * @return The registered user, wrapped in an Optional container
 	 */
-	Optional<User> register(String name, String password, String email, String leagueName, String gameName2) throws RegistrationException;
+	Optional<User> register(String name, String password, String email, String leagueName, String overwatchName);
 
 	/**
 	 * Registers the user in the parameter
@@ -175,7 +211,7 @@ public interface IUserService {
 	/**
 	 * Logs the user in
 	 *
-	 * @param email    The email addresss of the user
+	 * @param email    The email address of the user
 	 * @param password The password of the user
 	 * @return The logged in user, wrapped in an Optional container
 	 */
@@ -204,15 +240,17 @@ public interface IUserService {
 	}
 
 	/**
+	 * Checks the validity of a password. By default, a password is valid if:
+	 *
+	 * - It's at least 8 characters long
+	 * - Contains at least 1 uppercase letter
+	 * - Contains at least 1 lowercase letter
+	 * - Contains at least 1 digit
+	 * - Contains no whitespace characters
+	 *
 	 * @param password The password to check
 	 * @return True if the password is valid, throws an exception with the problems with the password otherwise
-	 * @throws RegistrationException Checks the validity of a password
-	 *                               By default, a password is valid if:
-	 *                               - It's at least 8 characters long
-	 *                               - Contains at least 1 uppercase letter
-	 *                               - Contains at least 1 lowercase letter
-	 *                               - Contains at least 1 digit
-	 *                               - Contains no whitespace characters
+	 * @throws RegistrationException
 	 */
 	default boolean isValidPassword(String password) {
 		PasswordValidator validator = new PasswordValidator(
@@ -227,11 +265,13 @@ public interface IUserService {
 		if (result.isValid())
 			return true;
 
+		//TODO szebben
 		throw new RegistrationException("Invalid jelszó:\n" + StringUtils.join(validator.getMessages(result), "\n"));
 	}
 
 	/**
-	 * Checks a user's milestones, if one's requirements are fulfilled, it sends an email
+	 * Checks a user's milestones, if one's requirements are fulfilled, sends an email by calling the
+	 * @see IUserService#sendEmail(User, String) function
 	 *
 	 * @param user The users whose milestones we want to check
 	 */

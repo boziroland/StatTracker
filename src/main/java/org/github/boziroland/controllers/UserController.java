@@ -65,14 +65,14 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<User> loginUser(@RequestBody String email, @RequestBody String password) {
+	public ResponseEntity<User> loginUser(@RequestBody Map<String, String> userData) {
 		LOGGER.info("POST Request: /login");
-		Optional<User> loggedInUser = userService.login(email, password);
+		Optional<User> loggedInUser = userService.login(userData.get("email"), userData.get("password"));
 		if (loggedInUser.isPresent()) {
 			LOGGER.info("User {} logged in", loggedInUser.get().getName());
 			return ResponseEntity.ok(loggedInUser.get());
 		}
-		throw new LoginException("Login failure for User with email " + email);
+		throw new LoginException("Login failure for User with email " + userData.get("email"));
 	}
 
 	@DeleteMapping("/delete/{id}")
@@ -127,4 +127,29 @@ public class UserController {
 		throw new IllegalArgumentException("User overwatch name not found!");
 	}
 
+	@PostMapping("/{game}/{id}")
+	public ResponseEntity<String> setGameName(@PathVariable String game, @PathVariable int id, @RequestBody Map<String, String> userData) {
+		String name = userData.get("name");
+		LOGGER.info("POST Request: /{}/{} with name {}", game, id, name);
+
+		switch (game.toLowerCase()) {
+			case "league":
+			case "lol":
+			case "leagueoflegends":
+				if (userService.updateLeagueName(id, name))
+					return ResponseEntity.ok(name);
+
+				break;
+			case "ow":
+			case "overwatch":
+				if (userService.updateOWName(id, name))
+					return ResponseEntity.ok(name);
+
+				break;
+			default:
+				throw new IllegalArgumentException("No such game in the database!");
+		}
+
+		throw new IllegalArgumentException("User not found!");
+	}
 }

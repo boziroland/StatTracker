@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The interface IAPIService provides a common base interface for the specific API services.
+ * The interface IAPIService provides a common base interface for the specific API data classes.
  */
 public interface IAPIService {
 

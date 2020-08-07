@@ -58,14 +58,14 @@ public class LeagueService implements ILeagueService {
 	@Override
 	public LeagueData createOrUpdate(Summoner player, List<MatchReference> lastTenMatches, String username) {
 
-			MySummoner myPlayer = summonerRepository.save(new MySummoner(player));
+		MySummoner myPlayer = summonerRepository.save(new MySummoner(player));
 
-			List<MyMatchReference> myLastTenMatches = new ArrayList<>();
+		List<MyMatchReference> myLastTenMatches = new ArrayList<>();
 
-			for (var match : lastTenMatches)
-				myLastTenMatches.add(matchReferenceRepository.save(new MyMatchReference(match)));
+		for (var match : lastTenMatches)
+			myLastTenMatches.add(matchReferenceRepository.save(new MyMatchReference(match)));
 
-			return leagueRepository.save(new LeagueData(myPlayer, myLastTenMatches, username));
+		return leagueRepository.save(new LeagueData(myPlayer, myLastTenMatches, username));
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class LeagueService implements ILeagueService {
 	private Platform getRegion(String accountId) {
 		String region = accountId.substring(accountId.lastIndexOf("-") + 1);
 
-		return switch (region) {
+		return switch (region.toUpperCase()) {
 			case "EUNE" -> Platform.EUNE;
 			case "EUW" -> Platform.EUW;
 			case "BR" -> Platform.BR;

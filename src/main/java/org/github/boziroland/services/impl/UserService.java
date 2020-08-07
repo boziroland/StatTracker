@@ -62,8 +62,8 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public User create(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-		return create(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+	public User create(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName) {
+		return create(new User(name, password, email, commentsOnProfile, comments, leagueName, overwatchName));
 	}
 
 	@Override
@@ -74,8 +74,8 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-		update(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+	public void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName) {
+		update(new User(name, password, email, commentsOnProfile, comments, leagueName, overwatchName));
 	}
 
 	@Override
@@ -102,8 +102,8 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void delete(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-		userRepository.delete(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+	public void delete(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName) {
+		userRepository.delete(new User(name, password, email, commentsOnProfile, comments, leagueName, overwatchName));
 	}
 
 	@Override
@@ -172,7 +172,6 @@ public class UserService implements IUserService {
 
 	@Override
 	public Optional<User> register(User user) {
-		user.setPassword(securityService.hashPassword(user.getPassword()));
 		return register(user.getName(), user.getPassword(), user.getEmail(), user.getLeagueID(), user.getOverwatchID());
 	}
 

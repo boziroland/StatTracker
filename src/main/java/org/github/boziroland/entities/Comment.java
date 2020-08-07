@@ -21,12 +21,12 @@ public class Comment {
 	private Integer id;
 
 	@NonNull
-	@OneToOne
-	private User sender;
+	@Column(name = "senderId")
+	private Integer senderId;
 
 	@NonNull
-	@OneToOne
-	private User receiver;
+	@Column(name = "receiverId")
+	private Integer receiverId;
 
 	@NonNull
 	private String message;
