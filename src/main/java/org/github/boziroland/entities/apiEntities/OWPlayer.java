@@ -6,9 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.Duration;
 import java.util.Map;
 
@@ -19,10 +17,13 @@ import java.util.Map;
 public class OWPlayer {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ID_SEQUENCE")
+	@SequenceGenerator(name="ID_SEQUENCE", sequenceName="ID_SEQUENCE", allocationSize=1)
 	private Integer id;
 
 	private String username;
+
+	@Column(name = "playerLevel")
 	private MutableInt level;
 	private String portrait;
 

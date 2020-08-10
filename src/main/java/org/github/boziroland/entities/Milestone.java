@@ -1,16 +1,15 @@
 package org.github.boziroland.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Milestone {
 
 	public enum Game {
@@ -18,7 +17,8 @@ public class Milestone {
 	}
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ID_SEQUENCE")
+	@SequenceGenerator(name="ID_SEQUENCE", sequenceName="ID_SEQUENCE", allocationSize=1)
 	private Integer id;
 
 	private String name;

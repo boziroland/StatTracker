@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The interface ILeagueService defines the performable CRUD operations on the LeaguePlayer class.
+ * The interface ILeagueService defines the performable CRUD operations on the
+ * @see LeagueData class.
  */
 public interface ILeagueService extends IAPIService {
 
@@ -18,7 +19,7 @@ public interface ILeagueService extends IAPIService {
 	 * @see ILeagueRepository#save(Object)
 	 * @param player         The League account of the player
 	 * @param lastTenMatches The last ten matches of the player
-	 * @param username
+	 * @param username		 The League username of the player
 	 * @return The saved Leaguedata instance
 	 */
 	LeagueData createOrUpdate(Summoner player, List<MatchReference> lastTenMatches, String username);
@@ -31,14 +32,15 @@ public interface ILeagueService extends IAPIService {
 	Optional<LeagueData> findById(int id);
 
 	/**
-	 * Lists every stored LeagueData
+	 * Lists every stored
+	 * @see LeagueData
 	 */
 	List<LeagueData> list();
 
 	/**
 	 * Deletes a
 	 * @see LeagueData by its id
-	 * @param id the id of the leagueData to remove
+	 * @param id the id of the LeagueData to remove
 	 */
 	void deleteById(int id);
 

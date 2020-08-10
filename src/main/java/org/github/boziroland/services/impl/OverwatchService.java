@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.entities.LeagueData;
 import org.github.boziroland.entities.OverwatchData;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.entities.apiEntities.OWPlayer;
@@ -19,13 +18,13 @@ import java.util.Optional;
 
 public class OverwatchService implements IOverwatchService {
 
-	Logger LOGGER = LoggerFactory.getLogger(OverwatchService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OverwatchService.class);
 
 	@Autowired
-	IOverwatchRepository overwatchRepository;
+	private IOverwatchRepository overwatchRepository;
 
 	@Autowired
-	IOWPlayerRepository owPlayerReposity;
+	private IOWPlayerRepository owPlayerReposity;
 
 	private final RestTemplate restTemplate = new RestTemplateBuilder().build();
 

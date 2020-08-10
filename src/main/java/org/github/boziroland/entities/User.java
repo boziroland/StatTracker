@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.*;
@@ -11,25 +15,29 @@ import java.util.*;
 @Entity
 @Data
 @NoArgsConstructor
+@Table(name = "RUser")
 public class User {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ID_SEQUENCE")
+	@SequenceGenerator(name="ID_SEQUENCE", sequenceName="ID_SEQUENCE", allocationSize=1)
 	private Integer id;
 	private String name;
 	private String password;
 	private String email;
 
 	@ElementCollection
-	@CollectionTable(name = "MilestoneNamePointJoinTable")
+	@CollectionTable(name = "MilestonePointJoinTable")
 	@MapKeyColumn(name = "Milestone")
 	@JsonIgnore
 	Map<String, MutableInt> milestoneNameUserPointMap = new HashMap<>();
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SELECT)
 	private List<Comment> commentsOnProfile = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SELECT)
 	private List<Comment> commentsSent = new ArrayList<>();
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -40,14 +48,14 @@ public class User {
 	@JsonIgnore
 	private OverwatchData overwatchData;
 
-	public User(String name, String password, String email, String leagueID, String gameName2) {
+	public User(String name, String password, String email, String leagueID, String overwatchID) {
 		this.name = name;
 		this.password = password;
 		this.email = email;
 
 		leagueData.setUsername(leagueID);
 
-		overwatchData.setUsername(gameName2);
+		overwatchData.setUsername(overwatchID);
 	}
 
 	public User(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String overwatchID) {
@@ -73,6 +81,8 @@ public class User {
 	}
 
 	public void setLeagueID(String leagueID) {
+		if(leagueData == null)
+			leagueData = new LeagueData();
 		leagueData.setUsername(leagueID);
 	}
 
@@ -81,6 +91,8 @@ public class User {
 	}
 
 	public void setOverwatchID(String overwatchID) {
+		if(overwatchData == null)
+			overwatchData = new OverwatchData();
 		overwatchData.setUsername(overwatchID);
 	}
 

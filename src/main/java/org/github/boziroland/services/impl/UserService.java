@@ -1,42 +1,48 @@
 package org.github.boziroland.services.impl;
 
-import jdk.jshell.spi.ExecutionControl;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.tuple.Pair;
 import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.Milestone;
 import org.github.boziroland.entities.User;
+import org.github.boziroland.exceptions.LoginException;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.repositories.IUserRepository;
 import org.github.boziroland.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.time.LocalTime;
 import java.util.*;
 
 public class UserService implements IUserService {
 
-	Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	@Autowired
-	IUserRepository userRepository;
+	private IUserRepository userRepository;
 
 	@Autowired
-	IMilestoneService milestoneService;
+	private IMilestoneService milestoneService;
 
 	@Autowired
-	ISecurityService securityService;
+	private ISecurityService securityService;
 
 	@Autowired
-	ILeagueService leagueService;
+	private ILeagueService leagueService;
 
 	@Autowired
-	IOverwatchService overwatchService;
+	private IOverwatchService overwatchService;
 
-	ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
+	@Autowired
+	private JavaMailSender emailSender;
+
+	private ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
 
 	public UserService() {
 	}
@@ -57,23 +63,20 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public User create(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-		return create(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+	public User create(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName) {
+		return create(new User(name, password, email, commentsOnProfile, comments, leagueName, overwatchName));
 	}
 
 	@Override
 	public void update(User user) {
 		var foundUser = userRepository.findById(user.getId());
 
-		if (foundUser.isPresent())
-			userRepository.deleteById(user.getId());
-
 		userRepository.save(user);
 	}
 
 	@Override
-	public void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-		update(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+	public void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName) {
+		update(new User(name, password, email, commentsOnProfile, comments, leagueName, overwatchName));
 	}
 
 	@Override
@@ -83,7 +86,7 @@ public class UserService implements IUserService {
 
 	@Override
 	public Optional<User> findByEmail(String email) {
-		if (isValidEmail(email))
+		if (securityService.isValidEmail(email))
 			return Optional.ofNullable(userRepository.findByEmail(email));
 
 		return Optional.empty();
@@ -100,8 +103,8 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void delete(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String gameName2) {
-		userRepository.delete(new User(name, password, email, commentsOnProfile, comments, leagueName, gameName2));
+	public void delete(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName) {
+		userRepository.delete(new User(name, password, email, commentsOnProfile, comments, leagueName, overwatchName));
 	}
 
 	@Override
@@ -115,11 +118,11 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void requestInformation(int id, IAPIService apiService) {
+	public void requestInformation(int id, IAPIService service) {
 		var user = findById(id);
 
 		if (user.isPresent()) {
-			apiService.requestInformation(user.get());
+			service.requestInformation(user.get());
 			checkMilestones(user.get());
 		} else {
 			throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
@@ -127,8 +130,8 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void requestInformation(User user, IAPIService apiService) {
-		apiService.requestInformation(user);
+	public void requestInformation(User user, IAPIService service) {
+		service.requestInformation(user);
 	}
 
 	@SneakyThrows
@@ -136,7 +139,13 @@ public class UserService implements IUserService {
 	public void sendEmail(User user, String message) {
 
 		var userEmail = user.getEmail();
-		throw new ExecutionControl.NotImplementedException("should have sent an email");
+
+		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+		simpleMailMessage.setFrom("noreply@stattracker.com");
+		simpleMailMessage.setTo(userEmail);
+		simpleMailMessage.setSubject("Teljesítmény elérve!");
+		simpleMailMessage.setText(message);
+		emailSender.send(simpleMailMessage);
 
 	}
 
@@ -145,16 +154,21 @@ public class UserService implements IUserService {
 		if (findByEmail(email).isPresent()) {
 			throw new RegistrationException("Email cím foglalt!");
 		} else {
-			if (!isValidUsername(name)) {
+			boolean isValidUsername = securityService.isValidUsername(name);
+			boolean isValidEmail = securityService.isValidEmail(email);
+			Pair<Boolean, String> isValidPassword = securityService.isValidPassword(password);
+
+			if (!isValidUsername) {
 				throw new RegistrationException("A felhasználónévnek legalább 5 karakter hosszúnak kell lennie!");
-			} else if (!isValidEmail(email)) {
+			} else if (!isValidEmail) {
 				throw new RegistrationException("Rossz email!");
-			} else if (isValidPassword(password)) {
+			} else if (!isValidPassword.getLeft()) {
+				throw new RegistrationException(isValidPassword.getRight());
+			}else{
 				Optional<User> user = Optional.of(new User(name, securityService.hashPassword(password), email, commentsOnProfile, comments, leagueID, overwatchName));
 				return Optional.of(create(user.get()));
 			}
 		}
-		return Optional.empty();
 	}
 
 	@Override
@@ -164,7 +178,6 @@ public class UserService implements IUserService {
 
 	@Override
 	public Optional<User> register(User user) {
-		user.setPassword(securityService.hashPassword(user.getPassword()));
 		return register(user.getName(), user.getPassword(), user.getEmail(), user.getLeagueID(), user.getOverwatchID());
 	}
 
@@ -172,19 +185,23 @@ public class UserService implements IUserService {
 	public Optional<User> login(String email, String password) {
 		Optional<User> user = findByEmail(email);
 
-		if (user.isPresent())
-			if (securityService.checkPassword(password, user.get().getPassword()))
+		if (user.isPresent()) {
+			if (securityService.checkPassword(password, user.get().getPassword())) {
 				return user;
-
-		return Optional.empty();
+			} else {
+				throw new LoginException("Rossz jelszó!");
+			}
+		} else {
+			throw new LoginException("Rossz email cím!");
+		}
 	}
 
 	@Override
 	public void checkMilestones(User user) {
 		var completedMilestones = milestoneService.checkAchievements(user);
 
-		for(var m : completedMilestones){
-			sendEmail(user, "Gratulálok!\n\n Teljesítetted a(z) " + m + " nevű teljesítmény követelményeit!");
+		for (var m : completedMilestones) {
+			sendEmail(user, "Gratulálok!\n\nTeljesítetted a(z) " + m + " nevű teljesítmény követelményeit!");
 			user.getMilestoneNameUserPointMap().remove(m);
 		}
 	}
@@ -204,18 +221,16 @@ public class UserService implements IUserService {
 
 		Map<String, MutableInt> idPointMap = new HashMap<>();
 
-		if(user.getLeagueData().getPlayer() != null) {
-			if (user.getLeagueData().getUsername() != null) {//TODO
-				if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
-					idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
-				// ...
-			}
+		if (user.getLeagueData() != null) {
+			if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
+				idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
+			// ...
 		}
 
-			if (user.getOverwatchData() != null) {
-				if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getCompetitiveDamageRank().getValue())
-					idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getCompetitiveDamageRank());
-				// ...
+		if (user.getOverwatchData() != null) {
+			if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getCompetitiveDamageRank().getValue())
+				idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getCompetitiveDamageRank());
+			// ...
 		}
 
 		user.setMilestoneNameUserPointMap(idPointMap);

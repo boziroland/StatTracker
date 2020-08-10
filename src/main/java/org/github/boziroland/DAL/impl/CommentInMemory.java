@@ -25,7 +25,7 @@ public class CommentInMemory implements ICommentDAO {
 		List<Comment> ret = new ArrayList<>();
 
 		for (var c : idCommentMap.entrySet())
-			if (c.getValue().getSender().getId() == user.getId())
+			if (c.getValue().getSenderId().equals(user.getId()))
 				ret.add(c.getValue());
 
 		return ret;
@@ -45,7 +45,7 @@ public class CommentInMemory implements ICommentDAO {
 	public void deleteByUser(User user) {
 
 		for (var c : idCommentMap.entrySet())
-			if (c.getValue().getSender().getId() == user.getId())
+			if (c.getValue().getSenderId().equals(user.getId()))
 				idCommentMap.remove(c.getKey());
 	}
 

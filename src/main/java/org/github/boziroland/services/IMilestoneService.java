@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The interface IMilestoneService defines the performable CRUD operations on the Milestone class.
+ * The interface IMilestoneService defines the performable CRUD operations on the
+ * @see Milestone class, as well as a way to check a users completed achievements.
  */
 public interface IMilestoneService {
 
@@ -24,7 +25,7 @@ public interface IMilestoneService {
 	Milestone createOrUpdate(String name, String description, Integer requirement, Milestone.Game game);
 
 	/**
-	 * Passes the milestone in the paramter to
+	 * Passes the milestone in the parameter to
 	 * @see IMilestoneRepository#save(Object)
 	 * @param m The milestone to store
 	 * @return The saved milestone

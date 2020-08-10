@@ -20,7 +20,7 @@ public class OverwatchData extends GeneralAPIData {
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	OWPlayer player;
+	private OWPlayer player;
 
 	public OverwatchData(String username){
 		this.username = username;

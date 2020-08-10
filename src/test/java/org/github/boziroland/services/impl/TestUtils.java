@@ -1,4 +1,4 @@
-package TestUtils;
+package org.github.boziroland.services.impl;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.github.boziroland.entities.User;
@@ -22,12 +22,28 @@ public class TestUtils {
 		return ret;
 	}
 
+	public static User registerOneUser(IUserService service) throws RegistrationException {
+		String randomEmail = RandomStringUtils.randomAlphabetic(8) + "@" + RandomStringUtils.randomAlphabetic(5) + ".com";
+
+		var user = service.register(RandomStringUtils.random(5), "KAcsa11!", randomEmail, List.of(), List.of(), null, null);
+
+		return user.get();
+	}
+
 	public static List<User> registerAndLoginNDifferentusers(IUserService service, int n) throws RegistrationException, LoginException {
 		List<User> registeredUsers = registerNDifferentUsers(service, n);
 		for (User user : registeredUsers)
 			service.login(user.getEmail(), "KAcsa11!");
 
 		return registeredUsers;
+	}
+
+	public static User registerAndLoginOneUser(IUserService service) throws RegistrationException, LoginException {
+		User registeredUser = registerOneUser(service);
+
+		service.login(registeredUser.getEmail(), "KAcsa11!");
+
+		return registeredUser;
 	}
 
 	public static Optional<User> registerAndLoginUserWhoHasLeagueName(IUserService service) throws RegistrationException {

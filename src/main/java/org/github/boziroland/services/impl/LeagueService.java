@@ -1,5 +1,6 @@
 package org.github.boziroland.services.impl;
 
+import lombok.SneakyThrows;
 import net.rithms.riot.api.ApiConfig;
 import net.rithms.riot.api.RiotApi;
 import net.rithms.riot.api.RiotApiException;
@@ -18,35 +19,40 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 public class LeagueService implements ILeagueService {
 
-	Logger LOGGER = LoggerFactory.getLogger(LeagueService.class);
+	static Logger LOGGER = LoggerFactory.getLogger(LeagueService.class);
 
 	@Autowired
-	ILeagueRepository leagueRepository;
+	private ILeagueRepository leagueRepository;
 
 	@Autowired
-	IMySummonerRepository summonerRepository;
+	private IMySummonerRepository summonerRepository;
 
 	@Autowired
-	IMyMatchReferenceRepository matchReferenceRepository;
+	private IMyMatchReferenceRepository matchReferenceRepository;
 
-	RiotApi api;
+	private RiotApi api;
 
 	public LeagueService() throws IOException {
 		init();
 	}
 
-	void init() throws IOException {
-		Optional<String> key = readKeyFromFile("src/main/resources/riotAPIkey.txt");
+	@SneakyThrows
+	void init() {
+		FileReader reader = new FileReader("src/main/resources/properties/riotAPI.properties");
+		Properties p = new Properties();
+		p.load(reader);
 
-		if (key.isPresent()) {
-			ApiConfig config = new ApiConfig().setKey(key.get());
+		if (p.containsKey("key")) {
+			ApiConfig config = new ApiConfig().setKey(p.getProperty("key"));
 			api = new RiotApi(config);
 		}
 	}
@@ -54,14 +60,14 @@ public class LeagueService implements ILeagueService {
 	@Override
 	public LeagueData createOrUpdate(Summoner player, List<MatchReference> lastTenMatches, String username) {
 
-			MySummoner myPlayer = summonerRepository.save(new MySummoner(player));
+		MySummoner myPlayer = summonerRepository.save(new MySummoner(player));
 
-			List<MyMatchReference> myLastTenMatches = new ArrayList<>();
+		List<MyMatchReference> myLastTenMatches = new ArrayList<>();
 
-			for (var match : lastTenMatches)
-				myLastTenMatches.add(matchReferenceRepository.save(new MyMatchReference(match)));
+		for (var match : lastTenMatches)
+			myLastTenMatches.add(matchReferenceRepository.save(new MyMatchReference(match)));
 
-			return leagueRepository.save(new LeagueData(myPlayer, myLastTenMatches, username));
+		return leagueRepository.save(new LeagueData(myPlayer, myLastTenMatches, username));
 	}
 
 	@Override
@@ -107,7 +113,7 @@ public class LeagueService implements ILeagueService {
 	private Platform getRegion(String accountId) {
 		String region = accountId.substring(accountId.lastIndexOf("-") + 1);
 
-		return switch (region) {
+		return switch (region.toUpperCase()) {
 			case "EUNE" -> Platform.EUNE;
 			case "EUW" -> Platform.EUW;
 			case "BR" -> Platform.BR;
