@@ -218,58 +218,6 @@ public interface IUserService {
 	Optional<User> login(String email, String password);
 
 	/**
-	 * Checks the validity of an email
-	 *
-	 * @param email The email to check
-	 * @return True, if it's a valid email, false otherwise
-	 */
-	default boolean isValidEmail(String email) {
-		EmailValidator validator = EmailValidator.getInstance();
-		return validator.isValid(email);
-	}
-
-	/**
-	 * Checks the validity of a username
-	 * By default, a username has to be at least 5 characters long
-	 *
-	 * @param username The username to check
-	 * @return True, if the username is valid, false otherwise
-	 */
-	default boolean isValidUsername(String username) {
-		return username.length() >= 5;
-	}
-
-	/**
-	 * Checks the validity of a password. By default, a password is valid if:
-	 *
-	 * - It's at least 8 characters long
-	 * - Contains at least 1 uppercase letter
-	 * - Contains at least 1 lowercase letter
-	 * - Contains at least 1 digit
-	 * - Contains no whitespace characters
-	 *
-	 * @param password The password to check
-	 * @return True if the password is valid, throws an exception with the problems with the password otherwise
-	 * @throws RegistrationException
-	 */
-	default boolean isValidPassword(String password) {
-		PasswordValidator validator = new PasswordValidator(
-				new LengthRule(8),
-				new CharacterRule(EnglishCharacterData.UpperCase, 1),
-				new CharacterRule(EnglishCharacterData.LowerCase, 1),
-				new CharacterRule(EnglishCharacterData.Digit, 1),
-				new WhitespaceRule()
-		);
-		var result = validator.validate(new PasswordData(password));
-
-		if (result.isValid())
-			return true;
-
-		//TODO szebben
-		throw new RegistrationException("Invalid jelszó:\n" + StringUtils.join(validator.getMessages(result), "\n"));
-	}
-
-	/**
 	 * Checks a user's milestones, if one's requirements are fulfilled, sends an email by calling the
 	 * @see IUserService#sendEmail(User, String) function
 	 *

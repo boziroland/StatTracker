@@ -1,5 +1,6 @@
 package org.github.boziroland.services.impl;
 
+import lombok.SneakyThrows;
 import net.rithms.riot.api.ApiConfig;
 import net.rithms.riot.api.RiotApi;
 import net.rithms.riot.api.RiotApiException;
@@ -44,7 +45,8 @@ public class LeagueService implements ILeagueService {
 		init();
 	}
 
-	void init() throws IOException {
+	@SneakyThrows
+	void init() {
 		FileReader reader = new FileReader("src/main/resources/properties/riotAPI.properties");
 		Properties p = new Properties();
 		p.load(reader);

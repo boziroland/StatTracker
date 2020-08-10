@@ -3,6 +3,8 @@
 target
 src/main/resources/properties/email.properties
 src/main/resources/properties/riotAPI.properties
+src/main/resources/properties/translateAPILocation.properties
+src/main/resources/translateAPIKey.json
 logs
 data.mv.db
 data.trace.db

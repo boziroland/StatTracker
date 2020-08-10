@@ -2,6 +2,7 @@ package org.github.boziroland.services.impl;
 
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.tuple.Pair;
 import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.Milestone;
@@ -85,7 +86,7 @@ public class UserService implements IUserService {
 
 	@Override
 	public Optional<User> findByEmail(String email) {
-		if (isValidEmail(email))
+		if (securityService.isValidEmail(email))
 			return Optional.ofNullable(userRepository.findByEmail(email));
 
 		return Optional.empty();
@@ -153,16 +154,21 @@ public class UserService implements IUserService {
 		if (findByEmail(email).isPresent()) {
 			throw new RegistrationException("Email cím foglalt!");
 		} else {
-			if (!isValidUsername(name)) {
+			boolean isValidUsername = securityService.isValidUsername(name);
+			boolean isValidEmail = securityService.isValidEmail(email);
+			Pair<Boolean, String> isValidPassword = securityService.isValidPassword(password);
+
+			if (!isValidUsername) {
 				throw new RegistrationException("A felhasználónévnek legalább 5 karakter hosszúnak kell lennie!");
-			} else if (!isValidEmail(email)) {
+			} else if (!isValidEmail) {
 				throw new RegistrationException("Rossz email!");
-			} else if (isValidPassword(password)) {
+			} else if (!isValidPassword.getLeft()) {
+				throw new RegistrationException(isValidPassword.getRight());
+			}else{
 				Optional<User> user = Optional.of(new User(name, securityService.hashPassword(password), email, commentsOnProfile, comments, leagueID, overwatchName));
 				return Optional.of(create(user.get()));
 			}
 		}
-		return Optional.empty();
 	}
 
 	@Override
@@ -195,7 +201,7 @@ public class UserService implements IUserService {
 		var completedMilestones = milestoneService.checkAchievements(user);
 
 		for (var m : completedMilestones) {
-			sendEmail(user, "Gratulálok!\n\n Teljesítetted a(z) " + m + " nevű teljesítmény követelményeit!");
+			sendEmail(user, "Gratulálok!\n\nTeljesítetted a(z) " + m + " nevű teljesítmény követelményeit!");
 			user.getMilestoneNameUserPointMap().remove(m);
 		}
 	}
