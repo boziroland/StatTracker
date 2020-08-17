@@ -29,13 +29,13 @@ public class Application {
 		users.add(userService.login("bonifac.solyom@gmail.com", "KAcsa11&"));
 		Thread.sleep(2000);
 		//userService.register("amy99", "KAcsa11&", "amy.glassires@gmail.com", "meshons#EUNE", "Spricsma#21972-eu");
-		users.add(userService.login("amy.glassires@gmail.com", "KAcsa11&"));
+		//users.add(userService.login("amy.glassires@gmail.com", "KAcsa11&"));
 
-		User bonifac = users.get(0).get();
-		User amy = users.get(1).get();
-		commentService.sendComment(bonifac, amy, "Miss you Amy!");
-		userService.update(bonifac);
-		userService.update(amy);
+//		User bonifac = users.get(0).get();
+//		User amy = users.get(1).get();
+//		commentService.sendComment(bonifac, amy, "Miss you Amy!");
+//		userService.update(bonifac);
+//		userService.update(amy);
 
 		LOGGER.info("main end");
 	}

@@ -187,6 +187,7 @@ public class UserService implements IUserService {
 
 		if (user.isPresent()) {
 			if (securityService.checkPassword(password, user.get().getPassword())) {
+				LOGGER.info("{} just logged in!", user.get().getName());
 				return user;
 			} else {
 				throw new LoginException("Rossz jelszó!");
