@@ -41,7 +41,7 @@ public class LeagueService implements ILeagueService {
 
 	private RiotApi api;
 
-	public LeagueService() throws IOException {
+	public LeagueService() {
 		init();
 	}
 

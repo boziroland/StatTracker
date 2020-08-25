@@ -10,6 +10,8 @@ import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import org.github.boziroland.entities.apiEntities.MyMatchReference;
 import org.github.boziroland.entities.apiEntities.MySummoner;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,7 +30,8 @@ public class LeagueData extends GeneralAPIData {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private MySummoner player;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, orphanRemoval = true) //MERGE?? ALL??
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true) //MERGE?? ALL??
+	@Fetch(value = FetchMode.SELECT)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private List<MyMatchReference> lastTenMatches;
 

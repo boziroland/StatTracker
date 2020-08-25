@@ -167,11 +167,14 @@ public class MainView extends VerticalLayout implements View {
 		final Image image = new Image();
 		image.setSource(new ThemeResource(imageUrl));
 
-		horizontalLayout.addComponent(new Button("Show graph", (event) -> {
+		final Button showGraphButton = new Button("Show graph", (event) -> {
 			parent.removeComponent(1, 0);
 			parent.addComponent(image, 1, 0);
 			parent.setComponentAlignment(image, Alignment.MIDDLE_CENTER);
-		}));
+		});
+
+		showGraphButton.setEnabled(!data.equals("-"));
+		horizontalLayout.addComponent(showGraphButton);
 
 		return horizontalLayout;
 	}

@@ -43,9 +43,10 @@ public class User {
 	@Fetch(value = FetchMode.SELECT)
 	private List<Comment> commentsSent = new ArrayList<>();
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@Fetch(value = FetchMode.SELECT)
 	@JsonIgnore
-	private LeagueData leagueData;
+	private List<LeagueData> leagueDataList = new ArrayList<>();
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
@@ -58,7 +59,15 @@ public class User {
 		this.profilePublic = true;
 		this.sendEmails = true;
 
-		leagueData.setUsername(leagueID);
+		if(leagueID != null) {
+			leagueDataList.add(new LeagueData());
+			leagueDataList.get(0).setUsername(leagueID);
+		}
+
+		if (overwatchID != null) {
+			overwatchData = new OverwatchData();
+			overwatchData.setUsername(overwatchID);
+		}
 
 		overwatchData.setUsername(overwatchID);
 	}
@@ -73,8 +82,8 @@ public class User {
 		this.sendEmails = true;
 
 		if(leagueID != null) {
-			leagueData = new LeagueData();
-			leagueData.setUsername(leagueID);
+			leagueDataList.add(new LeagueData());
+			leagueDataList.get(0).setUsername(leagueID);
 		}
 
 		if (overwatchID != null) {
@@ -84,13 +93,13 @@ public class User {
 	}
 
 	public String getLeagueID() {
-		return leagueData == null ? null : leagueData.getUsername();
+		return leagueDataList.size() == 0 ? null : leagueDataList.get(0).getUsername();
 	}
 
 	public void setLeagueID(String leagueID) {
-		if(leagueData == null)
-			leagueData = new LeagueData();
-		leagueData.setUsername(leagueID);
+		if(leagueDataList.size() == 0)
+			leagueDataList.add(new LeagueData());
+		leagueDataList.get(0).setUsername(leagueID);
 	}
 
 	public String getOverwatchID() {
@@ -134,6 +143,14 @@ public class User {
 	}
 
 	public boolean hasLeagueData(){
-		return leagueData != null;
+		return leagueDataList.size() != 0;
+	}
+
+	public void setLeagueData(LeagueData leagueData){
+		leagueDataList.add(leagueData);
+	}
+
+	public LeagueData getLeagueData(){
+		return leagueDataList.get(leagueDataList.size() - 1);
 	}
 }
