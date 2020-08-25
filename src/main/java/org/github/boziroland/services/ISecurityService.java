@@ -37,7 +37,7 @@ public interface ISecurityService {
 	/**
 	 * Checks the validity of a password. By default, a password is valid if:
 	 * <p>
-	 * - It's at least 8 characters long
+	 * - It's at least 8, at most 56 characters long
 	 * - Contains at least 1 uppercase letter
 	 * - Contains at least 1 lowercase letter
 	 * - Contains at least 1 digit
@@ -48,7 +48,7 @@ public interface ISecurityService {
 	 */
 	default Pair<Boolean, String> isValidPassword(String password) {
 		PasswordValidator validator = new PasswordValidator(
-				new LengthRule(8),
+				new LengthRule(8, 56),
 				new CharacterRule(EnglishCharacterData.UpperCase, 1),
 				new CharacterRule(EnglishCharacterData.LowerCase, 1),
 				new CharacterRule(EnglishCharacterData.Digit, 1),
@@ -59,7 +59,7 @@ public interface ISecurityService {
 		if (result.isValid())
 			return new ImmutablePair<>(true, "");
 
-		return new ImmutablePair<>(false, "Nem elég erős jelszó:\n" + Translator.getInstance().translate("en", "hu", StringUtils.join(validator.getMessages(result))));
+		return new ImmutablePair<>(false, "Nem elég erős jelszó!\n" + Translator.getInstance().translate("en", "hu", StringUtils.join(validator.getMessages(result))));
 	}
 
 	/**

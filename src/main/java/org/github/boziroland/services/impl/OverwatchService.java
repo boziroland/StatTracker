@@ -55,7 +55,7 @@ public class OverwatchService implements IOverwatchService {
 	@Override
 	public void requestInformation(User user) {
 		String owAccountId = user.getOverwatchID();
-			LOGGER.info("Trying to get Overwatch information for: " + owAccountId + " (" + user.getName() + ")");
+		LOGGER.info("Trying to get Overwatch information for: " + owAccountId + " (" + user.getName() + ")");
 		if (owAccountId != null) {
 			String name = owAccountId.substring(0, owAccountId.lastIndexOf("-"));
 			String region = owAccountId.substring(owAccountId.lastIndexOf("-") + 1);

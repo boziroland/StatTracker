@@ -18,9 +18,9 @@ public class DefaultView extends VerticalLayout implements View {
 	public static final String NAME = "";
 
 	@PostConstruct
-	void init(){
+	void init() {
 
-		Label label = new Label("ez a default view");
+		Label label = new Label("ÜDV AZ OLDALON OwO");
 
 		addComponent(label);
 

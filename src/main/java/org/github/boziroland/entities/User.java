@@ -26,6 +26,9 @@ public class User {
 	private String password;
 	private String email;
 
+	private Boolean profilePublic;
+	private Boolean sendEmails;
+
 	@ElementCollection
 	@CollectionTable(name = "MilestonePointJoinTable")
 	@MapKeyColumn(name = "Milestone")
@@ -52,6 +55,8 @@ public class User {
 		this.name = name;
 		this.password = password;
 		this.email = email;
+		this.profilePublic = true;
+		this.sendEmails = true;
 
 		leagueData.setUsername(leagueID);
 
@@ -64,6 +69,8 @@ public class User {
 		this.email = email;
 		this.commentsOnProfile = commentsOnProfile;
 		this.commentsSent = commentsSent;
+		this.profilePublic = true;
+		this.sendEmails = true;
 
 		if(leagueID != null) {
 			leagueData = new LeagueData();
@@ -120,5 +127,13 @@ public class User {
 				", password='" + password + '\'' +
 				", email='" + email + '\'' +
 				'}';
+	}
+
+	public boolean hasOverwatchData(){
+		return overwatchData != null;
+	}
+
+	public boolean hasLeagueData(){
+		return leagueData != null;
 	}
 }

@@ -99,14 +99,12 @@ public class LeagueService implements ILeagueService {
 				Summoner summoner = api.getSummonerByName(platform, riotName);
 				List<MatchReference> matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
 
-				//var savedData = createOrUpdate(summoner, matchList.subList(0, 10), leagueAccountId);
+				int lastMatches = Math.min(matchList.size(), 99);
 
-				user.setLeagueData(new LeagueData(summoner, matchList.subList(0, 10), leagueAccountId));
+				user.setLeagueData(new LeagueData(summoner, matchList.subList(0, lastMatches), leagueAccountId));
 			} catch (RiotApiException e) {
 				e.printStackTrace();
 			}
-		} else {
-			user.setLeagueData(new LeagueData());
 		}
 	}
 

@@ -94,6 +94,25 @@ $v-font-weight--header: 600;
 		background-color: #3f3e3e;
 	}
 
+	.messageColumn {
+		border: none;
+		background-color: #3f3e3e;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 350px
+	}
+
+	.errorColumn {
+		@extend .messageColumn;
+		color: #ffacac;
+	}
+
+	.happyColumn {
+		@extend .messageColumn;
+		color: #3bef36;
+	}
+
 	.commentSenderName {
 		@extend .commentColumn;
 		border-right: 1px solid aliceblue;
@@ -104,6 +123,20 @@ $v-font-weight--header: 600;
 
 	.tabSheetData {
 		padding-left: 21px;
+	}
+
+	.searchBar {
+		padding-top: 42px;
+		padding-left: 42px;
+	}
+
+	.searchResult {
+		border-bottom: 1px solid #2e96f0;
+		font-size: 20px;
+	}
+
+	.commentSectionPadding {
+		padding-top: 0px;
 	}
 
 	.tabSheetDatapaddingFirstElement {
@@ -136,4 +169,5 @@ $v-font-weight--header: 600;
 	.v-tabsheet-tabsheetpanel {
 		height: 500px !important;
 	}
+
 }

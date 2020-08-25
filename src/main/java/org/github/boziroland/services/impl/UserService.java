@@ -42,7 +42,7 @@ public class UserService implements IUserService {
 	@Autowired
 	private JavaMailSender emailSender;
 
-	private ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
+	private final ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
 
 	public UserService() {
 	}
@@ -69,9 +69,41 @@ public class UserService implements IUserService {
 
 	@Override
 	public void update(User user) {
-		var foundUser = userRepository.findById(user.getId());
-
 		userRepository.save(user);
+	}
+
+	@Override
+	public void updatePassword(User user, String password) {
+		user.setPassword(securityService.hashPassword(password));
+		update(user);
+	}
+
+	@Override
+	public void updateEmail(User user, String email) {
+		user.setEmail(email);
+		update(user);
+	}
+
+	@Override
+	public void updateProfileVisibility(User user, boolean isPublic) {
+		user.setProfilePublic(isPublic);
+		update(user);
+	}
+
+	@Override
+	public void updateEmailReceivability(User user, boolean canReceive) {
+		user.setSendEmails(canReceive);
+		update(user);
+	}
+
+	public void updateOWName(User user, String name) {
+		user.setOverwatchID(name);
+		update(user);
+	}
+
+	public void updateLeagueName(User user, String name) {
+		user.setLeagueID(name);
+		update(user);
 	}
 
 	@Override
@@ -93,8 +125,13 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public List<User> findByName(String name) {
-		return userRepository.findByName(name);
+	public Optional<User> findByName(String name) {
+		return Optional.ofNullable(userRepository.findByName(name));
+	}
+
+	@Override
+	public List<User> findByNameContaining(String name) {
+		return userRepository.findByNameContaining(name);
 	}
 
 	@Override
@@ -164,7 +201,8 @@ public class UserService implements IUserService {
 				throw new RegistrationException("Rossz email!");
 			} else if (!isValidPassword.getLeft()) {
 				throw new RegistrationException(isValidPassword.getRight());
-			}else{
+			} else {
+				LOGGER.info("New registered user: {}", name);
 				Optional<User> user = Optional.of(new User(name, securityService.hashPassword(password), email, commentsOnProfile, comments, leagueID, overwatchName));
 				return Optional.of(create(user.get()));
 			}
@@ -222,13 +260,13 @@ public class UserService implements IUserService {
 
 		Map<String, MutableInt> idPointMap = new HashMap<>();
 
-		if (user.getLeagueData() != null) {
+		if (user.getLeagueData() != null && user.getLeagueData().getUsername() != null) {
 			if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
 				idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
 			// ...
 		}
 
-		if (user.getOverwatchData() != null) {
+		if (user.getOverwatchData() != null && user.getOverwatchData().getUsername() != null) {
 			if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getCompetitiveDamageRank().getValue())
 				idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getCompetitiveDamageRank());
 			// ...

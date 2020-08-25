@@ -124,6 +124,8 @@
             <column name="EMAIL" type="VARCHAR(255)"/>
             <column name="NAME" type="VARCHAR(255)"/>
             <column name="PASSWORD" type="VARCHAR(255)"/>
+            <column name="PROFILE_PUBLIC" type="BOOLEAN"/>
+            <column name="SEND_EMAILS" type="BOOLEAN"/>
             <column name="LEAGUE_DATA_ID" type="INT"/>
             <column name="OVERWATCH_DATA_ID" type="INT"/>
         </createTable>

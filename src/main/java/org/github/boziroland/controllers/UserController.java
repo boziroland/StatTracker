@@ -131,25 +131,20 @@ public class UserController {
 	public ResponseEntity<String> setGameName(@PathVariable String game, @PathVariable int id, @RequestBody Map<String, String> userData) {
 		String name = userData.get("name");
 		LOGGER.info("POST Request: /{}/{} with name {}", game, id, name);
-
-		switch (game.toLowerCase()) {
-			case "league":
-			case "lol":
-			case "leagueoflegends":
-				if (userService.updateLeagueName(id, name))
+		var user = userService.findById(id);
+		if (user.isPresent()) {
+			switch (game.toLowerCase()) {
+				case "league", "lol", "leagueoflegends" -> {
+					userService.updateLeagueName(user.get(), name);
 					return ResponseEntity.ok(name);
-
-				break;
-			case "ow":
-			case "overwatch":
-				if (userService.updateOWName(id, name))
+				}
+				case "ow", "overwatch" -> {
+					userService.updateOWName(user.get(), name);
 					return ResponseEntity.ok(name);
-
-				break;
-			default:
-				throw new IllegalArgumentException("No such game in the database!");
+				}
+				default -> throw new IllegalArgumentException("No such game in the database!");
+			}
 		}
-
-		throw new IllegalArgumentException("User not found!");
+		throw new IllegalArgumentException("No such user!");
 	}
 }

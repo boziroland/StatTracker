@@ -7,6 +7,6 @@ public class RegistrationException extends RuntimeException {
 	}
 
 	public RegistrationException(String message) {
-		super();
+		super(message);
 	}
 }

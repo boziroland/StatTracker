@@ -26,7 +26,7 @@ public class Application {
 		ICommentService commentService = applicationContext.getBean(CommentService.class);
 
 		//userService.register("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", "meshons#EUNE", null);
-		users.add(userService.login("bonifac.solyom@gmail.com", "KAcsa11&"));
+		//users.add(userService.login("bonifac.solyom@gmail.com", "KAcsa11&"));
 		Thread.sleep(2000);
 		//userService.register("amy99", "KAcsa11&", "amy.glassires@gmail.com", "meshons#EUNE", "Spricsma#21972-eu");
 		//users.add(userService.login("amy.glassires@gmail.com", "KAcsa11&"));
