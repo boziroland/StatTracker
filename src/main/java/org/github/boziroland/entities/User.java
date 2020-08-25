@@ -19,8 +19,8 @@ import java.util.*;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ID_SEQUENCE")
-	@SequenceGenerator(name="ID_SEQUENCE", sequenceName="ID_SEQUENCE", allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQUENCE")
+	@SequenceGenerator(name = "ID_SEQUENCE", sequenceName = "ID_SEQUENCE", allocationSize = 1)
 	private Integer id;
 	private String name;
 	private String password;
@@ -48,9 +48,11 @@ public class User {
 	@JsonIgnore
 	private List<LeagueData> leagueDataList = new ArrayList<>();
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	//@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	@Fetch(value = FetchMode.SELECT)
 	@JsonIgnore
-	private OverwatchData overwatchData;
+	private List<OverwatchData> overwatchDataList = new ArrayList<>();
 
 	public User(String name, String password, String email, String leagueID, String overwatchID) {
 		this.name = name;
@@ -59,17 +61,17 @@ public class User {
 		this.profilePublic = true;
 		this.sendEmails = true;
 
-		if(leagueID != null) {
+		if (leagueID != null) {
 			leagueDataList.add(new LeagueData());
 			leagueDataList.get(0).setUsername(leagueID);
 		}
 
 		if (overwatchID != null) {
-			overwatchData = new OverwatchData();
-			overwatchData.setUsername(overwatchID);
+			overwatchDataList.add(new OverwatchData());
+			overwatchDataList.get(0).setUsername(overwatchID);
 		}
 
-		overwatchData.setUsername(overwatchID);
+		//overwatchDataList.setUsername(overwatchID);
 	}
 
 	public User(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String overwatchID) {
@@ -81,14 +83,14 @@ public class User {
 		this.profilePublic = true;
 		this.sendEmails = true;
 
-		if(leagueID != null) {
+		if (leagueID != null) {
 			leagueDataList.add(new LeagueData());
 			leagueDataList.get(0).setUsername(leagueID);
 		}
 
 		if (overwatchID != null) {
-			overwatchData = new OverwatchData();
-			overwatchData.setUsername(overwatchID);
+			overwatchDataList.add(new OverwatchData());
+			overwatchDataList.get(0).setUsername(overwatchID);
 		}
 	}
 
@@ -97,19 +99,19 @@ public class User {
 	}
 
 	public void setLeagueID(String leagueID) {
-		if(leagueDataList.size() == 0)
+		if (leagueDataList.size() == 0)
 			leagueDataList.add(new LeagueData());
 		leagueDataList.get(0).setUsername(leagueID);
 	}
 
 	public String getOverwatchID() {
-		return overwatchData == null ? null : overwatchData.getUsername();
+		return overwatchDataList.size() == 0 ? null : overwatchDataList.get(0).getUsername();
 	}
 
 	public void setOverwatchID(String overwatchID) {
-		if(overwatchData == null)
-			overwatchData = new OverwatchData();
-		overwatchData.setUsername(overwatchID);
+		if (overwatchDataList.size() == 0)
+			overwatchDataList.add(new OverwatchData());
+		overwatchDataList.get(0).setUsername(overwatchID);
 	}
 
 	@Override
@@ -138,19 +140,27 @@ public class User {
 				'}';
 	}
 
-	public boolean hasOverwatchData(){
-		return overwatchData != null;
+	public boolean hasOverwatchData() {
+		return overwatchDataList.size() != 0;
 	}
 
-	public boolean hasLeagueData(){
+	public boolean hasLeagueData() {
 		return leagueDataList.size() != 0;
 	}
 
-	public void setLeagueData(LeagueData leagueData){
+	public void setLeagueData(LeagueData leagueData) {
 		leagueDataList.add(leagueData);
 	}
 
-	public LeagueData getLeagueData(){
+	public LeagueData getLeagueData() {
 		return leagueDataList.get(leagueDataList.size() - 1);
+	}
+
+	public void setOverwatchData(OverwatchData overwatchData) {
+		overwatchDataList.add(overwatchData);
+	}
+
+	public OverwatchData getOverwatchData() {
+		return overwatchDataList.get(overwatchDataList.size() - 1);
 	}
 }
