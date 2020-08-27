@@ -46,7 +46,7 @@ public class LeagueService implements ILeagueService {
 	}
 
 	@SneakyThrows
-	void init() {
+	private void init() {
 		FileReader reader = new FileReader("src/main/resources/properties/riotAPI.properties");
 		Properties p = new Properties();
 		p.load(reader);
@@ -88,6 +88,7 @@ public class LeagueService implements ILeagueService {
 	@Override
 	public void requestInformation(User user) {
 		String leagueAccountId = user.getLeagueID();
+		LOGGER.info("Trying to get League information for: " + leagueAccountId + " (" + user.getName() + ")");
 		if (leagueAccountId != null) {
 			Platform platform = getRegion(leagueAccountId);
 			String riotName = leagueAccountId.substring(0, leagueAccountId.lastIndexOf("-"));
@@ -95,7 +96,6 @@ public class LeagueService implements ILeagueService {
 			LOGGER.info("Getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
 
 			try {
-
 				Summoner summoner = api.getSummonerByName(platform, riotName);
 				List<MatchReference> matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
 
@@ -105,6 +105,7 @@ public class LeagueService implements ILeagueService {
 			} catch (RiotApiException e) {
 				e.printStackTrace();
 			}
+			LOGGER.info("Done getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
 		}
 	}
 

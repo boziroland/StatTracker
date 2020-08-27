@@ -10,15 +10,17 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.github.boziroland.Constants;
+import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.services.impl.CommentService;
 import org.github.boziroland.services.impl.MilestoneService;
 import org.github.boziroland.services.impl.UserService;
 import org.github.boziroland.ui.MainUI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Objects;
 
 @SpringView(name = MainView.NAME)
 @SpringComponent
@@ -39,10 +41,12 @@ public class MainView extends VerticalLayout implements View {
 
 	private User user;
 
+	private final VerticalLayout commentSectionlayout = new VerticalLayout();
+
 	@PostConstruct
 	void init() {
 
-		this.addAttachListener(this::onAttach);
+		addAttachListener(this::onAttach);
 
 		tabSheet.setSizeFull();
 
@@ -50,8 +54,6 @@ public class MainView extends VerticalLayout implements View {
 		tabSheet.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
 
 		addComponent(tabSheet);
-		addComponent(createMilestoneSection());
-		addComponent(createCommentSection());
 	}
 
 	private void onAttach(AttachEvent attachEvent) {
@@ -62,16 +64,19 @@ public class MainView extends VerticalLayout implements View {
 	private VerticalLayout createMilestoneSection() {
 		VerticalLayout ret = new VerticalLayout();
 		ret.setStyleName("setLiterallyEveryPaddingToZero");
-		var milestones = Constants.getMilestonesAsList();
+		var milestones = milestoneService.getMilestonesAsList();
 		for (var m : milestones) {
 			HorizontalLayout milestoneLayout = new HorizontalLayout();
 			milestoneLayout.setStyleName("tabSheetData");
 			Image image = new Image();
-			image.setSource(new ThemeResource("images/achievement_done.png"));
+			if(user.getMilestoneNameUserPointMap().containsKey(m.getName()))
+				image.setSource(new ThemeResource("images/achievement_notdone.png"));
+			else
+				image.setSource(new ThemeResource("images/achievement_done.png"));
 			image.setHeight("100%");
 			image.setWidth("100%");
 			milestoneLayout.addComponent(image);
-			milestoneLayout.addComponent(new Label("" + m.getName() + "<br><i>" + m.getDescription() + "</i>", ContentMode.HTML));
+			milestoneLayout.addComponent(new Label(m.getName() + "<br><i>" + m.getDescription() + "</i>", ContentMode.HTML));
 			ret.addComponent(milestoneLayout);
 		}
 		Label line = new Label("<hr>", ContentMode.HTML);
@@ -82,7 +87,7 @@ public class MainView extends VerticalLayout implements View {
 
 	private VerticalLayout createCommentSection() {
 		HorizontalLayout messageWritingLayout = new HorizontalLayout();
-		VerticalLayout commentSectionlayout = new VerticalLayout(messageWritingLayout);
+		commentSectionlayout.addComponent(messageWritingLayout);
 		commentSectionlayout.setStyleName("commentSectionPadding");
 		commentSectionlayout.setSizeUndefined();
 
@@ -93,41 +98,35 @@ public class MainView extends VerticalLayout implements View {
 		Button sendMessageButton = new Button("Elküld");
 		messageWritingLayout.addComponent(sendMessageButton);
 		messageWritingLayout.setComponentAlignment(sendMessageButton, Alignment.MIDDLE_CENTER);
+
 		sendMessageButton.addClickListener(event -> {
-			String sender = user.getName();
 			String msg = messageArea.getValue();
 
-			TextArea listenerSender = new TextArea();
-			listenerSender.setEnabled(false);
-			listenerSender.setValue(sender);
-			listenerSender.setStyleName("commentSenderName");
-
-			TextArea listenerMessage = new TextArea();
-			listenerMessage.setEnabled(false);
-			listenerMessage.setValue(msg);
-			listenerMessage.setStyleName("commentColumn");
-
-			commentSectionlayout.addComponent(new HorizontalLayout(listenerSender, listenerMessage));
+			sendComment(msg);
 		});
 
-		//TODO fake kommenteket kiszedni
-		for (int i = 1; i < 4; i++) {
-			HorizontalLayout commentLayout = new HorizontalLayout();
-			TextArea sender = new TextArea();
-			sender.setEnabled(false);
-			sender.setValue("Felhasználó #" + i);
-			sender.setStyleName("commentColumn");
-			sender.setStyleName("commentSenderName");
-			TextArea comment = new TextArea();
-			comment.setEnabled(false);
-			comment.setValue("Felhasználó #" + i + " kommentje");
-			comment.setStyleName("commentColumn");
-			commentLayout.addComponent(sender);
-			commentLayout.addComponent(comment);
-
-			commentSectionlayout.addComponent(commentLayout);
-		}
 		return commentSectionlayout;
+	}
+
+	private void sendComment(String message) {
+		User loggedInUser = ((MainUI) getUI()).getUser();
+		sendComment(loggedInUser, message);
+	}
+
+	private void sendComment(User sender, String message) {
+		TextArea listenerSender = new TextArea();
+		listenerSender.setEnabled(false);
+		listenerSender.setValue(sender.getName());
+		listenerSender.setStyleName("commentSenderName");
+
+		TextArea listenerMessage = new TextArea();
+		listenerMessage.setEnabled(false);
+		listenerMessage.setValue(message);
+		listenerMessage.setStyleName("commentColumn");
+
+		commentService.sendComment(sender, user, message);
+
+		commentSectionlayout.addComponent(new HorizontalLayout(listenerSender, listenerMessage));
 	}
 
 	private void setLeagueTabInformation() {
@@ -203,12 +202,23 @@ public class MainView extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeListener.ViewChangeEvent event) {
 		String name = event.getParameters();
-		if(event.getParameters() != null) {
+		if (event.getParameters() != null) {
 			var usr = userService.findByName(name);
 			usr.ifPresent(value -> user = value);
 			setLeagueTabInformation();
 			setOWTabInformation();
+
+			commentSectionlayout.removeAllComponents();
+			List<Comment> commentsOnProfile = commentService.findByReceiver(user);
+
+			for (var comment : commentsOnProfile) {
+				User sender = userService.findById(comment.getSenderId()).get();
+				sendComment(sender, comment.getMessage());
+			}
+
 		}
-		addComponent(new Label(event.getParameters().isEmpty() ? "placeholder" : name), 0);
+		addComponent(new Label(Objects.requireNonNull(event.getParameters()).isEmpty() ? "placeholder" : name), 0);
+		addComponent(createMilestoneSection());
+		addComponent(createCommentSection());
 	}
 }

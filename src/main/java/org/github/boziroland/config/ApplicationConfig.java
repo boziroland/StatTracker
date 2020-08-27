@@ -48,6 +48,11 @@ public class ApplicationConfig {
 	}
 
 	@Bean
+	public IScheduledInformationRetrieverService scheduledInformationRetrieverService() {
+		return new ScheduledInformationRetrieverService();
+	}
+
+	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}

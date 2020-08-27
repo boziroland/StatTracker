@@ -1,6 +1,9 @@
 package org.github.boziroland.services;
 
+import org.github.boziroland.entities.GeneralAPIData;
+import org.github.boziroland.entities.OverwatchData;
 import org.github.boziroland.entities.User;
+import org.github.boziroland.entities.apiEntities.OWPlayer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,5 +22,4 @@ public interface IAPIService {
 	 * @param user The user whose information we want to request
 	 */
 	void requestInformation(User user);
-
 }

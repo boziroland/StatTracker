@@ -64,6 +64,7 @@ public class OverwatchService implements IOverwatchService {
 
 			ResponseEntity<OWPlayer> response = restTemplate.getForEntity("http://owapi.io/profile/pc/" + region + "/" + name, OWPlayer.class);
 			user.setOverwatchData(new OverwatchData(response.getBody(), owAccountId));
+			LOGGER.info("Done getting Overwatch information for: " + owAccountId + " (" + user.getName() + ")");
 		}
 	}
 }

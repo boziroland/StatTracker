@@ -28,8 +28,9 @@ public interface IUserService {
 	 *
 	 * @param user The user to pass
 	 * @see IUserDAO#createOrUpdate(User)
+	 * @return The updated user
 	 */
-	void update(User user);
+	User update(User user);
 
 	/**
 	 * Updates the user's password
@@ -37,8 +38,9 @@ public interface IUserService {
 	 * @param user     The user whose password is to be updated
 	 * @param password The password which the password shall be updated to
 	 * @throws DataUpdateException
+	 * @return The updated user
 	 */
-	void updatePassword(User user, String password);
+	User updatePassword(User user, String password);
 
 	/**
 	 * Updates the user's email
@@ -46,8 +48,9 @@ public interface IUserService {
 	 * @param user  The user whose email is to be updated
 	 * @param email The email which the email shall be updated to
 	 * @throws DataUpdateException
+	 * @return The updated user
 	 */
-	void updateEmail(User user, String email);
+	User updateEmail(User user, String email);
 
 	/**
 	 * Updates the user's profile's visibility
@@ -55,8 +58,9 @@ public interface IUserService {
 	 * @param user     The user whose profile visibility is to be updated
 	 * @param isPublic The visibility which the profile visibility shall be updated to
 	 * @throws DataUpdateException
+	 * @return The updated user
 	 */
-	void updateProfileVisibility(User user, boolean isPublic);
+	User updateProfileVisibility(User user, boolean isPublic);
 
 	/**
 	 * Updates the user's ability to receive emails
@@ -64,8 +68,9 @@ public interface IUserService {
 	 * @param user       The user whose email receivability is to be updated
 	 * @param canReceive The email receivability which the email receivability shall be updated to
 	 * @throws DataUpdateException
+	 * @return The updated user
 	 */
-	void updateEmailReceivability(User user, boolean canReceive);
+	User updateEmailReceivability(User user, boolean canReceive);
 
 	/**
 	 * Updates the name which will be used to retrieve League information about the user
@@ -73,8 +78,9 @@ public interface IUserService {
 	 * @param user The user whose League name is to be updated
 	 * @param name The name which the name shall be updated to
 	 * @throws DataUpdateException
+	 * @return The updated user
 	 */
-	void updateLeagueName(User user, String name);
+	User updateLeagueName(User user, String name);
 
 	/**
 	 * Updates the name which will be used to retrieve Overwatch information about the user
@@ -82,8 +88,9 @@ public interface IUserService {
 	 * @param user The user whose Overwatch name is to be updated
 	 * @param name The name which the name shall be updated to
 	 * @throws DataUpdateException
+	 * @return The updated user
 	 */
-	void updateOWName(User user, String name);
+	User updateOWName(User user, String name);
 
 	/**
 	 * Creates a User instance, and passes it to
@@ -106,13 +113,14 @@ public interface IUserService {
 	 * @param name              The user's name
 	 * @param password          The user's password
 	 * @param email             The user's email
-	 * @param comments          The user's comments
 	 * @param commentsOnProfile The comments on the user's profile
+	 * @param comments          The user's comments
 	 * @param leagueName        The user's League account name
 	 * @param overwatchName     The user's Overwatch account name
 	 * @see IUserDAO#createOrUpdate(User)
+	 * @return The updated user
 	 */
-	void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName);
+	User update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName);
 
 	/**
 	 * Finds a user by their ID
@@ -200,7 +208,7 @@ public interface IUserService {
 	 * @param user    The user whom we want to email
 	 * @param message The message to send
 	 */
-	void sendEmail(User user, String message);
+	//void sendEmail(User user, String message);
 
 	/**
 	 * Registers a user.
@@ -251,6 +259,6 @@ public interface IUserService {
 	 * @param user The users whose milestones we want to check
 	 * @see IUserService#sendEmail(User, String) function
 	 */
-	void checkMilestones(User user);
+	//void checkMilestones(User user);
 
 }

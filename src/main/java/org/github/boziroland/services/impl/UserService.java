@@ -1,11 +1,8 @@
 package org.github.boziroland.services.impl;
 
-import lombok.SneakyThrows;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Comment;
-import org.github.boziroland.entities.Milestone;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.LoginException;
 import org.github.boziroland.exceptions.RegistrationException;
@@ -14,9 +11,6 @@ import org.github.boziroland.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -40,15 +34,13 @@ public class UserService implements IUserService {
 	@Autowired
 	private IOverwatchService overwatchService;
 
-	@Autowired
-	private JavaMailSender emailSender;
 
-	private final ScheduledInformationRetrieverService sirs = new ScheduledInformationRetrieverService();
+	@Autowired
+	private IScheduledInformationRetrieverService sirs;
 
 	public UserService() {
 	}
 
-	//@Transactional
 	@Override
 	public User create(User user) {
 
@@ -57,9 +49,10 @@ public class UserService implements IUserService {
 
 		User savedUser = userRepository.save(user);
 
-		addMilestones(savedUser);
+		milestoneService.addMilestones(savedUser);
 
 		addUserToScheduler(savedUser);
+		update(user);
 
 		return savedUser;
 	}
@@ -70,47 +63,47 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void update(User user) {
-		userRepository.save(user);
+	public User update(User user) {
+		return userRepository.save(user);
 	}
 
 	@Override
-	public void updatePassword(User user, String password) {
+	public User updatePassword(User user, String password) {
 		user.setPassword(securityService.hashPassword(password));
-		update(user);
+		return update(user);
 	}
 
 	@Override
-	public void updateEmail(User user, String email) {
+	public User updateEmail(User user, String email) {
 		user.setEmail(email);
-		update(user);
+		return update(user);
 	}
 
 	@Override
-	public void updateProfileVisibility(User user, boolean isPublic) {
+	public User updateProfileVisibility(User user, boolean isPublic) {
 		user.setProfilePublic(isPublic);
-		update(user);
+		return update(user);
 	}
 
 	@Override
-	public void updateEmailReceivability(User user, boolean canReceive) {
+	public User updateEmailReceivability(User user, boolean canReceive) {
 		user.setSendEmails(canReceive);
-		update(user);
+		return update(user);
 	}
 
-	public void updateOWName(User user, String name) {
+	public User updateOWName(User user, String name) {
 		user.setOverwatchID(name);
-		update(user);
+		return update(user);
 	}
 
-	public void updateLeagueName(User user, String name) {
+	public User updateLeagueName(User user, String name) {
 		user.setLeagueID(name);
-		update(user);
+		return update(user);
 	}
 
 	@Override
-	public void update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName) {
-		update(new User(name, password, email, commentsOnProfile, comments, leagueName, overwatchName));
+	public User update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName) {
+		return update(new User(name, password, email, commentsOnProfile, comments, leagueName, overwatchName));
 	}
 
 	@Override
@@ -162,7 +155,6 @@ public class UserService implements IUserService {
 
 		if (user.isPresent()) {
 			service.requestInformation(user.get());
-			checkMilestones(user.get());
 		} else {
 			throw new RuntimeException("Nincs ilyen id-vel rendelkező felhasználó!");
 		}
@@ -171,21 +163,6 @@ public class UserService implements IUserService {
 	@Override
 	public void requestInformation(User user, IAPIService service) {
 		service.requestInformation(user);
-	}
-
-	@SneakyThrows
-	@Override
-	public void sendEmail(User user, String message) {
-
-		var userEmail = user.getEmail();
-
-		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-		simpleMailMessage.setFrom("noreply@stattracker.com");
-		simpleMailMessage.setTo(userEmail);
-		simpleMailMessage.setSubject("Teljesítmény elérve!");
-		simpleMailMessage.setText(message);
-		emailSender.send(simpleMailMessage);
-
 	}
 
 	@Override
@@ -237,48 +214,16 @@ public class UserService implements IUserService {
 		}
 	}
 
-	@Override
-	public void checkMilestones(User user) {
-		var completedMilestones = milestoneService.checkAchievements(user);
-
-		for (var m : completedMilestones) {
-			sendEmail(user, "Gratulálok!\n\nTeljesítetted a(z) " + m + " nevű teljesítmény követelményeit!");
-			user.getMilestoneNameUserPointMap().remove(m);
-		}
-	}
-
 	private void addUserToScheduler(User user) {
-		Random random = new Random();
-		int leagueDelay = random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS));
-		int owDelay = random.nextInt(Math.toIntExact(Constants.DATA_RETRIEVE_DELAY_IN_SECONDS));
+		int leagueDelay = (int) Constants.DATA_RETRIEVE_DELAY_IN_SECONDS;
+		int owDelay = (int) Constants.DATA_RETRIEVE_DELAY_IN_SECONDS;
 		sirs.retrieve(user, leagueService, leagueDelay);
 		sirs.retrieve(user, overwatchService, owDelay);
 		//TODO possibly átírni h napi 1x updateljen csak
 		LOGGER.info("Added user " + user.getName() + " to for scheduling, League in " + LocalTime.ofSecondOfDay(leagueDelay) + ", OW in " + LocalTime.ofSecondOfDay(owDelay));
 	}
 
-	public void addMilestones(User user) {
-		List<Milestone> milestones = Constants.getMilestonesAsList();
-
-		Map<String, MutableInt> idPointMap = new HashMap<>();
-
-		if (user.getLeagueData() != null && user.getLeagueData().getUsername() != null) {
-			if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue())
-				idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
-			// ...
-		}
-
-		if (user.getOverwatchData() != null && user.getOverwatchData().getUsername() != null) {
-			if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getCompetitiveDamageRank().getValue())
-				idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getCompetitiveDamageRank());
-			// ...
-		}
-
-		user.setMilestoneNameUserPointMap(idPointMap);
-
-	}
-
-	public ScheduledInformationRetrieverService getSirs() {
+	public IScheduledInformationRetrieverService getSirs() {
 		return sirs;
 	}
 }

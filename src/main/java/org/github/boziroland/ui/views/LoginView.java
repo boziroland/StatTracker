@@ -37,6 +37,7 @@ public class LoginView extends GridLayout implements View {
 
 		TextArea messageField = new TextArea();
 		messageField.setEnabled(false);
+		messageField.setStyleName("messageColumn");
 
 		BiFunction<String, String, Void> showMessage = (style, message) -> {
 			messageField.setStyleName(style);
@@ -49,12 +50,12 @@ public class LoginView extends GridLayout implements View {
 			LOGGER.info("Login attempt with email " + event.getLoginParameter("username"));
 			try {
 				var user = userService.login(event.getLoginParameter("username"), event.getLoginParameter("password"));
-				//TODO ez talán működik idk teszteld le
 				if (user.isPresent()) {
 					((MainUI) getUI()).setUser(user.get());
 					((MainUI) getUI()).getLoginButton().setVisible(false);
 					((MainUI) getUI()).getLogoutButton().setVisible(true);
 					((MainUI) getUI()).getRegisterButton().setVisible(false);
+					((MainUI) getUI()).getProfileButton().setVisible(true);
 					((MainUI) getUI()).getNavigator().navigateTo(MainView.NAME + "/" + user.get().getName());
 				} else {
 					showMessage.apply("errorColumn", "Ismeretlen hiba keletkezett.");
@@ -63,10 +64,13 @@ public class LoginView extends GridLayout implements View {
 				showMessage.apply("errorColumn", e.getMessage());
 			} catch (Exception e) {
 				showMessage.apply("errorColumn", "Ismeretlen hiba keletkezett.");
+				e.printStackTrace();
 			}
 		});
 
 		addComponent(loginForm);
 		setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
+		addComponent(messageField);
+		setComponentAlignment(loginForm, Alignment.BOTTOM_CENTER);
 	}
 }

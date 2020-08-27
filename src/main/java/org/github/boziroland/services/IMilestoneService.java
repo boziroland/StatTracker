@@ -7,28 +7,32 @@ import org.github.boziroland.repositories.IMilestoneRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * The interface IMilestoneService defines the performable CRUD operations on the
+ *
  * @see Milestone class, as well as a way to check a users completed achievements.
  */
 public interface IMilestoneService {
 
 	/**
 	 * Creates a milestone instance and passes it to
-	 * @see IMilestoneRepository#save(Object)
-	 * @param name The name of the milestone
+	 *
+	 * @param name        The name of the milestone
 	 * @param description The description of the milestone
 	 * @param requirement The point requiremnt of the milestone
 	 * @return The saved milestone
+	 * @see IMilestoneRepository#save(Object)
 	 */
 	Milestone createOrUpdate(String name, String description, Integer requirement, Milestone.Game game);
 
 	/**
 	 * Passes the milestone in the parameter to
-	 * @see IMilestoneRepository#save(Object)
+	 *
 	 * @param m The milestone to store
 	 * @return The saved milestone
+	 * @see IMilestoneRepository#save(Object)
 	 */
 	Milestone createOrUpdate(Milestone m);
 
@@ -72,5 +76,13 @@ public interface IMilestoneService {
 	 * @return The completed achievements
 	 */
 	List<String> checkAchievements(User user);
+
+	void addMilestones(User user);
+
+	void setMilestones(List<Milestone> m);
+
+	List<Milestone> getMilestonesAsList();
+
+	Set<Milestone> getMilestonesAsSet();
 
 }

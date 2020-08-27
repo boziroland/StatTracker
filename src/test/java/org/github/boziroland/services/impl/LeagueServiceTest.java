@@ -27,7 +27,6 @@ class LeagueServiceTest {
 
 	@Test
 	void testRetrieveLeagueData(){
-		//TODO TESZTEK
 		var user = TestUtils.registerAndLoginUserWhoHasLeagueName(userService);
 
 		user.ifPresent(value -> userService.requestInformation(value, leagueService));

@@ -40,10 +40,10 @@ class UserServiceTest {
 		assertEquals("bonifác", userService.list().get(0).getName());
 	}
 
-	@Test
-	void testSendEmailButCantBecauseNoSuchUserExists() {
-		assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.sendEmail(TestUtils.registerAndLoginOneUser(userService),"teszt"));
-	}
+//	@Test
+//	void testSendEmailButCantBecauseNoSuchUserExists() {
+//		assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.sendEmail(TestUtils.registerAndLoginOneUser(userService),"teszt"));
+//	}
 
 	@Test
 	void testRequestInformationButCantBecauseNoSuchUserExists() throws RegistrationException {

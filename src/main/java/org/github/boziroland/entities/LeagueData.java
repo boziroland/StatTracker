@@ -30,7 +30,7 @@ public class LeagueData extends GeneralAPIData {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private MySummoner player;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true) //MERGE?? ALL??
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) //MERGE?? ALL??
 	@Fetch(value = FetchMode.SELECT)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private List<MyMatchReference> lastTenMatches;

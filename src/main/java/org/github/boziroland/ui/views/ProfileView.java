@@ -4,6 +4,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
+import org.github.boziroland.Constants;
 import org.github.boziroland.exceptions.DataUpdateException;
 import org.github.boziroland.services.impl.UserService;
 import org.github.boziroland.ui.MainUI;
@@ -23,15 +24,18 @@ public class ProfileView extends VerticalLayout implements View {
 
 	@PostConstruct
 	public void init() {
+
 		VerticalLayout verticalLayout = new VerticalLayout();
 		verticalLayout.setSizeUndefined();
 		TextField passwordField = new PasswordField("Jelszó");
 		TextField passwordAgainField = new PasswordField("Jelszó (újra)");
 		TextField leagueNameField = new TextField("League of Legends név");
+		leagueNameField.setPlaceholder("e.g. meshons");
 		TextField owNameField = new TextField("Overwatch név");
+		owNameField.setPlaceholder("e.g. Spricsma#21972");
 		TextField emailField = new TextField("Email cím");
-		CheckBox receiveEmails = new CheckBox("Szeretnék kapni email-eket", true);
-		CheckBox profilePublic = new CheckBox("Bárki láthatja a profilom", true);
+		CheckBox receiveEmails = new CheckBox("Szeretnék kapni email-eket", Constants.SEND_EMAIL_DEFAULT_VALUE);
+		CheckBox profilePublic = new CheckBox("Bárki láthatja a profilom", Constants.PROFILE_PUBLIC_DEFAULT_VALUE);
 		Button saveButton = new Button("Mentés");
 
 		TextArea messageField = new TextArea();
@@ -90,5 +94,4 @@ public class ProfileView extends VerticalLayout implements View {
 		addComponent(verticalLayout);
 		setComponentAlignment(verticalLayout, Alignment.MIDDLE_CENTER);
 	}
-
 }

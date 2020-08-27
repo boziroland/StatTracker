@@ -14,4 +14,8 @@ public interface IScheduledInformationRetrieverService {
 	 * @param delay The delay after which we want to retrieve the information
 	 */
 	void retrieve(User user, IAPIService service, long delay);
+
+	void sendEmail(User user, String message);
+
+	void checkMilestones(User user);
 }

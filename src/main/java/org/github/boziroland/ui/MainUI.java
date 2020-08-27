@@ -1,5 +1,6 @@
 package org.github.boziroland.ui;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
@@ -8,13 +9,18 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.annotation.SpringViewDisplay;
 import com.vaadin.spring.navigator.SpringNavigator;
 import com.vaadin.ui.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.ui.views.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@EqualsAndHashCode(callSuper = true)
 @SpringUI
 @SpringViewDisplay
 @Theme("mytheme")
+@PreserveOnRefresh
+@Data
 public class MainUI extends UI implements ViewDisplay {
 
 	private User user;
@@ -34,7 +40,7 @@ public class MainUI extends UI implements ViewDisplay {
 	@Override
 	protected void init(VaadinRequest vaadinRequest) {
 		setNavigator(navigator);
-		initalizeButtons();
+		initializeButtons();
 		VerticalLayout layout = new VerticalLayout();
 		layout.setSizeFull();
 		layout.setStyleName("layoutPadding");
@@ -62,50 +68,25 @@ public class MainUI extends UI implements ViewDisplay {
 		getNavigator().setErrorView(DefaultView.class);
 	}
 
-	private void initalizeButtons() {
+	private void initializeButtons() {
 		mainButton = new Button("uwu click me daddy", clickEvent -> getNavigator().navigateTo(MainView.NAME));
 		loginButton = new Button("uwu click me to log in daddy", clickEvent -> getNavigator().navigateTo(LoginView.NAME));
 		registerButton = new Button("uwu click me to register daddy", clickEvent -> getNavigator().navigateTo(RegistrationView.NAME));
 		searchButton = new Button("uwu click me to search daddy", clickEvent -> getNavigator().navigateTo(SearchView.NAME));
 		profileButton = new Button("uwu click me to edit ur profile daddy", clickEvent -> getNavigator().navigateTo(ProfileView.NAME));
-		logoutButton = new Button("uwu click me to log out daddy", clickEvent -> {user = null; loginButton.setVisible(true); registerButton.setVisible(true); logoutButton.setVisible(false); });
+		profileButton.setVisible(false);
+		logoutButton = new Button("uwu click me to log out daddy", clickEvent -> {
+			user = null;
+			loginButton.setVisible(true);
+			registerButton.setVisible(true);
+			logoutButton.setVisible(false);
+			profileButton.setVisible(false);
+		});
 		logoutButton.setVisible(false);
 	}
 
 	@Override
 	public void showView(View view) {
 		springViewDisplay.setContent((Component) view);
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Button getLoginButton() {
-		return loginButton;
-	}
-
-	public void setLoginButton(Button loginButton) {
-		this.loginButton = loginButton;
-	}
-
-	public Button getRegisterButton() {
-		return registerButton;
-	}
-
-	public void setRegisterButton(Button registerButton) {
-		this.registerButton = registerButton;
-	}
-
-	public Button getLogoutButton() {
-		return logoutButton;
-	}
-
-	public void setLogoutButton(Button logoutButton) {
-		this.logoutButton = logoutButton;
 	}
 }

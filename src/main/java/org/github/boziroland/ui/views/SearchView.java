@@ -54,7 +54,6 @@ public class SearchView extends VerticalLayout implements View {
 				results.addComponent(result);
 			}
 		});
-		//TODO keresésnél valami fucked, nem mutatja a keresett statjait :(
 		searchBar.addComponent(searchField);
 		searchBar.addComponent(searchButton);
 		addComponent(searchBar);

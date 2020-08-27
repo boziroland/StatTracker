@@ -293,4 +293,20 @@
     <changeSet author="gyakornok (generated)" id="1596449949720-39">
         <addForeignKeyConstraint baseColumnNames="SENDER_ID" baseTableName="PROFILE_COMMENTS" constraintName="FKSBSNEI55MLY37C199WYY957TM" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
     </changeSet>
+    <changeSet id="69420420" author="gyakornok">
+        <insert tableName="MILESTONE">
+            <column name="ID" valueComputed="ID_SEQUENCE.nextval"/>
+            <column name="DESCRIPTION" value="Érd el a 100-as szintet League of Legends-ben"/>
+            <column name="GAME" value="0" />
+            <column name="NAME" value="100-as szint LOL" />
+            <column name="REQUIREMENT" value="100"/>
+        </insert>
+        <insert tableName="MILESTONE">
+            <column name="ID" valueComputed="ID_SEQUENCE.nextval"/>
+            <column name="DESCRIPTION" value="Érd el az 1100-as szintet Overwatch-ban"/>
+            <column name="GAME" value="1" />
+            <column name="NAME" value="1100-as szint OW" />
+            <column name="REQUIREMENT" value="1100"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

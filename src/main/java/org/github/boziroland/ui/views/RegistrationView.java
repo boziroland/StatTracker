@@ -100,6 +100,7 @@ public class RegistrationView extends GridLayout implements View {
 
 		TextArea messageField = new TextArea();
 		messageField.setEnabled(false);
+		messageField.setStyleName("messageColumn");
 
 		BiFunction<String, String, Void> showMessage = (style, message) -> {
 			messageField.setStyleName(style);

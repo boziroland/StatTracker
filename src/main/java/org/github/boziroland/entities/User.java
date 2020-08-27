@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.github.boziroland.Constants;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.*;
@@ -29,9 +28,10 @@ public class User {
 	private Boolean profilePublic;
 	private Boolean sendEmails;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "MilestonePointJoinTable")
 	@MapKeyColumn(name = "Milestone")
+	@Fetch(value = FetchMode.SELECT)
 	@JsonIgnore
 	Map<String, MutableInt> milestoneNameUserPointMap = new HashMap<>();
 
@@ -48,7 +48,6 @@ public class User {
 	@JsonIgnore
 	private List<LeagueData> leagueDataList = new ArrayList<>();
 
-	//@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@Fetch(value = FetchMode.SELECT)
 	@JsonIgnore
@@ -58,8 +57,8 @@ public class User {
 		this.name = name;
 		this.password = password;
 		this.email = email;
-		this.profilePublic = true;
-		this.sendEmails = true;
+		this.profilePublic = Constants.PROFILE_PUBLIC_DEFAULT_VALUE;
+		this.sendEmails = Constants.SEND_EMAIL_DEFAULT_VALUE;
 
 		if (leagueID != null) {
 			leagueDataList.add(new LeagueData());
@@ -70,8 +69,6 @@ public class User {
 			overwatchDataList.add(new OverwatchData());
 			overwatchDataList.get(0).setUsername(overwatchID);
 		}
-
-		//overwatchDataList.setUsername(overwatchID);
 	}
 
 	public User(String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> commentsSent, String leagueID, String overwatchID) {
@@ -80,8 +77,8 @@ public class User {
 		this.email = email;
 		this.commentsOnProfile = commentsOnProfile;
 		this.commentsSent = commentsSent;
-		this.profilePublic = true;
-		this.sendEmails = true;
+		this.profilePublic = Constants.PROFILE_PUBLIC_DEFAULT_VALUE;
+		this.sendEmails = Constants.SEND_EMAIL_DEFAULT_VALUE;
 
 		if (leagueID != null) {
 			leagueDataList.add(new LeagueData());
@@ -153,6 +150,8 @@ public class User {
 	}
 
 	public LeagueData getLeagueData() {
+		if (leagueDataList.size() == 0)
+			return null;
 		return leagueDataList.get(leagueDataList.size() - 1);
 	}
 
@@ -161,6 +160,8 @@ public class User {
 	}
 
 	public OverwatchData getOverwatchData() {
+		if (overwatchDataList.size() == 0)
+			return null;
 		return overwatchDataList.get(overwatchDataList.size() - 1);
 	}
 }

@@ -12,6 +12,8 @@ public interface ICommentRepository extends JpaRepository<Comment, Integer> {
 
 	List<Comment> findBySenderId(Integer senderId);
 
+	List<Comment> findByReceiverId(Integer receiverId);
+
 	void deleteBySenderId(Integer senderID);
 
 }
