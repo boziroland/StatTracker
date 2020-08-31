@@ -20,7 +20,7 @@ public class DefaultView extends VerticalLayout implements View {
 	@PostConstruct
 	void init() {
 
-		Label label = new Label("ÜDV AZ OLDALON OwO");
+		Label label = new Label("Üdv az oldalon. Alább a híreket, fejlesztői közleményeket láthatod.");
 
 		addComponent(label);
 

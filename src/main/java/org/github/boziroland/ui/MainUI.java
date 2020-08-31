@@ -69,13 +69,13 @@ public class MainUI extends UI implements ViewDisplay {
 	}
 
 	private void initializeButtons() {
-		mainButton = new Button("uwu click me daddy", clickEvent -> getNavigator().navigateTo(MainView.NAME));
-		loginButton = new Button("uwu click me to log in daddy", clickEvent -> getNavigator().navigateTo(LoginView.NAME));
-		registerButton = new Button("uwu click me to register daddy", clickEvent -> getNavigator().navigateTo(RegistrationView.NAME));
-		searchButton = new Button("uwu click me to search daddy", clickEvent -> getNavigator().navigateTo(SearchView.NAME));
-		profileButton = new Button("uwu click me to edit ur profile daddy", clickEvent -> getNavigator().navigateTo(ProfileView.NAME));
+		mainButton = new Button("Főoldal", clickEvent -> getNavigator().navigateTo(MainView.NAME));
+		loginButton = new Button("Belépés", clickEvent -> getNavigator().navigateTo(LoginView.NAME));
+		registerButton = new Button("Regisztráció", clickEvent -> getNavigator().navigateTo(RegistrationView.NAME));
+		searchButton = new Button("Keresés", clickEvent -> getNavigator().navigateTo(SearchView.NAME));
+		profileButton = new Button("Beállítások", clickEvent -> getNavigator().navigateTo(ProfileView.NAME));
 		profileButton.setVisible(false);
-		logoutButton = new Button("uwu click me to log out daddy", clickEvent -> {
+		logoutButton = new Button("Kijelentkezés", clickEvent -> {
 			user = null;
 			loginButton.setVisible(true);
 			registerButton.setVisible(true);

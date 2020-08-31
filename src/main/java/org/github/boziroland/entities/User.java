@@ -9,6 +9,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.util.*;
 
 @Entity
@@ -138,11 +139,11 @@ public class User {
 	}
 
 	public boolean hasOverwatchData() {
-		return overwatchDataList.size() != 0;
+		return overwatchDataList.size() > 0;
 	}
 
 	public boolean hasLeagueData() {
-		return leagueDataList.size() != 0;
+		return leagueDataList.size() > 0;
 	}
 
 	public void setLeagueData(LeagueData leagueData) {
@@ -155,6 +156,34 @@ public class User {
 		return leagueDataList.get(leagueDataList.size() - 1);
 	}
 
+	public List<LeagueData> getLeagueDataList(){
+		return leagueDataList;
+	}
+
+	public List<Long> getLeagueLevelList(){
+		List<Long> ret = new ArrayList<>();
+		for(var data : leagueDataList){
+			if(data.getPlayer() == null)
+				ret.add(null);
+			else
+				ret.add(data.getPlayer().getSummonerLevel().longValue());
+		}
+
+		return ret;
+	}
+
+	public List<Long> getLeaguePlayedMatchesList(){
+		List<Long> ret = new ArrayList<>();
+		for(var data : leagueDataList){
+			if(data.getLastTenMatches() == null)
+				ret.add(null);
+			else
+				ret.add((long) data.getLastTenMatches().size());
+		}
+
+		return ret;
+	}
+
 	public void setOverwatchData(OverwatchData overwatchData) {
 		overwatchDataList.add(overwatchData);
 	}
@@ -163,5 +192,93 @@ public class User {
 		if (overwatchDataList.size() == 0)
 			return null;
 		return overwatchDataList.get(overwatchDataList.size() - 1);
+	}
+
+	public List<OverwatchData> getOverwatchDataList(){
+		return overwatchDataList;
+	}
+
+	public List<Long> getOverwatchLevelList(){
+		List<Long> ret = new ArrayList<>();
+		for(var data : overwatchDataList){
+			if(data.getPlayer() == null)
+				ret.add(null);
+			else
+				ret.add(data.getPlayer().getLevel().longValue());
+		}
+
+		return ret;
+	}
+
+	public List<Long> getOverwatchCompetitiveMatchesList(){
+		List<Long> ret = new ArrayList<>();
+		for(var data : overwatchDataList){
+			if(data.getPlayer() == null)
+				ret.add(null);
+			else
+				ret.add(data.getPlayer().getGamesCompetitivePlayed().longValue());
+		}
+
+		return ret;
+	}
+
+	public List<Long> getOverwatchCompetitiveMatchesWonList(){
+		List<Long> ret = new ArrayList<>();
+		for(var data : overwatchDataList){
+			if(data.getPlayer() == null)
+				ret.add(null);
+			else
+				ret.add(data.getPlayer().getGamesCompetitiveWon().longValue());
+		}
+
+		return ret;
+	}
+
+	public List<Long> getOverwatchCompetitiveMatchesLostList(){
+		List<Long> ret = new ArrayList<>();
+		for(var data : overwatchDataList){
+			if(data.getPlayer() == null)
+				ret.add(null);
+			else
+				ret.add(data.getPlayer().getGamesCompetitiveLost().longValue());
+		}
+
+		return ret;
+	}
+
+	public List<Long> getOverwatchQuickplayMatchesWonList(){
+		List<Long> ret = new ArrayList<>();
+		for(var data : overwatchDataList){
+			if(data.getPlayer() == null)
+				ret.add(null);
+			else
+				ret.add(data.getPlayer().getGamesQuickplayWon().longValue());
+		}
+
+		return ret;
+	}
+
+	public List<Long> getOverwatchQuickplayPlaytimeList(){
+		List<Long> ret = new ArrayList<>();
+		for(var data : overwatchDataList){
+			if(data.getPlayer() == null)
+				ret.add(null);
+			else
+				ret.add(data.getPlayer().getPlaytimeQuickplay().toSeconds());
+		}
+
+		return ret;
+	}
+
+	public List<Long> getOverwatchCompetitivePlaytimeList(){
+		List<Long> ret = new ArrayList<>();
+		for(var data : overwatchDataList){
+			if(data.getPlayer() == null)
+				ret.add(null);
+			else
+				ret.add(data.getPlayer().getPlaytimeCompetitive().toSeconds());
+		}
+
+		return ret;
 	}
 }

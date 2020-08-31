@@ -18,7 +18,7 @@ import java.util.Properties;
 public class ApplicationConfig {
 
 	@Bean
-	public IOverwatchService overwatchService() {
+	public IAPIService overwatchService() {
 		return new OverwatchService();
 	}
 
@@ -28,7 +28,7 @@ public class ApplicationConfig {
 	}
 
 	@Bean
-	public ILeagueService leagueService() throws IOException {
+	public IAPIService leagueService() {
 		return new LeagueService();
 	}
 

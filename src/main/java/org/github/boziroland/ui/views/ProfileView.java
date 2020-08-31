@@ -11,6 +11,7 @@ import org.github.boziroland.ui.MainUI;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.function.BiFunction;
 
 @SpringView(name = ProfileView.NAME)
@@ -22,17 +23,25 @@ public class ProfileView extends VerticalLayout implements View {
 	@Autowired
 	private UserService userService;
 
+	VerticalLayout verticalLayout = new VerticalLayout();
+
+	String[] leagueRegions = {"EUNE", "EUW", "BR", "JP", "KR", "LAN", "LAS", "OCE", "NA", "TR", "RU"};
+	String[] owRegions = {"EU", "NA", "KR", "CN", "GLOBAL"};
+
 	@PostConstruct
 	public void init() {
 
-		VerticalLayout verticalLayout = new VerticalLayout();
 		verticalLayout.setSizeUndefined();
 		TextField passwordField = new PasswordField("Jelszó");
 		TextField passwordAgainField = new PasswordField("Jelszó (újra)");
 		TextField leagueNameField = new TextField("League of Legends név");
 		leagueNameField.setPlaceholder("e.g. meshons");
-		TextField owNameField = new TextField("Overwatch név");
-		owNameField.setPlaceholder("e.g. Spricsma#21972");
+		final ComboBox<String> leagueRegionBox = new ComboBox<>("League of Legends régió", List.of(leagueRegions));
+		createGameNameField(leagueNameField, leagueRegionBox);
+		TextField overwatchNameField = new TextField("Overwatch név");
+		overwatchNameField.setPlaceholder("e.g. Spricsma#21972");
+		final ComboBox<String> overwatchRegionBox = new ComboBox<>("Overwatch régió", List.of(owRegions));
+		createGameNameField(overwatchNameField, overwatchRegionBox);
 		TextField emailField = new TextField("Email cím");
 		CheckBox receiveEmails = new CheckBox("Szeretnék kapni email-eket", Constants.SEND_EMAIL_DEFAULT_VALUE);
 		CheckBox profilePublic = new CheckBox("Bárki láthatja a profilom", Constants.PROFILE_PUBLIC_DEFAULT_VALUE);
@@ -64,10 +73,10 @@ public class ProfileView extends VerticalLayout implements View {
 					}
 				}
 				if (!leagueNameField.isEmpty())
-					userService.updateLeagueName(user, leagueNameField.getValue());
+					userService.updateLeagueName(user, leagueNameField.getValue() + "#" + leagueRegionBox.getValue());
 
-				if (!owNameField.isEmpty())
-					userService.updateOWName(user, owNameField.getValue());
+				if (!overwatchNameField.isEmpty())
+					userService.updateOWName(user, overwatchNameField.getValue() + "-" + overwatchRegionBox.getValue());
 
 				if (!emailField.isEmpty())
 					userService.updateEmail(user, emailField.getValue());
@@ -84,7 +93,7 @@ public class ProfileView extends VerticalLayout implements View {
 		verticalLayout.addComponent(passwordField);
 		verticalLayout.addComponent(passwordAgainField);
 		verticalLayout.addComponent(leagueNameField);
-		verticalLayout.addComponent(owNameField);
+		verticalLayout.addComponent(overwatchNameField);
 		verticalLayout.addComponent(emailField);
 		verticalLayout.addComponent(receiveEmails);
 		verticalLayout.addComponent(profilePublic);
@@ -93,5 +102,24 @@ public class ProfileView extends VerticalLayout implements View {
 
 		addComponent(verticalLayout);
 		setComponentAlignment(verticalLayout, Alignment.MIDDLE_CENTER);
+	}
+
+	private void createGameNameField(TextField nameField, ComboBox<String> regionBox) {
+		nameField.addValueChangeListener(event -> {
+			if (!nameField.isEmpty())
+				regionBox.setStyleName("red");
+			else
+				regionBox.removeStyleName("red");
+		});
+		regionBox.addValueChangeListener(event -> {
+			if (!nameField.isEmpty()) {
+				if (regionBox.getValue() == null)
+					regionBox.setStyleName("red");
+				else
+					regionBox.removeStyleName("red");
+			}
+		});
+		verticalLayout.addComponent(nameField);
+		verticalLayout.addComponent(regionBox);
 	}
 }

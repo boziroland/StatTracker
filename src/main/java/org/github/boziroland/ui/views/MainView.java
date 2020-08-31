@@ -9,16 +9,18 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.github.boziroland.Constants;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.services.impl.CommentService;
 import org.github.boziroland.services.impl.MilestoneService;
 import org.github.boziroland.services.impl.UserService;
+import org.github.boziroland.ui.ChartCreator;
 import org.github.boziroland.ui.MainUI;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
@@ -134,8 +136,8 @@ public class MainView extends VerticalLayout implements View {
 		final FormLayout formLayout = new FormLayout();
 		setupLayouts(gridLayout, formLayout);
 
-		formLayout.addComponent(createDataTextField(gridLayout, "Profile level:", user.hasLeagueData() ? convert(user.getLeagueData().getPlayer().getSummonerLevel()) : "-", "images/placeholder0.jpg"));
-		formLayout.addComponent(createDataTextField(gridLayout, "Played matches:", user.hasLeagueData() ? convert(user.getLeagueData().getLastTenMatches().size()) : "-", "images/placeholder1.jpg"));
+		formLayout.addComponent(createDataTextField(gridLayout, "Profile level:", user.hasLeagueData() ? convert(user.getLeagueData().getPlayer().getSummonerLevel()) : "-", user.getLeagueLevelList()));
+		formLayout.addComponent(createDataTextField(gridLayout, "Played matches:", user.hasLeagueData() ? convert(user.getLeagueData().getLastTenMatches().size()) : "-", user.getLeaguePlayedMatchesList()));
 
 		tabSheet.addTab(gridLayout, "League of Legends");
 	}
@@ -145,26 +147,28 @@ public class MainView extends VerticalLayout implements View {
 		final FormLayout formLayout = new FormLayout();
 		setupLayouts(gridLayout, formLayout);
 
-		formLayout.addComponent(createDataTextField(gridLayout, "Profile level:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getLevel()) : "-", "images/placeholder0.jpg"));
-		formLayout.addComponent(createDataTextField(gridLayout, "Played competitive matches:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesCompetitivePlayed()) : "-", "images/placeholder1.jpg"));
-		formLayout.addComponent(createDataTextField(gridLayout, "Won competitive matches:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesCompetitiveWon()) : "-", "images/placeholder1.jpg"));
-		formLayout.addComponent(createDataTextField(gridLayout, "Won casual matches:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesQuickplayWon()) : "-", "images/placeholder1.jpg"));
-		formLayout.addComponent(createDataTextField(gridLayout, "Competitive playtime:", user.hasOverwatchData() ? user.getOverwatchData().getPlayer().getPlaytimeCompetitive().toString() : "-", "images/placeholder1.jpg"));
-		formLayout.addComponent(createDataTextField(gridLayout, "Quickplay playtime:", user.hasOverwatchData() ? user.getOverwatchData().getPlayer().getPlaytimeQuickplay().toString() : "-", "images/placeholder1.jpg"));
+		formLayout.addComponent(createDataTextField(gridLayout, "Profile level:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getLevel()) : "-", user.getOverwatchLevelList()));
+		formLayout.addComponent(createDataTextField(gridLayout, "Played competitive matches:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesCompetitivePlayed()) : "-", user.getOverwatchCompetitiveMatchesList()));
+		formLayout.addComponent(createDataTextField(gridLayout, "Won competitive matches:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesCompetitiveWon()) : "-", user.getOverwatchCompetitiveMatchesWonList()));
+		formLayout.addComponent(createDataTextField(gridLayout, "Won casual matches:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesQuickplayWon()) : "-", user.getOverwatchQuickplayMatchesWonList()));
+		formLayout.addComponent(createDataTextField(gridLayout, "Competitive playtime:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getPlaytimeCompetitive()) : "-", user.getOverwatchCompetitivePlaytimeList()));
+		formLayout.addComponent(createDataTextField(gridLayout, "Quickplay playtime:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getPlaytimeQuickplay()) : "-", user.getOverwatchQuickplayPlaytimeList()));
 
 		tabSheet.addTab(gridLayout, "Overwatch");
 	}
 
-	private Component createDataTextField(GridLayout parent, String text, String data, String imageUrl) {
+	private Component createDataTextField(GridLayout parent, String text, String fieldData, List<Long> chartData) {
 		final HorizontalLayout horizontalLayout = new HorizontalLayout();
 		horizontalLayout.setStyleName("setLiterallyEveryPaddingToZero");
-		final TextField textField = new TextField(text, data);
+		final TextField textField = new TextField(text, fieldData);
 		textField.setStyleName("dataColumn");
 		textField.setEnabled(false);
 		horizontalLayout.addComponent(textField);
 
-		final Image image = new Image();
-		image.setSource(new ThemeResource(imageUrl));
+//		final Image image = new Image();
+//		image.setSource(new ThemeResource(imageUrl));
+
+		var image = ChartCreator.createChart(text, chartData);
 
 		final Button showGraphButton = new Button("Show graph", (event) -> {
 			parent.removeComponent(1, 0);
@@ -172,7 +176,7 @@ public class MainView extends VerticalLayout implements View {
 			parent.setComponentAlignment(image, Alignment.MIDDLE_CENTER);
 		});
 
-		showGraphButton.setEnabled(!data.equals("-"));
+		showGraphButton.setEnabled(!fieldData.equals("-"));
 		horizontalLayout.addComponent(showGraphButton);
 
 		return horizontalLayout;
@@ -199,6 +203,12 @@ public class MainView extends VerticalLayout implements View {
 		return number.toString();
 	}
 
+	private String convert(Duration time) {
+		if (time == null)
+			return "-";
+		return DurationFormatUtils.formatDurationHMS(time.toMillis());
+	}
+
 	@Override
 	public void enter(ViewChangeListener.ViewChangeEvent event) {
 		String name = event.getParameters();
@@ -216,6 +226,8 @@ public class MainView extends VerticalLayout implements View {
 				sendComment(sender, comment.getMessage());
 			}
 
+		}else{
+			getUI().getNavigator().navigateTo(LoginView.NAME);
 		}
 		addComponent(new Label(Objects.requireNonNull(event.getParameters()).isEmpty() ? "placeholder" : name), 0);
 		addComponent(createMilestoneSection());

@@ -29,23 +29,16 @@ public class UserService implements IUserService {
 	private ISecurityService securityService;
 
 	@Autowired
-	private ILeagueService leagueService;
-
-	@Autowired
-	private IOverwatchService overwatchService;
-
+	List<IAPIService> apiServices;
 
 	@Autowired
 	private IScheduledInformationRetrieverService sirs;
 
-	public UserService() {
-	}
-
 	@Override
 	public User create(User user) {
 
-		requestInformation(user, leagueService);
-		requestInformation(user, overwatchService);
+		for(var apiService : apiServices)
+			requestInformation(user, apiService);
 
 		User savedUser = userRepository.save(user);
 
@@ -176,8 +169,12 @@ public class UserService implements IUserService {
 
 			if (!isValidUsername) {
 				throw new RegistrationException("A felhasználónévnek legalább 5 karakter hosszúnak kell lennie!");
-			} else if (!isValidEmail) {
-				throw new RegistrationException("Rossz email!");
+			} else if(findByName(name).isPresent()){
+				throw new RegistrationException("Létezik már ilyen nevű felhasználó!");
+			}else if (!isValidEmail) {
+				throw new RegistrationException("Formailag helytelen email!");
+			} else if(findByEmail(email).isPresent()){
+				throw new RegistrationException("Ez az email cím már használatban van!");
 			} else if (!isValidPassword.getLeft()) {
 				throw new RegistrationException(isValidPassword.getRight());
 			} else {
@@ -217,9 +214,8 @@ public class UserService implements IUserService {
 	private void addUserToScheduler(User user) {
 		int leagueDelay = (int) Constants.DATA_RETRIEVE_DELAY_IN_SECONDS;
 		int owDelay = (int) Constants.DATA_RETRIEVE_DELAY_IN_SECONDS;
-		sirs.retrieve(user, leagueService, leagueDelay);
-		sirs.retrieve(user, overwatchService, owDelay);
-		//TODO possibly átírni h napi 1x updateljen csak
+		for(var apiService : apiServices)
+			sirs.retrieve(user, apiService, leagueDelay);
 		LOGGER.info("Added user " + user.getName() + " to for scheduling, League in " + LocalTime.ofSecondOfDay(leagueDelay) + ", OW in " + LocalTime.ofSecondOfDay(owDelay));
 	}
 

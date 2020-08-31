@@ -2,25 +2,20 @@ package org.github.boziroland.ui.views;
 
 import com.vaadin.data.Binder;
 import com.vaadin.navigator.View;
-import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import liquibase.pro.packaged.I;
 import lombok.Data;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.services.impl.UserService;
-import org.github.boziroland.ui.MainUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @SpringView(name = RegistrationView.NAME)
 @SpringComponent
@@ -169,14 +164,14 @@ public class RegistrationView extends GridLayout implements View {
 			if (!nameField.isEmpty())
 				regionBox.setStyleName("red");
 			else
-				regionBox.setStyleName("grey");
+				regionBox.removeStyleName("red");
 		});
 		regionBox.addValueChangeListener(event -> {
 			if (!nameField.isEmpty()) {
 				if (regionBox.getValue() == null)
 					regionBox.setStyleName("red");
 				else
-					regionBox.setStyleName("grey");
+					regionBox.removeStyleName("red");
 			}
 		});
 		registrationForm.addComponent(nameField);

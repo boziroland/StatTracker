@@ -89,7 +89,7 @@ public class MilestoneService implements IMilestoneService {
 
 		Map<String, MutableInt> idPointMap = new HashMap<>();
 
-		if (user.getLeagueData() != null && user.getLeagueData().getUsername() != null) {
+		if (user.getLeagueData() != null && user.getLeagueData().getUsername() != null && user.getLeagueData().getPlayer() != null) {
 			if (milestones.get(0).getRequirement() > user.getLeagueData().getPlayer().getSummonerLevel().getValue()) {
 				idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
 			} else if (usersPreviousPoints.size() > 0) {
@@ -100,7 +100,7 @@ public class MilestoneService implements IMilestoneService {
 			}
 		}
 
-		if (user.getOverwatchData() != null && user.getOverwatchData().getUsername() != null) {
+		if (user.getOverwatchData() != null && user.getOverwatchData().getUsername() != null && user.getOverwatchData().getPlayer() != null) {
 			if (milestones.get(1).getRequirement() > user.getOverwatchData().getPlayer().getLevel().getValue()) {
 				idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getLevel());
 			} else if (usersPreviousPoints.size() > 0) {

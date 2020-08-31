@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +26,7 @@ public class ScheduledInformationRetrieverService implements IScheduledInformati
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
 
 	@Autowired
-	IMilestoneService milestoneService;
+	private IMilestoneService milestoneService;
 
 	@Autowired
 	private JavaMailSender emailSender;
