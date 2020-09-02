@@ -15,6 +15,9 @@ import org.github.boziroland.entities.User;
 import org.github.boziroland.ui.views.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @SpringUI
 @SpringViewDisplay
@@ -30,6 +33,7 @@ public class MainUI extends UI implements ViewDisplay {
 	@Autowired
 	private SpringNavigator navigator;
 
+	private Label mainLabel;
 	private Button mainButton;
 	private Button loginButton;
 	private Button logoutButton;
@@ -40,27 +44,16 @@ public class MainUI extends UI implements ViewDisplay {
 	@Override
 	protected void init(VaadinRequest vaadinRequest) {
 		setNavigator(navigator);
-		initializeButtons();
 		VerticalLayout layout = new VerticalLayout();
 		layout.setSizeFull();
 		layout.setStyleName("layoutPadding");
 		setContent(layout);
-		CssLayout navBar = new CssLayout();
-		navBar.setStyleName("navBarSpacing");
-		navBar.addComponent(new Label("Game Statistics Tracker"));
-		navBar.addComponent(mainButton);
-		navBar.addComponent(loginButton);
-		navBar.addComponent(logoutButton);
-		navBar.addComponent(registerButton);
-		navBar.addComponent(searchButton);
-		navBar.addComponent(profileButton);
-
-		for (Component component : navBar)
-			component.setStyleName("addSpacingToNavBarElements");
+		CssLayout navBar = initializeNavbar();
 
 		layout.addComponent(navBar);
 
 		springViewDisplay = new Panel();
+		springViewDisplay.addStyleName("grey");
 		springViewDisplay.setSizeFull();
 		layout.addComponent(springViewDisplay);
 		layout.setExpandRatio(springViewDisplay, 1.0f);
@@ -68,12 +61,35 @@ public class MainUI extends UI implements ViewDisplay {
 		getNavigator().setErrorView(DefaultView.class);
 	}
 
+	private CssLayout initializeNavbar(){
+		CssLayout navBar = new CssLayout();
+
+		initializeButtons();
+
+		navBar.setStyleName("navBarSpacing");
+		navBar.addComponent(mainButton);
+		navBar.addComponent(loginButton);
+		navBar.addComponent(logoutButton);
+		navBar.addComponent(mainLabel);
+		navBar.addComponent(registerButton);
+		navBar.addComponent(searchButton);
+		navBar.addComponent(profileButton);
+
+		for (Component component : navBar)
+			component.addStyleName("addSpacingToNavBarElements");
+
+		return navBar;
+	}
+
 	private void initializeButtons() {
+		mainLabel = new Label("Game Statistics Tracker");
+		mainLabel.setStyleName("mainLabelPadding");
+
 		mainButton = new Button("Főoldal", clickEvent -> getNavigator().navigateTo(MainView.NAME));
 		loginButton = new Button("Belépés", clickEvent -> getNavigator().navigateTo(LoginView.NAME));
 		registerButton = new Button("Regisztráció", clickEvent -> getNavigator().navigateTo(RegistrationView.NAME));
-		searchButton = new Button("Keresés", clickEvent -> getNavigator().navigateTo(SearchView.NAME));
 		profileButton = new Button("Beállítások", clickEvent -> getNavigator().navigateTo(ProfileView.NAME));
+		searchButton = new Button("Keresés", clickEvent -> getNavigator().navigateTo(SearchView.NAME));
 		profileButton.setVisible(false);
 		logoutButton = new Button("Kijelentkezés", clickEvent -> {
 			user = null;

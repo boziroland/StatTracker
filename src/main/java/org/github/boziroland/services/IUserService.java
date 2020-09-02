@@ -203,14 +203,6 @@ public interface IUserService {
 	void requestInformation(User user, IAPIService service);
 
 	/**
-	 * Send an email to the user.
-	 *
-	 * @param user    The user whom we want to email
-	 * @param message The message to send
-	 */
-	//void sendEmail(User user, String message);
-
-	/**
 	 * Registers a user.
 	 *
 	 * @param name              The user's name
@@ -252,13 +244,5 @@ public interface IUserService {
 	 * @return The logged in user, wrapped in an Optional container
 	 */
 	Optional<User> login(String email, String password);
-
-	/**
-	 * Checks a user's milestones, if one's requirements are fulfilled, sends an email by calling the
-	 *
-	 * @param user The users whose milestones we want to check
-	 * @see IUserService#sendEmail(User, String) function
-	 */
-	//void checkMilestones(User user);
 
 }

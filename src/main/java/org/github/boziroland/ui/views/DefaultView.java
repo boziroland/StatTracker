@@ -23,6 +23,5 @@ public class DefaultView extends VerticalLayout implements View {
 		Label label = new Label("Üdv az oldalon. Alább a híreket, fejlesztői közleményeket láthatod.");
 
 		addComponent(label);
-
 	}
 }

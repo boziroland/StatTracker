@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.github.boziroland.Constants;
+import org.github.boziroland.entities.apiEntities.MyMatchReference;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -174,11 +175,24 @@ public class User {
 
 	public List<Long> getLeaguePlayedMatchesList(){
 		List<Long> ret = new ArrayList<>();
-		for(var data : leagueDataList){
-			if(data.getLastTenMatches() == null)
+		ret.add(null);
+		for(int i = 1; i < leagueDataList.size(); i++){
+			if(leagueDataList.get(i) != null && leagueDataList.get(i - 1) != null){
+				var matchesToday = leagueDataList.get(i).getLastTenMatches();
+				var matchesYesterday = leagueDataList.get(i - 1).getLastTenMatches();
+				if(matchesYesterday.size() > 0) {
+					long playedMatchesSinceYesterday = 0;
+					for (MyMatchReference myMatchReference : matchesToday) {
+						if (!myMatchReference.getId().equals(matchesYesterday.get(0).getId()))
+							playedMatchesSinceYesterday++;
+					}
+					ret.add(playedMatchesSinceYesterday);
+				}else{
+					ret.add((long) matchesToday.size());
+				}
+			}else{
 				ret.add(null);
-			else
-				ret.add((long) data.getLastTenMatches().size());
+			}
 		}
 
 		return ret;

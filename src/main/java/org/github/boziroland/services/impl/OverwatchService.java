@@ -1,5 +1,7 @@
 package org.github.boziroland.services.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.github.boziroland.entities.OverwatchData;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.entities.apiEntities.OWPlayer;
@@ -13,7 +15,11 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class OverwatchService implements IOverwatchService {
@@ -66,5 +72,22 @@ public class OverwatchService implements IOverwatchService {
 			user.setOverwatchData(new OverwatchData(response.getBody(), owAccountId));
 			LOGGER.info("Done getting Overwatch information for: " + owAccountId + " (" + user.getName() + ")");
 		}
+	}
+
+	public boolean checkUser(String accountId) {
+		String name = accountId.substring(0, accountId.lastIndexOf("-")).replace("#", "-");
+		String region = accountId.substring(accountId.lastIndexOf("-") + 1);
+		String url = "http://owapi.io";
+		String parameters = "/profile/pc/" + region + "/" + name;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			LOGGER.info("Checking Overwatch account for name {}", accountId);
+			Map<String, Object> map = mapper.readValue(new URL(new URL(url), parameters), Map.class);
+			LOGGER.info("Got back: " + map.get("message"));
+			return !map.containsKey("message");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

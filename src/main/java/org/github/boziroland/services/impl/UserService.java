@@ -11,13 +11,19 @@ import org.github.boziroland.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class UserService implements IUserService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+
+	//@Value("${apikey}")
+	//String apiKey;
 
 	@Autowired
 	private IUserRepository userRepository;
@@ -37,14 +43,14 @@ public class UserService implements IUserService {
 	@Override
 	public User create(User user) {
 
-		for(var apiService : apiServices)
+		for (var apiService : apiServices)
 			requestInformation(user, apiService);
 
 		User savedUser = userRepository.save(user);
 
 		milestoneService.addMilestones(savedUser);
 
-		addUserToScheduler(savedUser);
+		scheduleUser(savedUser);
 		update(user);
 
 		return savedUser;
@@ -169,24 +175,37 @@ public class UserService implements IUserService {
 
 			if (!isValidUsername) {
 				throw new RegistrationException("A felhasználónévnek legalább 5 karakter hosszúnak kell lennie!");
-			} else if(findByName(name).isPresent()){
+			} else if (findByName(name).isPresent()) {
 				throw new RegistrationException("Létezik már ilyen nevű felhasználó!");
-			}else if (!isValidEmail) {
+			} else if (!isValidEmail) {
 				throw new RegistrationException("Formailag helytelen email!");
-			} else if(findByEmail(email).isPresent()){
+			} else if (findByEmail(email).isPresent()) {
 				throw new RegistrationException("Ez az email cím már használatban van!");
 			} else if (!isValidPassword.getLeft()) {
 				throw new RegistrationException(isValidPassword.getRight());
-			} else {
-				LOGGER.info("New registered user: {}", name);
-				Optional<User> user = Optional.of(new User(name, securityService.hashPassword(password), email, commentsOnProfile, comments, leagueID, overwatchName));
-				return Optional.of(create(user.get()));
 			}
+
+			if (overwatchName != null) {
+				if (!apiServices.get(0).checkUser(overwatchName)) {
+					throw new RegistrationException("Nincs ilyen Overwatch felhasználó!");
+				}
+			}
+			if (leagueID != null) {
+				if (!apiServices.get(1).checkUser(leagueID)) {
+					throw new RegistrationException("Nincs ilyen League of Legends felhasználó!");
+				}
+			}
+
+			LOGGER.info("New registered user: {}", name);
+			Optional<User> user = Optional.of(new User(name, securityService.hashPassword(password), email, commentsOnProfile, comments, leagueID, overwatchName));
+			return Optional.of(create(user.get()));
 		}
 	}
 
+
 	@Override
-	public Optional<User> register(String name, String password, String email, String leagueName, String overwatchName) {
+	public Optional<User> register(String name, String password, String email, String leagueName, String
+			overwatchName) {
 		return register(name, password, email, List.of(), List.of(), leagueName, overwatchName);
 	}
 
@@ -199,27 +218,24 @@ public class UserService implements IUserService {
 	public Optional<User> login(String email, String password) {
 		Optional<User> user = findByEmail(email);
 
-		if (user.isPresent()) {
-			if (securityService.checkPassword(password, user.get().getPassword())) {
-				LOGGER.info("{} just logged in!", user.get().getName());
-				return user;
-			} else {
-				throw new LoginException("Rossz jelszó!");
-			}
+		if (user.isPresent() && securityService.checkPassword(password, user.get().getPassword())) {
+			LOGGER.info("{} just logged in!", user.get().getName());
+			return user;
 		} else {
-			throw new LoginException("Rossz email cím!");
+			throw new LoginException("Rossz email cím vagy jelszó!");
 		}
 	}
 
-	private void addUserToScheduler(User user) {
+	private void scheduleUser(User user) {
 		int leagueDelay = (int) Constants.DATA_RETRIEVE_DELAY_IN_SECONDS;
 		int owDelay = (int) Constants.DATA_RETRIEVE_DELAY_IN_SECONDS;
-		for(var apiService : apiServices)
+		for (var apiService : apiServices)
 			sirs.retrieve(user, apiService, leagueDelay);
-		LOGGER.info("Added user " + user.getName() + " to for scheduling, League in " + LocalTime.ofSecondOfDay(leagueDelay) + ", OW in " + LocalTime.ofSecondOfDay(owDelay));
-	}
-
-	public IScheduledInformationRetrieverService getSirs() {
-		return sirs;
+		//im sorry ez nagyon ronda
+		Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
+			LOGGER.info("asd");
+			update(user);
+		}, Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS + 10, leagueDelay > owDelay ? leagueDelay + 60 : owDelay + 60, TimeUnit.SECONDS);
+		LOGGER.info("Added user " + user.getName() + " to for scheduling, League in " + leagueDelay + ", OW in " + owDelay);
 	}
 }

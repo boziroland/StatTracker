@@ -40,8 +40,19 @@ public class RegistrationView extends GridLayout implements View {
 	private final Binder<DummyUser> binder = new Binder<>(DummyUser.class);
 	private final FormLayout registrationForm = new FormLayout();
 
-	String[] leagueRegions = {"EUNE", "EUW", "BR", "JP", "KR", "LAN", "LAS", "OCE", "NA", "TR", "RU"};
-	String[] owRegions = {"EU", "NA", "KR", "CN", "GLOBAL"};
+	String[] leagueRegions = { "EUNE", "EUW", "BR", "JP", "KR", "LAN", "LAS", "OCE", "NA", "TR", "RU" };
+	String[] owRegions = { "EU", "US", "KR", "CN", "GLOBAL" };
+
+	private TextField usernameField;
+	private PasswordField passwordField;
+	private PasswordField passwordConfirmField;
+	private TextField emailField;
+	private TextField leagueNameField;
+	private ComboBox<String> leagueRegionBox;
+	private TextField overwatchNameField;
+	private ComboBox<String> overwatchRegionBox;
+	private TextArea messageField;
+	private Button loginButton;
 
 	@PostConstruct
 	public void init() {
@@ -54,15 +65,15 @@ public class RegistrationView extends GridLayout implements View {
 
 		Button registerButton = new Button("Regisztrálás");
 
-		final TextField usernameField = new TextField("Felhasználónév");
+		usernameField = new TextField("Felhasználónév");
 		binder.forField(usernameField).asRequired().bind(DummyUser::getUsername, DummyUser::setUsername);
 		registrationForm.addComponent(usernameField);
 
-		final PasswordField passwordField = new PasswordField("Jelszó");
+		passwordField = new PasswordField("Jelszó");
 		binder.forField(passwordField).asRequired().bind(DummyUser::getPassword, DummyUser::setPassword);
 		registrationForm.addComponent(passwordField);
 
-		final PasswordField passwordConfirmField = new PasswordField("Jelszó (újra)");
+		passwordConfirmField = new PasswordField("Jelszó (újra)");
 		passwordConfirmField.addValueChangeListener(event -> {
 			if (!event.getValue().equals(passwordField.getValue())) {
 				passwordField.setStyleName("red");
@@ -77,31 +88,25 @@ public class RegistrationView extends GridLayout implements View {
 		binder.forField(passwordConfirmField).asRequired();
 		registrationForm.addComponent(passwordConfirmField);
 
-		final TextField emailField = new TextField("Email");
+		emailField = new TextField("Email");
 		binder.forField(emailField).asRequired().bind(DummyUser::getEmail, DummyUser::setEmail);
 		registrationForm.addComponent(emailField);
 
-		final TextField leagueNameField = new TextField("League of Legends név");
+		leagueNameField = new TextField("League of Legends név");
 		leagueNameField.setPlaceholder("e.g. meshons");
 		binder.forField(leagueNameField).bind(DummyUser::getLeagueName, DummyUser::setLeagueName);
-		final ComboBox<String> leagueRegionBox = new ComboBox<>("League of Legends régió", List.of(leagueRegions));
-		createGameNameField(leagueNameField, leagueRegionBox);
+		leagueRegionBox = new ComboBox<>("League of Legends régió", List.of(leagueRegions));
+		FormUtils.createGameNameField(registrationForm, leagueNameField, leagueRegionBox);
 
-		final TextField overwatchNameField = new TextField("Overwatch név");
+		overwatchNameField = new TextField("Overwatch név");
 		overwatchNameField.setPlaceholder("e.g. Spricsma#21972");
 		binder.forField(overwatchNameField).bind(DummyUser::getOwName, DummyUser::setOwName);
-		final ComboBox<String> overwatchRegionBox = new ComboBox<>("Overwatch régió", List.of(owRegions));
-		createGameNameField(overwatchNameField, overwatchRegionBox);
+		overwatchRegionBox = new ComboBox<>("Overwatch régió", List.of(owRegions));
+		FormUtils.createGameNameField(registrationForm, overwatchNameField, overwatchRegionBox);
 
-		TextArea messageField = new TextArea();
+		messageField = new TextArea();
 		messageField.setEnabled(false);
 		messageField.setStyleName("messageColumn");
-
-		BiFunction<String, String, Void> showMessage = (style, message) -> {
-			messageField.setStyleName(style);
-			messageField.setValue(message);
-			return null;
-		};
 
 		registerButton.addClickListener(event -> {
 			String name = binder.getBean().username;
@@ -127,14 +132,14 @@ public class RegistrationView extends GridLayout implements View {
 				}
 				var user = userService.register(name, password, email, leagueName, owName);
 				if (user.isPresent()) {
-					showMessage.apply("happyColumn", "Sikeres regisztráció! Most már be tudsz lépni.");
+					FormUtils.showMessage(messageField, "happyColumn", "Sikeres regisztráció! Most már be tudsz lépni.");
 				} else {
-					showMessage.apply("errorColumn", "Ismeretlen hiba keletkezett.");
+					FormUtils.showMessage(messageField, "errorColumn", "Ismeretlen hiba keletkezett.");
 				}
 			} catch (RegistrationException e) {
-				showMessage.apply("errorColumn", e.getMessage());
+				FormUtils.showMessage(messageField, "errorColumn", e.getMessage());
 			} catch (Exception e) {
-				showMessage.apply("errorColumn", "Ismeretlen hiba keletkezett.");
+				FormUtils.showMessage(messageField, "errorColumn", "Ismeretlen hiba keletkezett.");
 				LOGGER.error("Ismeretlen hiba");
 				e.printStackTrace();
 			}
@@ -144,37 +149,21 @@ public class RegistrationView extends GridLayout implements View {
 
 		addComponent(registrationForm);
 		addComponent(messageField);
-		Button loginButton = new Button("Lépj be!");
+
+		loginButton = new Button("Lépj be!");
 		loginButton.addStyleName(ValoTheme.BUTTON_LINK);
 		loginButton.addClickListener(event -> {
 			getUI().getNavigator().navigateTo("login");
 		});
 
-		HorizontalLayout loginSuggestionLayout = new HorizontalLayout(new Label("Van már accountod? "), loginButton);
+		Label alreadyHaveAnAccountLabel = new Label("Van már accountod? ");
+		alreadyHaveAnAccountLabel.addStyleName("alreadyRegisteredTextPadding");
+		HorizontalLayout loginSuggestionLayout = new HorizontalLayout(alreadyHaveAnAccountLabel, loginButton);
 		addComponent(loginSuggestionLayout);
 
 		setComponentAlignment(registrationForm, Alignment.MIDDLE_CENTER);
 		setComponentAlignment(messageField, Alignment.TOP_CENTER);
 		setComponentAlignment(loginSuggestionLayout, Alignment.MIDDLE_CENTER);
-
 	}
 
-	private void createGameNameField(TextField nameField, ComboBox<String> regionBox) {
-		nameField.addValueChangeListener(event -> {
-			if (!nameField.isEmpty())
-				regionBox.setStyleName("red");
-			else
-				regionBox.removeStyleName("red");
-		});
-		regionBox.addValueChangeListener(event -> {
-			if (!nameField.isEmpty()) {
-				if (regionBox.getValue() == null)
-					regionBox.setStyleName("red");
-				else
-					regionBox.removeStyleName("red");
-			}
-		});
-		registrationForm.addComponent(nameField);
-		registrationForm.addComponent(regionBox);
-	}
 }

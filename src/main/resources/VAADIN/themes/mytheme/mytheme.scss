@@ -47,14 +47,13 @@ $v-overlay-shadow: 0 0 0 2px (v-tint 10);
 $v-focus-style: $v-focus-color;
 $v-font-family: "Roboto", "Lato", sans-serif;
 $v-font-weight--header: 600;
+//$v-border: 2px solid #238be8;
 
 //noinspection CssUnknownTarget
 @import "../valo/valo.scss";
 
 @mixin mytheme {
 	@include valo;
-
-	// Insert your own theme rules here
 
 	.login {
 		background-image: url("../mytheme/images/gameStats.png");
@@ -78,10 +77,20 @@ $v-font-weight--header: 600;
 	.addSpacingToNavBarElements {
 		margin-right: 10px;
 		margin-left: 10px;
+		margin-top: 14px;
 	}
 
 	.navBarProperties {
 		line-height: 36px;
+	}
+
+	.navBarSpacing {
+		display: flex;
+		justify-content: space-evenly;
+	}
+
+	.alreadyRegisteredTextPadding {
+		padding-top: 9px;
 	}
 
 	.dataColumn {
@@ -167,7 +176,11 @@ $v-font-weight--header: 600;
 
 	//ez a tabsheet magassága
 	.v-tabsheet-tabsheetpanel {
-		height: 500px !important;
+		height: 600px !important;
+	}
+
+	.mainLabelPadding {
+		padding-top: 8px;
 	}
 
 }

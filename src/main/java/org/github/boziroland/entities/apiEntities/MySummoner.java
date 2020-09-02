@@ -25,6 +25,7 @@ public class MySummoner {
 	private String puuid;
 	private MutableLong revisionDate;
 	private MutableInt summonerLevel;
+	//private Integer playedMatches;
 
 	public MySummoner(Summoner s) {
 		accountId = s.getAccountId();

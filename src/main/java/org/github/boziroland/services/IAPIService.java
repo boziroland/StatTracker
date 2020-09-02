@@ -22,4 +22,6 @@ public interface IAPIService {
 	 * @param user The user whose information we want to request
 	 */
 	void requestInformation(User user);
+
+	boolean checkUser(String accountId);
 }

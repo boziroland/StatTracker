@@ -64,7 +64,7 @@ public class OWPlayer {
 		this.gamesCompetitiveLost = makeMutableInt(((Map<String, Integer>) games.get("competitive")).get("lost"));
 		this.gamesCompetitiveDraw = makeMutableInt(((Map<String, Integer>) games.get("competitive")).get("draw"));
 		this.gamesCompetitivePlayed = makeMutableInt(((Map<String, Integer>) games.get("competitive")).get("played"));
-		this.gamesCompetitiveWinRate = makeMutableInt(((Map<String, Integer>) games.get("competitive")).get("win_rate"));
+		this.gamesCompetitiveWinRate = makeMutableInt(((Map<String, Double>) games.get("competitive")).get("win_rate"));
 	}
 
 	@JsonProperty(value = "playtime")
@@ -99,6 +99,13 @@ public class OWPlayer {
 			return new MutableInt(-1);
 
 		return new MutableInt(number);
+	}
+
+	private MutableInt makeMutableInt(Double number){
+		if(number == null)
+			return new MutableInt(-1);
+
+		return new MutableInt(number.intValue());
 	}
 
 }

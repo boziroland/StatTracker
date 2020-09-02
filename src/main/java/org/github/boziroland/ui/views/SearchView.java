@@ -12,7 +12,6 @@ import org.github.boziroland.services.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringView(name = SearchView.NAME)
@@ -26,12 +25,17 @@ public class SearchView extends VerticalLayout implements View {
 
 	@PostConstruct
 	public void init() {
+		Label searchLabel = new Label("Felhasználó keresés");
+		searchLabel.setStyleName("searchBar");
+		addComponent(searchLabel);
+
 		VerticalLayout results = new VerticalLayout();
 		HorizontalLayout searchBar = new HorizontalLayout();
 		searchBar.setStyleName("searchBar");
 		results.setWidthFull();
 		searchBar.setWidthFull();
 		TextField searchField = new TextField();
+		searchField.setPlaceholder("Felhasználó neve e.g. Bonifác");
 		searchField.setWidthFull();
 		Button searchButton = new Button("Keresés");
 		searchButton.addShortcutListener(new ShortcutListener("Search", ShortcutAction.KeyCode.ENTER, null) {
@@ -45,15 +49,21 @@ public class SearchView extends VerticalLayout implements View {
 			List<User> resultList = userService.findByNameContaining(name);
 
 			results.removeAllComponents();
-			for (var r : resultList) {
-				Button result = new Button(r.getName());
-				result.setStyleName(ValoTheme.BUTTON_LINK);
-				result.addClickListener(event1 -> {
-					getUI().getNavigator().navigateTo(MainView.NAME + "/" + r.getName());
-				});
-				results.addComponent(result);
+
+			if (resultList.size() == 0) {
+				results.addComponent(new Label("Nincs találat."));
+			} else {
+				for (var r : resultList) {
+					Button result = new Button(r.getName());
+					result.setStyleName(ValoTheme.BUTTON_LINK);
+					result.addClickListener(event1 -> {
+						getUI().getNavigator().navigateTo(MainView.NAME + "/" + r.getName());
+					});
+					results.addComponent(result);
+				}
 			}
 		});
+
 		searchBar.addComponent(searchField);
 		searchBar.addComponent(searchButton);
 		addComponent(searchBar);

@@ -1,5 +1,6 @@
 package org.github.boziroland.services.impl;
 
+import com.google.api.gax.rpc.UnimplementedException;
 import lombok.SneakyThrows;
 import net.rithms.riot.api.ApiConfig;
 import net.rithms.riot.api.RiotApi;
@@ -94,19 +95,38 @@ public class LeagueService implements ILeagueService {
 			String riotName = leagueAccountId.substring(0, leagueAccountId.lastIndexOf("-"));
 
 			LOGGER.info("Getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
-
+			Summoner summoner;
 			try {
-				Summoner summoner = api.getSummonerByName(platform, riotName);
-				List<MatchReference> matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
-
-				int lastMatches = Math.min(matchList.size(), 99);
-
-				user.setLeagueData(new LeagueData(summoner, matchList.subList(0, lastMatches), leagueAccountId));
+				summoner = api.getSummonerByName(platform, riotName);
 			} catch (RiotApiException e) {
-				e.printStackTrace();
+				summoner = new Summoner();
 			}
+
+			List<MatchReference> matchList;
+			try {
+				matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
+			} catch (RiotApiException e) {
+				matchList = new ArrayList<>();
+			}
+
+			int lastMatches = Math.min(matchList.size(), 25);
+
+			user.setLeagueData(new LeagueData(summoner, matchList.subList(0, lastMatches), leagueAccountId));
 			LOGGER.info("Done getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
 		}
+	}
+
+	@Override
+	public boolean checkUser(String accountId) {
+		accountId = accountId.replace("#", "-");
+		Platform platform = getRegion(accountId);
+		String riotName = accountId.substring(0, accountId.lastIndexOf("-"));
+		try {
+			api.getSummonerByName(platform, riotName);
+		} catch (RiotApiException e) {
+			return false;
+		}
+		return true;
 	}
 
 	private Platform getRegion(String accountId) {

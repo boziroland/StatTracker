@@ -1,10 +1,12 @@
 package org.github.boziroland.ui.views;
 
 import com.vaadin.navigator.View;
+import com.vaadin.server.ClientConnector;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import org.github.boziroland.Constants;
+import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.DataUpdateException;
 import org.github.boziroland.services.impl.UserService;
 import org.github.boziroland.ui.MainUI;
@@ -23,52 +25,79 @@ public class ProfileView extends VerticalLayout implements View {
 	@Autowired
 	private UserService userService;
 
-	VerticalLayout verticalLayout = new VerticalLayout();
+	VerticalLayout formLayout = new VerticalLayout();
 
 	String[] leagueRegions = {"EUNE", "EUW", "BR", "JP", "KR", "LAN", "LAS", "OCE", "NA", "TR", "RU"};
 	String[] owRegions = {"EU", "NA", "KR", "CN", "GLOBAL"};
 
+	private TextField passwordField;
+	private TextField passwordConfirmField;
+	private TextField leagueNameField;
+	private ComboBox<String> leagueRegionBox;
+	private TextField overwatchNameField;
+	private ComboBox<String> overwatchRegionBox;
+	private TextField emailField;
+	private CheckBox receiveEmails;
+	private CheckBox profilePublic;
+	private Button saveButton;
+	private TextArea messageField;
+
+	private User user;
+
 	@PostConstruct
 	public void init() {
 
-		verticalLayout.setSizeUndefined();
-		TextField passwordField = new PasswordField("Jelszó");
-		TextField passwordAgainField = new PasswordField("Jelszó (újra)");
-		TextField leagueNameField = new TextField("League of Legends név");
-		leagueNameField.setPlaceholder("e.g. meshons");
-		final ComboBox<String> leagueRegionBox = new ComboBox<>("League of Legends régió", List.of(leagueRegions));
-		createGameNameField(leagueNameField, leagueRegionBox);
-		TextField overwatchNameField = new TextField("Overwatch név");
-		overwatchNameField.setPlaceholder("e.g. Spricsma#21972");
-		final ComboBox<String> overwatchRegionBox = new ComboBox<>("Overwatch régió", List.of(owRegions));
-		createGameNameField(overwatchNameField, overwatchRegionBox);
-		TextField emailField = new TextField("Email cím");
-		CheckBox receiveEmails = new CheckBox("Szeretnék kapni email-eket", Constants.SEND_EMAIL_DEFAULT_VALUE);
-		CheckBox profilePublic = new CheckBox("Bárki láthatja a profilom", Constants.PROFILE_PUBLIC_DEFAULT_VALUE);
-		Button saveButton = new Button("Mentés");
+		this.addAttachListener(this::onAttach);
 
-		TextArea messageField = new TextArea();
+		formLayout.setSizeUndefined();
+		passwordField = new PasswordField("Jelszó");
+		passwordConfirmField = new PasswordField("Jelszó (újra)");
+
+		leagueNameField = new TextField("League of Legends név");
+		leagueNameField.setPlaceholder("e.g. meshons");
+		leagueRegionBox = new ComboBox<>("League of Legends régió", List.of(leagueRegions));
+		FormUtils.createGameNameField(formLayout, leagueNameField, leagueRegionBox);
+
+		overwatchNameField = new TextField("Overwatch név");
+		overwatchNameField.setPlaceholder("e.g. Spricsma#21972");
+		overwatchRegionBox = new ComboBox<>("Overwatch régió", List.of(owRegions));
+		FormUtils.createGameNameField(formLayout, overwatchNameField, overwatchRegionBox);
+
+		emailField = new TextField("Email cím");
+		receiveEmails = new CheckBox("Szeretnék kapni email-eket");
+		profilePublic = new CheckBox("Bárki láthatja a profilom");
+		saveButton = new Button("Mentés");
+
+		messageField = new TextArea();
 		messageField.setEnabled(false);
 
-		BiFunction<String, String, Void> showMessage = (style, message) -> {
-			messageField.setStyleName(style);
-			messageField.setValue(message);
-			return null;
-		};
+		formLayout.addComponent(passwordField);
+		formLayout.addComponent(passwordConfirmField);
+		formLayout.addComponent(emailField);
+		formLayout.addComponent(receiveEmails);
+		formLayout.addComponent(profilePublic);
+		formLayout.addComponent(saveButton);
+		formLayout.addComponent(messageField);
+
+		addComponent(formLayout);
+		setComponentAlignment(formLayout, Alignment.MIDDLE_CENTER);
+	}
+
+	private void onAttach(AttachEvent attachEvent){
+		user = ((MainUI)getUI()).getUser();
 
 		saveButton.addClickListener(event -> {
-			var user = ((MainUI) getUI()).getUser();
 			try {
 				if (!passwordField.isEmpty()) {
-					if (passwordField.getValue().equals(passwordAgainField.getValue())) {
-						passwordField.setStyleName("grey");
-						passwordAgainField.setStyleName("grey");
+					if (passwordField.getValue().equals(passwordConfirmField.getValue())) {
+
+						passwordField.removeStyleName("red");
+						passwordConfirmField.removeStyleName("red");
 
 						userService.updatePassword(user, passwordField.getValue());
-
 					} else {
 						passwordField.setStyleName("red");
-						passwordAgainField.setStyleName("red");
+						passwordConfirmField.setStyleName("red");
 						throw new DataUpdateException("A két jelszó nem egyezik!");
 					}
 				}
@@ -84,42 +113,14 @@ public class ProfileView extends VerticalLayout implements View {
 				userService.updateEmailReceivability(user, receiveEmails.getValue());
 				userService.updateProfileVisibility(user, profilePublic.getValue());
 
-				showMessage.apply("happyColumn", "Sikeres változtatás!");
+				FormUtils.showMessage(messageField, "happyColumn", "Sikeres változtatás!");
 			} catch (DataUpdateException e) {
-				showMessage.apply("errorColumn", e.getMessage());
+				FormUtils.showMessage(messageField, "errorColumn", e.getMessage());
 			}
 		});
 
-		verticalLayout.addComponent(passwordField);
-		verticalLayout.addComponent(passwordAgainField);
-		verticalLayout.addComponent(leagueNameField);
-		verticalLayout.addComponent(overwatchNameField);
-		verticalLayout.addComponent(emailField);
-		verticalLayout.addComponent(receiveEmails);
-		verticalLayout.addComponent(profilePublic);
-		verticalLayout.addComponent(saveButton);
-		verticalLayout.addComponent(messageField);
-
-		addComponent(verticalLayout);
-		setComponentAlignment(verticalLayout, Alignment.MIDDLE_CENTER);
+		receiveEmails.setValue(user.getSendEmails());
+		profilePublic.setValue(user.getProfilePublic());
 	}
 
-	private void createGameNameField(TextField nameField, ComboBox<String> regionBox) {
-		nameField.addValueChangeListener(event -> {
-			if (!nameField.isEmpty())
-				regionBox.setStyleName("red");
-			else
-				regionBox.removeStyleName("red");
-		});
-		regionBox.addValueChangeListener(event -> {
-			if (!nameField.isEmpty()) {
-				if (regionBox.getValue() == null)
-					regionBox.setStyleName("red");
-				else
-					regionBox.removeStyleName("red");
-			}
-		});
-		verticalLayout.addComponent(nameField);
-		verticalLayout.addComponent(regionBox);
-	}
 }
