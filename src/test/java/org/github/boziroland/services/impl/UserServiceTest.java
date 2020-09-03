@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import jdk.jshell.spi.ExecutionControl;
 import org.github.boziroland.Constants;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
@@ -13,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,7 +84,7 @@ class UserServiceTest {
 	//@Test
 	void testScheduling() {
 		Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS = 2;
-		Constants.DATA_RETRIEVE_DELAY_IN_SECONDS = 5;
+		Constants.DATA_RETRIEVE_MAX_DELAY_IN_SECONDS = 5;
 		User user = TestUtils.registerAndLoginOneUser(userService);
 		//await().atMost(10, TimeUnit.SECONDS).untilCall(AwaitilityClassProxy.to(userService));
 	}

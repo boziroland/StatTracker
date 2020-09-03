@@ -70,6 +70,8 @@ public class ProfileView extends VerticalLayout implements View {
 
 		messageField = new TextArea();
 		messageField.setEnabled(false);
+		messageField.setStyleName("messageColumn");
+		messageField.addStyleName("profileMessageBox");
 
 		formLayout.addComponent(passwordField);
 		formLayout.addComponent(passwordConfirmField);
@@ -80,6 +82,10 @@ public class ProfileView extends VerticalLayout implements View {
 		formLayout.addComponent(messageField);
 
 		addComponent(formLayout);
+
+		for(var c : formLayout)
+			formLayout.setComponentAlignment(c, Alignment.MIDDLE_CENTER);
+
 		setComponentAlignment(formLayout, Alignment.MIDDLE_CENTER);
 	}
 

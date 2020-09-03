@@ -11,9 +11,8 @@ import org.github.boziroland.services.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
-import java.time.LocalTime;
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +38,13 @@ public class UserService implements IUserService {
 
 	@Autowired
 	private IScheduledInformationRetrieverService sirs;
+
+	@PostConstruct
+	private void addUsersForScheduling(){
+		var users = list();
+
+		users.forEach(this::scheduleUser);
+	}
 
 	@Override
 	public User create(User user) {
@@ -227,15 +233,15 @@ public class UserService implements IUserService {
 	}
 
 	private void scheduleUser(User user) {
-		int leagueDelay = (int) Constants.DATA_RETRIEVE_DELAY_IN_SECONDS;
-		int owDelay = (int) Constants.DATA_RETRIEVE_DELAY_IN_SECONDS;
+		Random random = new Random();
+		int delay = (int) (Constants.DATA_RETRIEVE_MIN_DELAY_IN_SECONDS + random.nextInt((int) Constants.DATA_RETRIEVE_MAX_DELAY_IN_SECONDS));
 		for (var apiService : apiServices)
-			sirs.retrieve(user, apiService, leagueDelay);
+			sirs.retrieve(user, apiService, delay);
 		//im sorry ez nagyon ronda
 		Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
-			LOGGER.info("asd");
 			update(user);
-		}, Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS + 10, leagueDelay > owDelay ? leagueDelay + 60 : owDelay + 60, TimeUnit.SECONDS);
-		LOGGER.info("Added user " + user.getName() + " to for scheduling, League in " + leagueDelay + ", OW in " + owDelay);
+			LOGGER.info("Saved " + user.getName() + "'s queried data to database");
+		}, Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS + 10, delay + 60, TimeUnit.SECONDS);
+		LOGGER.info("Added user " + user.getName() + " to for scheduling, League in " + delay + ", OW in " + delay);
 	}
 }

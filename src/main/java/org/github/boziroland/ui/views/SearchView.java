@@ -53,11 +53,16 @@ public class SearchView extends VerticalLayout implements View {
 			if (resultList.size() == 0) {
 				results.addComponent(new Label("Nincs találat."));
 			} else {
-				for (var r : resultList) {
-					Button result = new Button(r.getName());
-					result.setStyleName(ValoTheme.BUTTON_LINK);
+				for (var user : resultList) {
+					Button result = new Button(user.getName());
+					if(!user.getProfilePublic()) {
+						result.setEnabled(false);
+						result.setStyleName(ValoTheme.BUTTON_BORDERLESS);
+					}else{
+						result.setStyleName(ValoTheme.BUTTON_LINK);
+					}
 					result.addClickListener(event1 -> {
-						getUI().getNavigator().navigateTo(MainView.NAME + "/" + r.getName());
+						getUI().getNavigator().navigateTo(MainView.NAME + "/" + user.getName());
 					});
 					results.addComponent(result);
 				}

@@ -28,7 +28,7 @@ public final class FormUtils {
 	}
 
 	public static void showMessage(TextArea messageField, String style, String message){
-		messageField.setStyleName(style);
+		messageField.setStyleName(style);//addSN ha lesz idő
 		messageField.setValue(message);
 	}
 
