@@ -27,8 +27,8 @@ class MilestoneServiceTest {
 	@Test
 	void testMilestoneNotDone() {
 		User user = Mockito.mock(User.class);
-		Map<String, MutableInt> userMilestones = new HashMap<>();
-		userMilestones.put("100-as szint", new MutableInt(10));
+		Map<String, Integer> userMilestones = new HashMap<>();
+		userMilestones.put("100-as szint", 10);
 
 		when(user.getMilestoneNameUserPointMap()).thenReturn(userMilestones);
 
@@ -38,8 +38,8 @@ class MilestoneServiceTest {
 	@Test
 	void testMilestoneDone() {
 		User user = Mockito.mock(User.class);
-		Map<String, MutableInt> userMilestones = new HashMap<>();
-		userMilestones.put("100-as szint", new MutableInt(100));
+		Map<String, Integer> userMilestones = new HashMap<>();
+		userMilestones.put("100-as szint", 100);
 		when(user.getMilestoneNameUserPointMap()).thenReturn(userMilestones);
 
 		assertEquals(2, milestoneService.checkAchievements(user).size());

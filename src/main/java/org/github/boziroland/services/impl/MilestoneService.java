@@ -75,7 +75,7 @@ public class MilestoneService implements IMilestoneService {
 
 		for (var entry : milestones) {
 			if (userMilestones.containsKey(entry.getName())) {
-				if (userMilestones.get(entry.getName()).getValue() >= entry.getRequirement()) {
+				if (userMilestones.get(entry.getName()) >= entry.getRequirement()) {
 					ret.add(entry.getName());
 				}
 			}
@@ -86,9 +86,9 @@ public class MilestoneService implements IMilestoneService {
 	//let this function just be a black box
 	public void addMilestones(User user) {
 		List<Milestone> milestones = getMilestonesAsList();
-		Map<String, MutableInt> usersPreviousPoints = user.getMilestoneNameUserPointMap();
+		Map<String, Integer> usersPreviousPoints = user.getMilestoneNameUserPointMap();
 
-		Map<String, MutableInt> idPointMap = new HashMap<>();
+		Map<String, Integer> idPointMap = new HashMap<>();
 
 		boolean userHasAlreadyBeenAddedMilestones = usersPreviousPoints.size() > 0;
 
@@ -96,15 +96,15 @@ public class MilestoneService implements IMilestoneService {
 
 
 		if (userHasRecordedLeagueData) {
-			boolean userHasCompletedFirstLeagueMilestone = (milestones.get(0).getRequirement() <= user.getLeagueData().getPlayer().getSummonerLevel().getValue());
+			boolean userHasCompletedFirstLeagueMilestone = (milestones.get(0).getRequirement() <= user.getLeagueData().getPlayer().getSummonerLevel());
 			if (!userHasCompletedFirstLeagueMilestone) {
 				idPointMap.put(milestones.get(0).getName(), user.getLeagueData().getPlayer().getSummonerLevel());
 			} else if (userHasAlreadyBeenAddedMilestones) {
 				boolean userHasTriedCompletingFirstLeagueMilestonePreviouslyButFailed = (usersPreviousPoints.containsKey(milestones.get(0).getName()));
 
 				if (userHasTriedCompletingFirstLeagueMilestonePreviouslyButFailed) {
-					boolean userHasNotCompletedFirstLeagueMilestonePreviouslyButCompletedItThisTime = milestones.get(0).getRequirement() > usersPreviousPoints.get(milestones.get(0).getName()).getValue()
-							&& milestones.get(0).getRequirement() <= user.getLeagueData().getPlayer().getSummonerLevel().getValue();
+					boolean userHasNotCompletedFirstLeagueMilestonePreviouslyButCompletedItThisTime = milestones.get(0).getRequirement() > usersPreviousPoints.get(milestones.get(0).getName())
+							&& milestones.get(0).getRequirement() <= user.getLeagueData().getPlayer().getSummonerLevel();
 
 					if (userHasNotCompletedFirstLeagueMilestonePreviouslyButCompletedItThisTime) {
 
@@ -120,15 +120,15 @@ public class MilestoneService implements IMilestoneService {
 		boolean userHasRecordedOwData = (user.getOverwatchData() != null && user.getOverwatchData().getUsername() != null && user.getOverwatchData().getPlayer() != null);
 
 		if (userHasRecordedOwData) {
-			boolean userHasCompletedFirstOwMilestone = (milestones.get(1).getRequirement() <= user.getOverwatchData().getPlayer().getLevel().getValue());
+			boolean userHasCompletedFirstOwMilestone = (milestones.get(1).getRequirement() <= user.getOverwatchData().getPlayer().getLevel());
 			if (!userHasCompletedFirstOwMilestone) {
 				idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getLevel());
 			} else if (userHasAlreadyBeenAddedMilestones) {
 				boolean userHasTriedCompletingFirstOwMilestonePreviouslyButFailed = (usersPreviousPoints.containsKey(milestones.get(1).getName()));
 
 				if (userHasTriedCompletingFirstOwMilestonePreviouslyButFailed) {
-					boolean userHasNotCompletedFirstOwMilestonePreviouslyButCompletedItThisTime = (milestones.get(1).getRequirement() > usersPreviousPoints.get(milestones.get(1).getName()).getValue()
-							&& milestones.get(1).getRequirement() <= user.getOverwatchData().getPlayer().getLevel().getValue());
+					boolean userHasNotCompletedFirstOwMilestonePreviouslyButCompletedItThisTime = (milestones.get(1).getRequirement() > usersPreviousPoints.get(milestones.get(1).getName())
+							&& milestones.get(1).getRequirement() <= user.getOverwatchData().getPlayer().getLevel());
 					if (userHasNotCompletedFirstOwMilestonePreviouslyButCompletedItThisTime) {
 
 						idPointMap.put(milestones.get(1).getName(), user.getOverwatchData().getPlayer().getLevel());

@@ -2,6 +2,7 @@ package org.github.boziroland.ui.views;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.View;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
@@ -28,6 +29,7 @@ public class LoginView extends GridLayout implements View {
 	private UserService userService;
 
 	private final LoginForm loginForm = new LoginForm();
+	private TextArea messageField;
 
 	@PostConstruct
 	public void init() {
@@ -35,7 +37,7 @@ public class LoginView extends GridLayout implements View {
 		setHeight(100.0f, Unit.PERCENTAGE);
 		setStyleName("login");
 
-		TextArea messageField = new TextArea();
+		messageField = new TextArea();
 		messageField.setEnabled(false);
 		messageField.setStyleName("messageColumn");
 
@@ -68,9 +70,15 @@ public class LoginView extends GridLayout implements View {
 			}
 		});
 
+		Image image = new Image();
+		image.setSource(new ThemeResource("images/gameStats.png"));
+		image.addStyleName("loginImage");
+
+		addComponent(image);
+		setComponentAlignment(image, Alignment.MIDDLE_CENTER);
 		addComponent(loginForm);
 		setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
 		addComponent(messageField);
-		setComponentAlignment(loginForm, Alignment.BOTTOM_CENTER);
+		setComponentAlignment(messageField, Alignment.MIDDLE_CENTER);
 	}
 }

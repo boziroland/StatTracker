@@ -207,12 +207,6 @@ public class MainView extends VerticalLayout implements View {
 		return String.valueOf(number);
 	}
 
-	private String convert(MutableInt number) {
-		if (number == null || number.getValue() < 0)
-			return "-";
-		return number.toString();
-	}
-
 	private String convert(Duration time) {
 		if (time == null)
 			return "-";
@@ -231,6 +225,9 @@ public class MainView extends VerticalLayout implements View {
 				getUI().getNavigator().navigateTo(LoginView.NAME);
 			} else {
 				user = usr.get();
+
+				if(!user.getProfilePublic())
+					getUI().getNavigator().navigateTo(DefaultView.NAME);
 
 				setLeagueTabInformation();
 				setOWTabInformation();

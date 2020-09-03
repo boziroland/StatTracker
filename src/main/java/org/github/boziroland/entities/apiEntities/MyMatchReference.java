@@ -18,24 +18,24 @@ public class MyMatchReference {
 	@SequenceGenerator(name="ID_SEQUENCE", sequenceName="ID_SEQUENCE", allocationSize=1)
 	private Integer id;
 
-	private MutableLong gameId;
-	private MutableInt champion;
+	private Long gameId;
+	private Integer champion;
 	private String lane;
 	private String platformId;
-	private MutableInt queue;
-	private MutableInt season;
+	private Integer queue;
+	private Integer season;
 
 	@Column(name = "gameDate")
-	private MutableLong timestamp;
+	private Long timestamp;
 
 	public MyMatchReference(MatchReference m) {
-		gameId = new MutableLong(m.getGameId());
-		champion = new MutableInt(m.getChampion());
+		gameId = m.getGameId();
+		champion = m.getChampion();
 		lane = m.getLane();
 		platformId = m.getPlatformId();
-		queue = new MutableInt(m.getQueue());
-		season = new MutableInt(m.getSeason());
-		timestamp = new MutableLong(m.getTimestamp());
+		queue = m.getQueue();
+		season = m.getSeason();
+		timestamp = m.getTimestamp();
 	}
 
 }

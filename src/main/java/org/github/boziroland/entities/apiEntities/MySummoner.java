@@ -21,19 +21,19 @@ public class MySummoner {
 	private String accountId;
 	private String name;
 	private String idLeague;
-	private MutableInt profileIconid;
+	private Integer profileIconid;
 	private String puuid;
-	private MutableLong revisionDate;
-	private MutableInt summonerLevel;
-	//private Integer playedMatches;
+	private Long revisionDate;
+	private Integer summonerLevel;
+	private Integer playedMatches;
 
 	public MySummoner(Summoner s) {
 		accountId = s.getAccountId();
 		name = s.getName();
 		idLeague = s.getId();
-		profileIconid = new MutableInt(s.getProfileIconId());
+		profileIconid = s.getProfileIconId();
 		puuid = s.getPuuid();
-		revisionDate = new MutableLong(s.getRevisionDate());
-		summonerLevel = new MutableInt(s.getSummonerLevel());
+		revisionDate = s.getRevisionDate();
+		summonerLevel = s.getSummonerLevel();
 	}
 }

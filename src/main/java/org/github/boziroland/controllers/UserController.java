@@ -120,7 +120,7 @@ public class UserController {
 			Map<String, Integer> milestoneMapWithIntValues = new HashMap<>();
 
 			for (var m : milestoneMap.entrySet())
-				milestoneMapWithIntValues.put(m.getKey(), m.getValue().getValue());
+				milestoneMapWithIntValues.put(m.getKey(), m.getValue());
 
 			return ResponseEntity.ok(milestoneMapWithIntValues);
 		}

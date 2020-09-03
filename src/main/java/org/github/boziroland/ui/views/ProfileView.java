@@ -83,50 +83,54 @@ public class ProfileView extends VerticalLayout implements View {
 
 		addComponent(formLayout);
 
-		for(var c : formLayout)
+		for (var c : formLayout)
 			formLayout.setComponentAlignment(c, Alignment.MIDDLE_CENTER);
 
 		setComponentAlignment(formLayout, Alignment.MIDDLE_CENTER);
 	}
 
-	private void onAttach(AttachEvent attachEvent){
-		user = ((MainUI)getUI()).getUser();
+	private void onAttach(AttachEvent attachEvent) {
+		user = ((MainUI) getUI()).getUser();
 
-		saveButton.addClickListener(event -> {
-			try {
-				if (!passwordField.isEmpty()) {
-					if (passwordField.getValue().equals(passwordConfirmField.getValue())) {
+		if (user == null) {
+			getUI().getNavigator().navigateTo(LoginView.NAME);
+		} else {
+			saveButton.addClickListener(event -> {
+				try {
+					if (!passwordField.isEmpty()) {
+						if (passwordField.getValue().equals(passwordConfirmField.getValue())) {
 
-						passwordField.removeStyleName("red");
-						passwordConfirmField.removeStyleName("red");
+							passwordField.removeStyleName("red");
+							passwordConfirmField.removeStyleName("red");
 
-						userService.updatePassword(user, passwordField.getValue());
-					} else {
-						passwordField.setStyleName("red");
-						passwordConfirmField.setStyleName("red");
-						throw new DataUpdateException("A két jelszó nem egyezik!");
+							userService.updatePassword(user, passwordField.getValue());
+						} else {
+							passwordField.setStyleName("red");
+							passwordConfirmField.setStyleName("red");
+							throw new DataUpdateException("A két jelszó nem egyezik!");
+						}
 					}
+					if (!leagueNameField.isEmpty())
+						userService.updateLeagueName(user, leagueNameField.getValue() + "#" + leagueRegionBox.getValue());
+
+					if (!overwatchNameField.isEmpty())
+						userService.updateOWName(user, overwatchNameField.getValue() + "-" + overwatchRegionBox.getValue());
+
+					if (!emailField.isEmpty())
+						userService.updateEmail(user, emailField.getValue());
+
+					userService.updateEmailReceivability(user, receiveEmails.getValue());
+					userService.updateProfileVisibility(user, profilePublic.getValue());
+
+					FormUtils.showMessage(messageField, "happyColumn", "Sikeres változtatás!");
+				} catch (DataUpdateException e) {
+					FormUtils.showMessage(messageField, "errorColumn", e.getMessage());
 				}
-				if (!leagueNameField.isEmpty())
-					userService.updateLeagueName(user, leagueNameField.getValue() + "#" + leagueRegionBox.getValue());
+			});
 
-				if (!overwatchNameField.isEmpty())
-					userService.updateOWName(user, overwatchNameField.getValue() + "-" + overwatchRegionBox.getValue());
-
-				if (!emailField.isEmpty())
-					userService.updateEmail(user, emailField.getValue());
-
-				userService.updateEmailReceivability(user, receiveEmails.getValue());
-				userService.updateProfileVisibility(user, profilePublic.getValue());
-
-				FormUtils.showMessage(messageField, "happyColumn", "Sikeres változtatás!");
-			} catch (DataUpdateException e) {
-				FormUtils.showMessage(messageField, "errorColumn", e.getMessage());
-			}
-		});
-
-		receiveEmails.setValue(user.getSendEmails());
-		profilePublic.setValue(user.getProfilePublic());
+			receiveEmails.setValue(user.getSendEmails());
+			profilePublic.setValue(user.getProfilePublic());
+		}
 	}
 
 }

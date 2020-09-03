@@ -97,6 +97,7 @@ public class MainUI extends UI implements ViewDisplay {
 			registerButton.setVisible(true);
 			logoutButton.setVisible(false);
 			profileButton.setVisible(false);
+			getNavigator().navigateTo(LoginView.NAME);
 		});
 		logoutButton.setVisible(false);
 	}

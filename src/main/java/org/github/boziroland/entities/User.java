@@ -3,14 +3,12 @@ package org.github.boziroland.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.github.boziroland.Constants;
 import org.github.boziroland.entities.apiEntities.MyMatchReference;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.time.Duration;
 import java.util.*;
 
 @Entity
@@ -35,7 +33,7 @@ public class User {
 	@MapKeyColumn(name = "Milestone")
 	@Fetch(value = FetchMode.SELECT)
 	@JsonIgnore
-	Map<String, MutableInt> milestoneNameUserPointMap = new HashMap<>();
+	Map<String, Integer> milestoneNameUserPointMap = new HashMap<>();
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@Fetch(value = FetchMode.SELECT)
