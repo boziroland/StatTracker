@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import net.rithms.riot.api.endpoints.match.dto.MatchList;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import org.github.boziroland.entities.apiEntities.MyMatchReference;
@@ -30,7 +31,7 @@ public class LeagueData extends GeneralAPIData {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private MySummoner player;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) //MERGE?? ALL??
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@Fetch(value = FetchMode.SELECT)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private List<MyMatchReference> lastTenMatches;
@@ -39,10 +40,12 @@ public class LeagueData extends GeneralAPIData {
 		username = accountName;
 	}
 
-	public LeagueData(Summoner player, List<MatchReference> lastTenMatches, String accountName) {
+	public LeagueData(Summoner player, MatchList matches, String accountName) {
+		List<MatchReference> matchList = matches.getMatches();
 		username = accountName;
 		setPlayer(player);
-		setLastTenMatches(lastTenMatches);
+		getPlayer().setPlayedMatches(matches.getTotalGames());
+		setLastTenMatches(matchList.subList(0, Math.min(matchList.size(), 10)));
 	}
 
 	public LeagueData(MySummoner player, List<MyMatchReference> lastTenMatches, String accountName) {

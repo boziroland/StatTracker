@@ -4,6 +4,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -12,6 +13,7 @@ import org.jfree.data.xy.XYSeries;
 import org.vaadin.addon.JFreeChartWrapper;
 
 import java.awt.*;
+import java.text.NumberFormat;
 import java.util.List;
 
 public final class ChartCreator {
@@ -25,28 +27,36 @@ public final class ChartCreator {
 
 	private static Component getLevelChart(String name, List<Long> data) {
 
-		DefaultTableXYDataset ds = new DefaultTableXYDataset();
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMinimumFractionDigits(0);
+		nf.setMaximumFractionDigits(0);
+
+		DefaultTableXYDataset defaultDataset = new DefaultTableXYDataset();
 		NumberAxis xAxis = new NumberAxis("Days");
 		xAxis.setLabelPaint(Color.white);
 		xAxis.setTickLabelPaint(Color.white);
+		xAxis.setTickUnit(new NumberTickUnit(1));
+		xAxis.setNumberFormatOverride(nf);
+
 		NumberAxis yAxis = new NumberAxis(name);
 		yAxis.setLabelPaint(Color.white);
 		yAxis.setTickLabelPaint(Color.white);
+		yAxis.setNumberFormatOverride(nf);
 
 		XYSeries series;
 
-		DefaultTableXYDataset ds2 = new DefaultTableXYDataset();
+		DefaultTableXYDataset dataset2 = new DefaultTableXYDataset();
 		series = new XYSeries(name, false, false);
 
 		for(int i = data.size() - 1; i >= 0; i--){
 			series.add(i, data.get(i));
 		}
 
-		ds2.addSeries(series);
+		dataset2.addSeries(series);
 
 		XYAreaRenderer r = new XYAreaRenderer(XYAreaRenderer.AREA_AND_SHAPES);
 
-		XYPlot plot2 = new XYPlot(ds2, xAxis, yAxis,
+		XYPlot plot2 = new XYPlot(dataset2, xAxis, yAxis,
 				new XYLineAndShapeRenderer());
 
 		plot2.setBackgroundPaint(Color.darkGray.darker());
@@ -54,7 +64,7 @@ public final class ChartCreator {
 		plot2.setDomainGridlinesVisible(true);
 		plot2.setRangeGridlinePaint(Color.white);
 
-		plot2.setDataset(1, ds);
+		plot2.setDataset(1, defaultDataset);
 
 		plot2.setRenderer(1, r);
 

@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import net.rithms.riot.api.ApiConfig;
 import net.rithms.riot.api.RiotApi;
 import net.rithms.riot.api.RiotApiException;
+import net.rithms.riot.api.endpoints.match.dto.MatchList;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import net.rithms.riot.constant.Platform;
@@ -102,16 +103,14 @@ public class LeagueService implements ILeagueService {
 				summoner = new Summoner();
 			}
 
-			List<MatchReference> matchList;
+			MatchList matchList;
 			try {
-				matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
+				matchList = api.getMatchListByAccountId(platform, summoner.getAccountId());
 			} catch (RiotApiException e) {
-				matchList = new ArrayList<>();
+				matchList = new MatchList();
 			}
 
-			int lastMatches = Math.min(matchList.size(), 25);
-
-			user.setLeagueData(new LeagueData(summoner, matchList.subList(0, lastMatches), leagueAccountId));
+			user.setLeagueData(new LeagueData(summoner, matchList, leagueAccountId));
 			LOGGER.info("Done getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
 		}
 	}

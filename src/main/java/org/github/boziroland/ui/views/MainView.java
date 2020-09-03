@@ -142,8 +142,12 @@ public class MainView extends VerticalLayout implements View {
 		final FormLayout formLayout = new FormLayout();
 		setupLayouts(gridLayout, formLayout);
 
-		formLayout.addComponent(createDataTextField(gridLayout, "Profile level:", user.hasLeagueData() ? convert(user.getLeagueData().getPlayer().getSummonerLevel()) : "-", user::getLeagueLevelList));
-		formLayout.addComponent(createDataTextField(gridLayout, "Played matches:", user.hasLeagueData() ? convert(user.getLeagueData().getLastTenMatches().size()) : "-", user::getLeaguePlayedMatchesList));
+		Label nameLabel = new Label("<b><u>" + (user.hasLeagueData() ? user.getLeagueData().getUsername() : "-") + "</u></b>", ContentMode.HTML);
+		nameLabel.setStyleName("nameLabelPadding");
+
+		formLayout.addComponent(nameLabel);
+		formLayout.addComponent(createDataTextField(gridLayout, "Profile level", user.hasLeagueData() ? convert(user.getLeagueData().getPlayer().getSummonerLevel()) : "-", user::getLeagueLevelList));
+		formLayout.addComponent(createDataTextField(gridLayout, "Played matches", user.hasLeagueData() ? convert(user.getLeagueData().getPlayer().getPlayedMatches()) : "-", user::getLeaguePlayedMatchesList));
 
 		tabSheet.addTab(gridLayout, "League of Legends");
 	}
@@ -153,12 +157,16 @@ public class MainView extends VerticalLayout implements View {
 		final FormLayout formLayout = new FormLayout();
 		setupLayouts(gridLayout, formLayout);
 
-		formLayout.addComponent(createDataTextField(gridLayout, "Profile level:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getLevel()) : "-", user::getOverwatchLevelList));
-		formLayout.addComponent(createDataTextField(gridLayout, "Played competitive matches:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesCompetitivePlayed()) : "-", user::getOverwatchCompetitiveMatchesList));
-		formLayout.addComponent(createDataTextField(gridLayout, "Won competitive matches:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesCompetitiveWon()) : "-", user::getOverwatchCompetitiveMatchesWonList));
-		formLayout.addComponent(createDataTextField(gridLayout, "Won casual matches:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesQuickplayWon()) : "-", user::getOverwatchQuickplayMatchesWonList));
-		formLayout.addComponent(createDataTextField(gridLayout, "Competitive playtime:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getPlaytimeCompetitive()) : "-", user::getOverwatchCompetitivePlaytimeList));
-		formLayout.addComponent(createDataTextField(gridLayout, "Quickplay playtime:", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getPlaytimeQuickplay()) : "-", user::getOverwatchQuickplayPlaytimeList));
+		Label nameLabel = new Label("<b><u>" + (user.hasOverwatchData() ? user.getOverwatchData().getUsername() : "-") + "</u></b>", ContentMode.HTML);
+		nameLabel.setStyleName("nameLabelPadding");
+
+		formLayout.addComponent(nameLabel);
+		formLayout.addComponent(createDataTextField(gridLayout, "Profile level", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getLevel()) : "-", user::getOverwatchLevelList));
+		formLayout.addComponent(createDataTextField(gridLayout, "Played competitive matches", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesCompetitivePlayed()) : "-", user::getOverwatchCompetitiveMatchesList));
+		formLayout.addComponent(createDataTextField(gridLayout, "Won competitive matches", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesCompetitiveWon()) : "-", user::getOverwatchCompetitiveMatchesWonList));
+		formLayout.addComponent(createDataTextField(gridLayout, "Won casual matches", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getGamesQuickplayWon()) : "-", user::getOverwatchQuickplayMatchesWonList));
+		formLayout.addComponent(createDataTextField(gridLayout, "Competitive playtime", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getPlaytimeCompetitive()) : "-", user::getOverwatchCompetitivePlaytimeList));
+		formLayout.addComponent(createDataTextField(gridLayout, "Quickplay playtime", user.hasOverwatchData() ? convert(user.getOverwatchData().getPlayer().getPlaytimeQuickplay()) : "-", user::getOverwatchQuickplayPlaytimeList));
 
 		tabSheet.addTab(gridLayout, "Overwatch");
 	}
@@ -172,13 +180,6 @@ public class MainView extends VerticalLayout implements View {
 		horizontalLayout.addComponent(textField);
 
 		final Button showGraphButton = new Button("Show graph", (event) -> {
-
-			Image image = new Image();
-			image.setSource(new ThemeResource("images/loading.svg"));
-			parent.removeComponent(1, 0);
-			parent.addComponent(image, 1, 0);
-			parent.setComponentAlignment(image, Alignment.MIDDLE_CENTER);
-
 			var chart = ChartCreator.createChart(text, (List<Long>) data.get());
 
 			parent.removeComponent(1, 0);
@@ -226,7 +227,7 @@ public class MainView extends VerticalLayout implements View {
 			} else {
 				user = usr.get();
 
-				if(!user.getProfilePublic())
+				if (!user.getProfilePublic())
 					getUI().getNavigator().navigateTo(DefaultView.NAME);
 
 				setLeagueTabInformation();
@@ -240,7 +241,7 @@ public class MainView extends VerticalLayout implements View {
 
 				List<Comment> commentsOnProfile = commentService.findByReceiver(user);
 
-				for(int i = commentsOnProfile.size() - 1; i >= 0; i--){
+				for (int i = commentsOnProfile.size() - 1; i >= 0; i--) {
 					var comment = commentsOnProfile.get(i);
 					User sender = userService.findById(comment.getSenderId()).get();
 					addComment(sender, comment.getMessage(), comment.getTime());

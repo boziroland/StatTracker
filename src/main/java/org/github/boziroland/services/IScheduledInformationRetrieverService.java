@@ -15,7 +15,16 @@ public interface IScheduledInformationRetrieverService {
 	 */
 	void retrieve(User user, IAPIService service, long delay);
 
+	/**
+	 * Sends an email to the user in the parameter with the message in the parameter
+	 * @param user The user whom the email is to be sent
+	 * @param message The message of the email
+	 */
 	void sendEmail(User user, String message);
 
+	/**
+	 * Checks the users milestones
+	 * @param user The user whose milestones are to be checked
+	 */
 	void checkMilestones(User user);
 }

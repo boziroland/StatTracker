@@ -77,12 +77,21 @@ public interface IMilestoneService {
 	 */
 	List<String> checkAchievements(User user);
 
+	/**
+	 * Adds milestones to the user in the parameter
+	 * @param user The user whose milestones are to be added
+	 */
 	void addMilestones(User user);
 
+	/**
+	 * Sets the milestones to be used by the program
+	 * @param m The list of the milestones
+	 */
 	void setMilestones(List<Milestone> m);
 
+	/**
+	 * Returns the milestones as a list
+	 * @return the list of the milestones
+	 */
 	List<Milestone> getMilestonesAsList();
-
-	Set<Milestone> getMilestonesAsSet();
-
 }
