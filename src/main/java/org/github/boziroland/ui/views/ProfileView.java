@@ -54,12 +54,12 @@ public class ProfileView extends VerticalLayout implements View {
 		passwordConfirmField = new PasswordField("Jelszó (újra)");
 
 		leagueNameField = new TextField("League of Legends név");
-		leagueNameField.setPlaceholder("e.g. meshons");
+		leagueNameField.setPlaceholder("pl. Meg");
 		leagueRegionBox = new ComboBox<>("League of Legends régió", List.of(leagueRegions));
 		FormUtils.createGameNameField(formLayout, leagueNameField, leagueRegionBox);
 
 		overwatchNameField = new TextField("Overwatch név");
-		overwatchNameField.setPlaceholder("e.g. Spricsma#21972");
+		overwatchNameField.setPlaceholder("pl. Michael#34262");
 		overwatchRegionBox = new ComboBox<>("Overwatch régió", List.of(owRegions));
 		FormUtils.createGameNameField(formLayout, overwatchNameField, overwatchRegionBox);
 

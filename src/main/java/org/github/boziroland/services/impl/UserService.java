@@ -204,10 +204,10 @@ public class UserService implements IUserService {
 
 			LOGGER.info("New registered user: {}", name);
 			Optional<User> user = Optional.of(new User(name, securityService.hashPassword(password), email, commentsOnProfile, comments, leagueID, overwatchName));
+			//sirs.sendEmail(user.get(), "Thanks for registering!"); //pusztán demonstrációs célból
 			return Optional.of(create(user.get()));
 		}
 	}
-
 
 	@Override
 	public Optional<User> register(String name, String password, String email, String leagueName, String

@@ -93,13 +93,13 @@ public class RegistrationView extends GridLayout implements View {
 		registrationForm.addComponent(emailField);
 
 		leagueNameField = new TextField("League of Legends név");
-		leagueNameField.setPlaceholder("e.g. meshons");
+		leagueNameField.setPlaceholder("pl. Eliza");
 		binder.forField(leagueNameField).bind(DummyUser::getLeagueName, DummyUser::setLeagueName);
 		leagueRegionBox = new ComboBox<>("League of Legends régió", List.of(leagueRegions));
 		FormUtils.createGameNameField(registrationForm, leagueNameField, leagueRegionBox);
 
 		overwatchNameField = new TextField("Overwatch név");
-		overwatchNameField.setPlaceholder("e.g. Spricsma#21972");
+		overwatchNameField.setPlaceholder("pl. Johnathan#1435");
 		binder.forField(overwatchNameField).bind(DummyUser::getOwName, DummyUser::setOwName);
 		overwatchRegionBox = new ComboBox<>("Overwatch régió", List.of(owRegions));
 		FormUtils.createGameNameField(registrationForm, overwatchNameField, overwatchRegionBox);
