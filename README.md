@@ -1,3 +1,21 @@
+# Futtatáshoz szükséges fájlok
+
+`src/main/resources/properties/email.properties` :
+```
+username = <email cím>
+password = <jelszó>
+```
+`src/main/resources/properties/riotAPI.properties `:
+```
+key = <Riot Games API Kulcs>
+```
+
+`src/main/resources/properties/translateAPILocation.properties` :
+```
+location = <translateAPIKey.json fájl helye>
+```
+A `translateAPIKey.json` egy Google által generált fájl, mely szükséges az fordító szolgáltatásuk használatához.
+
 # Üzleti igények
 
 ## Szöveges leírás
