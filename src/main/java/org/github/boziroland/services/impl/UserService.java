@@ -13,34 +13,31 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class UserService implements IUserService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
-
-	@Autowired
-	private IUserRepository userRepository;
-
-	@Autowired
-	private IMilestoneService milestoneService;
-
-	@Autowired
-	private ISecurityService securityService;
-
 	@Autowired
 	List<IAPIService> apiServices;
-
+	@Autowired
+	private IUserRepository userRepository;
+	@Autowired
+	private IMilestoneService milestoneService;
+	@Autowired
+	private ISecurityService securityService;
 	@Autowired
 	private IScheduledInformationRetrieverService sirs;
 
 	@PostConstruct
-	private void addUsersForScheduling(){
+	private void addUsersForScheduling() {
 		var users = list();
 
-		users.forEach(this::scheduleUser);
+		//users.forEach(this::scheduleUser);
 	}
 
 	@Override

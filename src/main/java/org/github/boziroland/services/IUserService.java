@@ -27,8 +27,8 @@ public interface IUserService {
 	 * Passes the User instance to
 	 *
 	 * @param user The user to pass
-	 * @see IUserDAO#createOrUpdate(User)
 	 * @return The updated user
+	 * @see IUserDAO#createOrUpdate(User)
 	 */
 	User update(User user);
 
@@ -37,8 +37,8 @@ public interface IUserService {
 	 *
 	 * @param user     The user whose password is to be updated
 	 * @param password The password which the password shall be updated to
-	 * @throws DataUpdateException
 	 * @return The updated user
+	 * @throws DataUpdateException
 	 */
 	User updatePassword(User user, String password);
 
@@ -47,8 +47,8 @@ public interface IUserService {
 	 *
 	 * @param user  The user whose email is to be updated
 	 * @param email The email which the email shall be updated to
-	 * @throws DataUpdateException
 	 * @return The updated user
+	 * @throws DataUpdateException
 	 */
 	User updateEmail(User user, String email);
 
@@ -57,8 +57,8 @@ public interface IUserService {
 	 *
 	 * @param user     The user whose profile visibility is to be updated
 	 * @param isPublic The visibility which the profile visibility shall be updated to
-	 * @throws DataUpdateException
 	 * @return The updated user
+	 * @throws DataUpdateException
 	 */
 	User updateProfileVisibility(User user, boolean isPublic);
 
@@ -67,8 +67,8 @@ public interface IUserService {
 	 *
 	 * @param user       The user whose email receivability is to be updated
 	 * @param canReceive The email receivability which the email receivability shall be updated to
-	 * @throws DataUpdateException
 	 * @return The updated user
+	 * @throws DataUpdateException
 	 */
 	User updateEmailReceivability(User user, boolean canReceive);
 
@@ -77,8 +77,8 @@ public interface IUserService {
 	 *
 	 * @param user The user whose League name is to be updated
 	 * @param name The name which the name shall be updated to
-	 * @throws DataUpdateException
 	 * @return The updated user
+	 * @throws DataUpdateException
 	 */
 	User updateLeagueName(User user, String name);
 
@@ -87,8 +87,8 @@ public interface IUserService {
 	 *
 	 * @param user The user whose Overwatch name is to be updated
 	 * @param name The name which the name shall be updated to
-	 * @throws DataUpdateException
 	 * @return The updated user
+	 * @throws DataUpdateException
 	 */
 	User updateOWName(User user, String name);
 
@@ -117,8 +117,8 @@ public interface IUserService {
 	 * @param comments          The user's comments
 	 * @param leagueName        The user's League account name
 	 * @param overwatchName     The user's Overwatch account name
-	 * @see IUserDAO#createOrUpdate(User)
 	 * @return The updated user
+	 * @see IUserDAO#createOrUpdate(User)
 	 */
 	User update(int id, String name, String password, String email, List<Comment> commentsOnProfile, List<Comment> comments, String leagueName, String overwatchName);
 

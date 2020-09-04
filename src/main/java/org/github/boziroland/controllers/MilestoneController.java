@@ -1,6 +1,5 @@
 package org.github.boziroland.controllers;
 
-import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Milestone;
 import org.github.boziroland.services.IMilestoneService;
 import org.slf4j.Logger;

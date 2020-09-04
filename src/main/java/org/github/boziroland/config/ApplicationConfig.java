@@ -11,7 +11,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Properties;
 
 @Configuration

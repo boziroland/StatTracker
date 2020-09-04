@@ -16,8 +16,8 @@ import java.util.Map;
 public class OWPlayer {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ID_SEQUENCE")
-	@SequenceGenerator(name="ID_SEQUENCE", sequenceName="ID_SEQUENCE", allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQUENCE")
+	@SequenceGenerator(name = "ID_SEQUENCE", sequenceName = "ID_SEQUENCE", allocationSize = 1)
 	private Integer id;
 
 	private String username;
@@ -45,7 +45,7 @@ public class OWPlayer {
 	private Integer competitiveSupportRank;
 
 	@JsonProperty(value = "level")
-	public void setLevel(Integer level){
+	public void setLevel(Integer level) {
 		this.level = level;
 	}
 

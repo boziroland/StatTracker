@@ -17,6 +17,12 @@ import java.util.*;
 @Table(name = "RUser")
 public class User {
 
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "MilestonePointJoinTable")
+	@MapKeyColumn(name = "Milestone")
+	@Fetch(value = FetchMode.SELECT)
+	@JsonIgnore
+	Map<String, Integer> milestoneNameUserPointMap = new HashMap<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQUENCE")
 	@SequenceGenerator(name = "ID_SEQUENCE", sequenceName = "ID_SEQUENCE", allocationSize = 1)
@@ -24,17 +30,8 @@ public class User {
 	private String name;
 	private String password;
 	private String email;
-
 	private Boolean profilePublic;
 	private Boolean sendEmails;
-
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "MilestonePointJoinTable")
-	@MapKeyColumn(name = "Milestone")
-	@Fetch(value = FetchMode.SELECT)
-	@JsonIgnore
-	Map<String, Integer> milestoneNameUserPointMap = new HashMap<>();
-
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@Fetch(value = FetchMode.SELECT)
 	private List<Comment> commentsOnProfile = new ArrayList<>();
@@ -145,24 +142,24 @@ public class User {
 		return leagueDataList.size() > 0;
 	}
 
-	public void setLeagueData(LeagueData leagueData) {
-		leagueDataList.add(leagueData);
-	}
-
 	public LeagueData getLeagueData() {
 		if (leagueDataList.size() == 0)
 			return null;
 		return leagueDataList.get(leagueDataList.size() - 1);
 	}
 
-	public List<LeagueData> getLeagueDataList(){
+	public void setLeagueData(LeagueData leagueData) {
+		leagueDataList.add(leagueData);
+	}
+
+	public List<LeagueData> getLeagueDataList() {
 		return leagueDataList;
 	}
 
-	public List<Long> getLeagueLevelList(){
+	public List<Long> getLeagueLevelList() {
 		List<Long> ret = new ArrayList<>();
-		for(var data : leagueDataList){
-			if(data.getPlayer() == null)
+		for (var data : leagueDataList) {
+			if (data.getPlayer() == null)
 				ret.add(null);
 			else
 				ret.add(data.getPlayer().getSummonerLevel().longValue());
@@ -171,33 +168,29 @@ public class User {
 		return ret;
 	}
 
-	public List<Long> getLeaguePlayedMatchesList(){
+	public List<Long> getLeaguePlayedMatchesList() {
 		List<Long> ret = new ArrayList<>();
 		ret.add(null);
-		for(int i = 1; i < leagueDataList.size(); i++){
-			if(leagueDataList.get(i) != null && leagueDataList.get(i - 1) != null){
+		for (int i = 1; i < leagueDataList.size(); i++) {
+			if (leagueDataList.get(i) != null && leagueDataList.get(i - 1) != null) {
 				var matchesToday = leagueDataList.get(i).getLastTenMatches();
 				var matchesYesterday = leagueDataList.get(i - 1).getLastTenMatches();
-				if(matchesYesterday.size() > 0) {
+				if (matchesYesterday.size() > 0) {
 					long playedMatchesSinceYesterday = 0;
 					for (MyMatchReference myMatchReference : matchesToday) {
 						if (!myMatchReference.getId().equals(matchesYesterday.get(0).getId()))
 							playedMatchesSinceYesterday++;
 					}
 					ret.add(playedMatchesSinceYesterday);
-				}else{
+				} else {
 					ret.add((long) matchesToday.size());
 				}
-			}else{
+			} else {
 				ret.add(null);
 			}
 		}
 
 		return ret;
-	}
-
-	public void setOverwatchData(OverwatchData overwatchData) {
-		overwatchDataList.add(overwatchData);
 	}
 
 	public OverwatchData getOverwatchData() {
@@ -206,14 +199,18 @@ public class User {
 		return overwatchDataList.get(overwatchDataList.size() - 1);
 	}
 
-	public List<OverwatchData> getOverwatchDataList(){
+	public void setOverwatchData(OverwatchData overwatchData) {
+		overwatchDataList.add(overwatchData);
+	}
+
+	public List<OverwatchData> getOverwatchDataList() {
 		return overwatchDataList;
 	}
 
-	public List<Long> getOverwatchLevelList(){
+	public List<Long> getOverwatchLevelList() {
 		List<Long> ret = new ArrayList<>();
-		for(var data : overwatchDataList){
-			if(data.getPlayer() == null)
+		for (var data : overwatchDataList) {
+			if (data.getPlayer() == null)
 				ret.add(null);
 			else
 				ret.add(data.getPlayer().getLevel().longValue());
@@ -222,10 +219,10 @@ public class User {
 		return ret;
 	}
 
-	public List<Long> getOverwatchCompetitiveMatchesList(){
+	public List<Long> getOverwatchCompetitiveMatchesList() {
 		List<Long> ret = new ArrayList<>();
-		for(var data : overwatchDataList){
-			if(data.getPlayer() == null)
+		for (var data : overwatchDataList) {
+			if (data.getPlayer() == null)
 				ret.add(null);
 			else
 				ret.add(data.getPlayer().getGamesCompetitivePlayed().longValue());
@@ -234,10 +231,10 @@ public class User {
 		return ret;
 	}
 
-	public List<Long> getOverwatchCompetitiveMatchesWonList(){
+	public List<Long> getOverwatchCompetitiveMatchesWonList() {
 		List<Long> ret = new ArrayList<>();
-		for(var data : overwatchDataList){
-			if(data.getPlayer() == null)
+		for (var data : overwatchDataList) {
+			if (data.getPlayer() == null)
 				ret.add(null);
 			else
 				ret.add(data.getPlayer().getGamesCompetitiveWon().longValue());
@@ -246,10 +243,10 @@ public class User {
 		return ret;
 	}
 
-	public List<Long> getOverwatchCompetitiveMatchesLostList(){
+	public List<Long> getOverwatchCompetitiveMatchesLostList() {
 		List<Long> ret = new ArrayList<>();
-		for(var data : overwatchDataList){
-			if(data.getPlayer() == null)
+		for (var data : overwatchDataList) {
+			if (data.getPlayer() == null)
 				ret.add(null);
 			else
 				ret.add(data.getPlayer().getGamesCompetitiveLost().longValue());
@@ -258,10 +255,10 @@ public class User {
 		return ret;
 	}
 
-	public List<Long> getOverwatchQuickplayMatchesWonList(){
+	public List<Long> getOverwatchQuickplayMatchesWonList() {
 		List<Long> ret = new ArrayList<>();
-		for(var data : overwatchDataList){
-			if(data.getPlayer() == null)
+		for (var data : overwatchDataList) {
+			if (data.getPlayer() == null)
 				ret.add(null);
 			else
 				ret.add(data.getPlayer().getGamesQuickplayWon().longValue());
@@ -270,10 +267,10 @@ public class User {
 		return ret;
 	}
 
-	public List<Long> getOverwatchQuickplayPlaytimeList(){
+	public List<Long> getOverwatchQuickplayPlaytimeList() {
 		List<Long> ret = new ArrayList<>();
-		for(var data : overwatchDataList){
-			if(data.getPlayer() == null)
+		for (var data : overwatchDataList) {
+			if (data.getPlayer() == null)
 				ret.add(null);
 			else
 				ret.add(data.getPlayer().getPlaytimeQuickplay().toSeconds());
@@ -282,10 +279,10 @@ public class User {
 		return ret;
 	}
 
-	public List<Long> getOverwatchCompetitivePlaytimeList(){
+	public List<Long> getOverwatchCompetitivePlaytimeList() {
 		List<Long> ret = new ArrayList<>();
-		for(var data : overwatchDataList){
-			if(data.getPlayer() == null)
+		for (var data : overwatchDataList) {
+			if (data.getPlayer() == null)
 				ret.add(null);
 			else
 				ret.add(data.getPlayer().getPlaytimeCompetitive().toSeconds());

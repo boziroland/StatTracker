@@ -15,9 +15,6 @@ import org.github.boziroland.entities.User;
 import org.github.boziroland.ui.views.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @EqualsAndHashCode(callSuper = true)
 @SpringUI
 @SpringViewDisplay
@@ -61,7 +58,7 @@ public class MainUI extends UI implements ViewDisplay {
 		getNavigator().setErrorView(DefaultView.class);
 	}
 
-	private CssLayout initializeNavbar(){
+	private CssLayout initializeNavbar() {
 		CssLayout navBar = new CssLayout();
 
 		initializeButtons();
@@ -83,7 +80,7 @@ public class MainUI extends UI implements ViewDisplay {
 
 	private void initializeButtons() {
 		mainLabel = new Label("Game Statistics Tracker");
-		mainLabel.setStyleName("mainLabelPadding");
+		mainLabel.setStyleName("mainLabelFontSize");
 
 		mainButton = new Button("Főoldal", clickEvent -> getNavigator().navigateTo(MainView.NAME));
 		loginButton = new Button("Belépés", clickEvent -> getNavigator().navigateTo(LoginView.NAME));

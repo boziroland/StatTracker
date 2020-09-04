@@ -16,6 +16,7 @@ public interface IAPIService {
 
 	/**
 	 * Checks if the user whose name is in the parameter can be queried from the game's API
+	 *
 	 * @param accountId The user's account name
 	 * @return true, if they can be, false otherwise
 	 */

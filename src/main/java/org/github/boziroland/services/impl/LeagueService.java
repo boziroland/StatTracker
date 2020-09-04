@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import com.google.api.gax.rpc.UnimplementedException;
 import lombok.SneakyThrows;
 import net.rithms.riot.api.ApiConfig;
 import net.rithms.riot.api.RiotApi;
@@ -22,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

@@ -12,21 +12,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Milestone {
 
-	public enum Game {
-		LEAGUE, OVERWATCH
-	}
-
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ID_SEQUENCE")
-	@SequenceGenerator(name="ID_SEQUENCE", sequenceName="ID_SEQUENCE", allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ID_SEQUENCE")
+	@SequenceGenerator(name = "ID_SEQUENCE", sequenceName = "ID_SEQUENCE", allocationSize = 1)
 	private Integer id;
-
 	private String name;
-
 	private String description;
-
 	private Integer requirement;
-
 	@Enumerated
 	private Game game;
 
@@ -35,6 +27,10 @@ public class Milestone {
 		this.description = description;
 		this.requirement = requirement;
 		this.game = game;
+	}
+
+	public enum Game {
+		LEAGUE, OVERWATCH
 	}
 }
 

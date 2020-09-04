@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.function.BiFunction;
 
 @SpringView(name = RegistrationView.NAME)
 @SpringComponent
@@ -24,25 +23,12 @@ public class RegistrationView extends GridLayout implements View {
 	public static final String NAME = "register";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationView.class);
-
-	@Autowired
-	private UserService userService;
-
-	@Data
-	private class DummyUser {
-		String username = "";
-		String password = "";
-		String email = "";
-		String leagueName = "";
-		String owName = "";
-	}
-
 	private final Binder<DummyUser> binder = new Binder<>(DummyUser.class);
 	private final FormLayout registrationForm = new FormLayout();
-
-	String[] leagueRegions = { "EUNE", "EUW", "BR", "JP", "KR", "LAN", "LAS", "OCE", "NA", "TR", "RU" };
-	String[] owRegions = { "EU", "US", "KR", "CN", "GLOBAL" };
-
+	String[] leagueRegions = {"EUNE", "EUW", "BR", "JP", "KR", "LAN", "LAS", "OCE", "NA", "TR", "RU"};
+	String[] owRegions = {"EU", "US", "KR", "CN", "GLOBAL"};
+	@Autowired
+	private UserService userService;
 	private TextField usernameField;
 	private PasswordField passwordField;
 	private PasswordField passwordConfirmField;
@@ -164,6 +150,15 @@ public class RegistrationView extends GridLayout implements View {
 		setComponentAlignment(registrationForm, Alignment.MIDDLE_CENTER);
 		setComponentAlignment(messageField, Alignment.TOP_CENTER);
 		setComponentAlignment(loginSuggestionLayout, Alignment.MIDDLE_CENTER);
+	}
+
+	@Data
+	private class DummyUser {
+		String username = "";
+		String password = "";
+		String email = "";
+		String leagueName = "";
+		String owName = "";
 	}
 
 }

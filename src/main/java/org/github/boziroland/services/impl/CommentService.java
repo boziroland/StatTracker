@@ -102,7 +102,7 @@ public class CommentService implements ICommentService {
 	public Comment sendComment(Integer fromId, Integer toId, String message) {
 		var from = userService.findById(fromId);
 		var to = userService.findById(toId);
-		if(from.isPresent() && to.isPresent()){
+		if (from.isPresent() && to.isPresent()) {
 			return sendComment(from.get(), to.get(), message);
 		}
 		return null;

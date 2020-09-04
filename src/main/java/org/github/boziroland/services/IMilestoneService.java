@@ -7,7 +7,6 @@ import org.github.boziroland.repositories.IMilestoneRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * The interface IMilestoneService defines the performable CRUD operations on the
@@ -79,18 +78,21 @@ public interface IMilestoneService {
 
 	/**
 	 * Adds milestones to the user in the parameter
+	 *
 	 * @param user The user whose milestones are to be added
 	 */
 	void addMilestones(User user);
 
 	/**
 	 * Sets the milestones to be used by the program
+	 *
 	 * @param m The list of the milestones
 	 */
 	void setMilestones(List<Milestone> m);
 
 	/**
 	 * Returns the milestones as a list
+	 *
 	 * @return the list of the milestones
 	 */
 	List<Milestone> getMilestonesAsList();

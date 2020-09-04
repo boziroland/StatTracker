@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.services.IMilestoneService;
 import org.junit.jupiter.api.Test;

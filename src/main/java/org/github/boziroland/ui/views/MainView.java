@@ -8,7 +8,6 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.github.boziroland.entities.Comment;
 import org.github.boziroland.entities.User;
@@ -32,24 +31,17 @@ import java.util.function.Supplier;
 public class MainView extends VerticalLayout implements View {
 
 	public static final String NAME = "main";
-
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private MilestoneService milestoneService;
-
-	@Autowired
-	private CommentService commentService;
-
 	private final TabSheet tabSheet = new TabSheet();
-
-	private User user;
-
 	private final VerticalLayout commentSectionlayout = new VerticalLayout();
-
 	TextArea commentArea = new TextArea();
 	Button sendMessageButton = new Button("Elküld");
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private MilestoneService milestoneService;
+	@Autowired
+	private CommentService commentService;
+	private User user;
 
 	@PostConstruct
 	void init() {

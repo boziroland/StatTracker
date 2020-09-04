@@ -10,6 +10,7 @@ import java.util.Optional;
 
 /**
  * The interface ICommentService defines the performable CRUD operations on the
+ *
  * @see Comment class.
  */
 public interface ICommentService {
@@ -116,8 +117,8 @@ public interface ICommentService {
 	/**
 	 * Sends a comment
 	 *
-	 * @param fromId    The id of the sender of the comment
-	 * @param toId      The id of thereceiver of the comment
+	 * @param fromId  The id of the sender of the comment
+	 * @param toId    The id of thereceiver of the comment
 	 * @param message The message of the comment
 	 * @return The saved comment
 	 */

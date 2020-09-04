@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.github.boziroland.entities.OverwatchData;
 import org.github.boziroland.entities.User;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +23,11 @@ import java.util.Optional;
 public class OverwatchService implements IOverwatchService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OverwatchService.class);
-
+	private final RestTemplate restTemplate = new RestTemplateBuilder().build();
 	@Autowired
 	private IOverwatchRepository overwatchRepository;
-
 	@Autowired
 	private IOWPlayerRepository owPlayerReposity;
-
-	private final RestTemplate restTemplate = new RestTemplateBuilder().build();
 
 	public OverwatchService() {
 	}

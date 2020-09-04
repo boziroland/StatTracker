@@ -1,12 +1,10 @@
 package org.github.boziroland.ui.views;
 
-import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.View;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
-import org.github.boziroland.controllers.CommentController;
 import org.github.boziroland.exceptions.LoginException;
 import org.github.boziroland.services.impl.UserService;
 import org.github.boziroland.ui.MainUI;
@@ -24,11 +22,9 @@ public class LoginView extends GridLayout implements View {
 	public static final String NAME = "login";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoginView.class);
-
+	private final LoginForm loginForm = new LoginForm();
 	@Autowired
 	private UserService userService;
-
-	private final LoginForm loginForm = new LoginForm();
 	private TextArea messageField;
 
 	@PostConstruct

@@ -48,7 +48,7 @@ public final class ChartCreator {
 		DefaultTableXYDataset dataset2 = new DefaultTableXYDataset();
 		series = new XYSeries(name, false, false);
 
-		for(int i = data.size() - 1; i >= 0; i--){
+		for (int i = data.size() - 1; i >= 0; i--) {
 			series.add(i, data.get(i));
 		}
 

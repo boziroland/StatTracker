@@ -27,7 +27,7 @@ public final class FormUtils {
 		layout.addComponent(regionBox);
 	}
 
-	public static void showMessage(TextArea messageField, String style, String message){
+	public static void showMessage(TextArea messageField, String style, String message) {
 		messageField.addStyleName(style);//addSN ha lesz idő
 		messageField.setValue(message);
 	}

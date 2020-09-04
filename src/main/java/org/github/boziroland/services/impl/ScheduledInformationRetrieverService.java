@@ -36,7 +36,7 @@ public class ScheduledInformationRetrieverService implements IScheduledInformati
 				service.requestInformation(user);
 				milestoneService.addMilestones(user);
 				checkMilestones(user);
-			}catch(Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		};

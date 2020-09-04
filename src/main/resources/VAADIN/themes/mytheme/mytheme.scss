@@ -173,13 +173,13 @@ $v-font-weight--header: 600;
 		padding: 0px !important;
 	}
 
-	//ez a tabsheet magassága
-	.v-tabsheet-tabsheetpanel {
-		//height: 600px !important;
-	}
+	//ez a tabsheet magassága, debug
+	//.v-tabsheet-tabsheetpanel {
+	//	//height: 600px !important;
+	//}
 
-	.mainLabelPadding {
-		padding-top: 8px;
+	.mainLabelFontSize {
+		font-size: 27px;
 	}
 
 }

@@ -1,6 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import org.github.boziroland.Constants;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.services.ILeagueService;
@@ -15,7 +14,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.List;
 import java.util.Optional;
 
-import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest

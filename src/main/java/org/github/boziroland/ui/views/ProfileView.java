@@ -1,11 +1,9 @@
 package org.github.boziroland.ui.views;
 
 import com.vaadin.navigator.View;
-import com.vaadin.server.ClientConnector;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
-import org.github.boziroland.Constants;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.DataUpdateException;
 import org.github.boziroland.services.impl.UserService;
@@ -14,22 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.function.BiFunction;
 
 @SpringView(name = ProfileView.NAME)
 @SpringComponent
 public class ProfileView extends VerticalLayout implements View {
 
 	public static final String NAME = "profile";
-
-	@Autowired
-	private UserService userService;
-
 	VerticalLayout formLayout = new VerticalLayout();
-
 	String[] leagueRegions = {"EUNE", "EUW", "BR", "JP", "KR", "LAN", "LAS", "OCE", "NA", "TR", "RU"};
 	String[] owRegions = {"EU", "NA", "KR", "CN", "GLOBAL"};
-
+	@Autowired
+	private UserService userService;
 	private TextField passwordField;
 	private TextField passwordConfirmField;
 	private TextField leagueNameField;
