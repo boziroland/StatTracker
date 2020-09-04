@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +42,8 @@ public class ScheduledInformationRetrieverService implements IScheduledInformati
 			}
 		};
 		LOGGER.info("ADDING USER FOR SCHEDULING WITH DELAY " + delay);
-		scheduler.scheduleAtFixedRate(task, Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS, Constants.DATA_RETRIEVE_MAX_DELAY_IN_SECONDS, TimeUnit.SECONDS);
+		Random r = new Random();
+		scheduler.scheduleAtFixedRate(task, r.nextInt((int) Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS), Constants.DATA_RETRIEVE_MAX_DELAY_IN_SECONDS, TimeUnit.SECONDS);
 	}
 
 	@SneakyThrows
