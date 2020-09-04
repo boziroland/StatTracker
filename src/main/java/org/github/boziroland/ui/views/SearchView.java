@@ -35,7 +35,7 @@ public class SearchView extends VerticalLayout implements View {
 		results.setWidthFull();
 		searchBar.setWidthFull();
 		TextField searchField = new TextField();
-		searchField.setPlaceholder("Felhasználó neve e.g. Bonifác");
+		searchField.setPlaceholder("Felhasználó neve pl. Bonifác");
 		searchField.setWidthFull();
 		Button searchButton = new Button("Keresés");
 		searchButton.addShortcutListener(new ShortcutListener("Search", ShortcutAction.KeyCode.ENTER, null) {
@@ -46,25 +46,29 @@ public class SearchView extends VerticalLayout implements View {
 		});
 		searchButton.addClickListener(event -> {
 			String name = searchField.getValue();
-			List<User> resultList = userService.findByNameContaining(name);
-
 			results.removeAllComponents();
-
-			if (resultList.size() == 0) {
+			if (name.equals("")) {
 				results.addComponent(new Label("Nincs találat."));
 			} else {
-				for (var user : resultList) {
-					Button result = new Button(user.getName());
-					if(!user.getProfilePublic()) {
-						result.setEnabled(false);
-						result.setStyleName(ValoTheme.BUTTON_BORDERLESS);
-					}else{
-						result.setStyleName(ValoTheme.BUTTON_LINK);
+				List<User> resultList = userService.findByNameContaining(name);
+
+
+				if (resultList.size() == 0) {
+					results.addComponent(new Label("Nincs találat."));
+				} else {
+					for (var user : resultList) {
+						Button result = new Button(user.getName());
+						if (!user.getProfilePublic()) {
+							result.setEnabled(false);
+							result.setStyleName(ValoTheme.BUTTON_BORDERLESS);
+						} else {
+							result.setStyleName(ValoTheme.BUTTON_LINK);
+						}
+						result.addClickListener(event1 -> {
+							getUI().getNavigator().navigateTo(MainView.NAME + "/" + user.getName());
+						});
+						results.addComponent(result);
 					}
-					result.addClickListener(event1 -> {
-						getUI().getNavigator().navigateTo(MainView.NAME + "/" + user.getName());
-					});
-					results.addComponent(result);
 				}
 			}
 		});

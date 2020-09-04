@@ -21,9 +21,6 @@ public class UserService implements IUserService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-	//@Value("${apikey}")
-	//String apiKey;
-
 	@Autowired
 	private IUserRepository userRepository;
 

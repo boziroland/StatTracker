@@ -38,11 +38,6 @@ class UserServiceTest {
 		assertEquals("bonifác", userService.list().get(0).getName());
 	}
 
-//	@Test
-//	void testSendEmailButCantBecauseNoSuchUserExists() {
-//		assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.sendEmail(TestUtils.registerAndLoginOneUser(userService),"teszt"));
-//	}
-
 	@Test
 	void testRequestInformationButCantBecauseNoSuchUserExists() throws RegistrationException {
 		assertThrows(RuntimeException.class, () -> userService.requestInformation(-1, leagueService));
@@ -79,14 +74,6 @@ class UserServiceTest {
 		User user = TestUtils.registerOneUser(userService);
 		Optional<User> expected = userService.login(user.getEmail(), "incorrectPassword");
 		assertTrue(expected.isEmpty());
-	}
-
-	//@Test
-	void testScheduling() {
-		Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS = 2;
-		Constants.DATA_RETRIEVE_MAX_DELAY_IN_SECONDS = 5;
-		User user = TestUtils.registerAndLoginOneUser(userService);
-		//await().atMost(10, TimeUnit.SECONDS).untilCall(AwaitilityClassProxy.to(userService));
 	}
 
 	@Test

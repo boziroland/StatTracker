@@ -45,7 +45,10 @@ public class LeagueData extends GeneralAPIData {
 		username = accountName;
 		setPlayer(player);
 		getPlayer().setPlayedMatches(matches.getTotalGames());
-		setLastTenMatches(matchList.subList(0, Math.min(matchList.size(), 10)));
+		if (matchList != null)
+			setLastTenMatches(matchList.subList(0, Math.min(matchList.size(), 10)));
+		else
+			setLastTenMatches(new ArrayList<>());
 	}
 
 	public LeagueData(MySummoner player, List<MyMatchReference> lastTenMatches, String accountName) {
