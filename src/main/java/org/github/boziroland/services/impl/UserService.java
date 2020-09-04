@@ -37,7 +37,7 @@ public class UserService implements IUserService {
 	private void addUsersForScheduling() {
 		var users = list();
 
-		//users.forEach(this::scheduleUser);
+		users.forEach(this::scheduleUser);
 	}
 
 	@Override
