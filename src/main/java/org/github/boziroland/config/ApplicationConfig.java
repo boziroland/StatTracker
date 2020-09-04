@@ -11,14 +11,13 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
 public class ApplicationConfig {
 
 	@Bean
-	public IOverwatchService overwatchService() {
+	public IAPIService overwatchService() {
 		return new OverwatchService();
 	}
 
@@ -28,7 +27,7 @@ public class ApplicationConfig {
 	}
 
 	@Bean
-	public ILeagueService leagueService() throws IOException {
+	public IAPIService leagueService() {
 		return new LeagueService();
 	}
 
@@ -45,6 +44,11 @@ public class ApplicationConfig {
 	@Bean
 	public ISecurityService securityService() {
 		return new SecurityService();
+	}
+
+	@Bean
+	public IScheduledInformationRetrieverService scheduledInformationRetrieverService() {
+		return new ScheduledInformationRetrieverService();
 	}
 
 	@Bean

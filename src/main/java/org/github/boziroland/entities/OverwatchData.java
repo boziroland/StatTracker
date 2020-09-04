@@ -22,7 +22,7 @@ public class OverwatchData extends GeneralAPIData {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private OWPlayer player;
 
-	public OverwatchData(String username){
+	public OverwatchData(String username) {
 		this.username = username;
 	}
 

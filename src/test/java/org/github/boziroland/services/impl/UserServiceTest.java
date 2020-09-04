@@ -1,7 +1,5 @@
 package org.github.boziroland.services.impl;
 
-import jdk.jshell.spi.ExecutionControl;
-import org.github.boziroland.Constants;
 import org.github.boziroland.entities.User;
 import org.github.boziroland.exceptions.RegistrationException;
 import org.github.boziroland.services.ILeagueService;
@@ -13,11 +11,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -38,11 +34,6 @@ class UserServiceTest {
 	void testUserServiceCreate() {
 		userService.create(new User("bonifác", "KAcsa11&", "bonifac.solyom@gmail.com", List.of(), List.of(), null, null));
 		assertEquals("bonifác", userService.list().get(0).getName());
-	}
-
-	@Test
-	void testSendEmailButCantBecauseNoSuchUserExists() {
-		assertThrows(ExecutionControl.NotImplementedException.class, () -> userService.sendEmail(TestUtils.registerAndLoginOneUser(userService),"teszt"));
 	}
 
 	@Test
@@ -81,14 +72,6 @@ class UserServiceTest {
 		User user = TestUtils.registerOneUser(userService);
 		Optional<User> expected = userService.login(user.getEmail(), "incorrectPassword");
 		assertTrue(expected.isEmpty());
-	}
-
-	//@Test
-	void testScheduling() {
-		Constants.INITIAL_DATA_RETRIEVE_DELAY_IN_SECONDS = 2;
-		Constants.DATA_RETRIEVE_DELAY_IN_SECONDS = 5;
-		User user = TestUtils.registerAndLoginOneUser(userService);
-		//await().atMost(10, TimeUnit.SECONDS).untilCall(AwaitilityClassProxy.to(userService));
 	}
 
 	@Test

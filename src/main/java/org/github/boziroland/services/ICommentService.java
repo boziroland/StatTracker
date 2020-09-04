@@ -10,6 +10,7 @@ import java.util.Optional;
 
 /**
  * The interface ICommentService defines the performable CRUD operations on the
+ *
  * @see Comment class.
  */
 public interface ICommentService {
@@ -49,7 +50,7 @@ public interface ICommentService {
 	 * @param user The user whose comments we want to find
 	 * @return The user's comments
 	 */
-	List<Comment> findByUser(User user);
+	List<Comment> findBySender(User user);
 
 	/**
 	 * Lists every comment made by the user whose id is in the parameter
@@ -57,7 +58,23 @@ public interface ICommentService {
 	 * @param userId The id of the user whose comments we want to find
 	 * @return The user's comments
 	 */
-	List<Comment> findByUserId(int userId);
+	List<Comment> findBySenderId(int userId);
+
+	/**
+	 * Lists every comment made to the user in the parameter
+	 *
+	 * @param user The user whose received comments we want to find
+	 * @return The user's received comments
+	 */
+	List<Comment> findByReceiver(User user);
+
+	/**
+	 * Lists every comment made to the user whose id is in the parameter
+	 *
+	 * @param userId The id of the user whose received comments we want to find
+	 * @return The user's received comments
+	 */
+	List<Comment> findByReceiverId(int userId);
 
 	/**
 	 * Lists every Comment
@@ -100,8 +117,8 @@ public interface ICommentService {
 	/**
 	 * Sends a comment
 	 *
-	 * @param fromId    The id of the sender of the comment
-	 * @param toId      The id of thereceiver of the comment
+	 * @param fromId  The id of the sender of the comment
+	 * @param toId    The id of thereceiver of the comment
 	 * @param message The message of the comment
 	 * @return The saved comment
 	 */

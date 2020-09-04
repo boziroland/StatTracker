@@ -1,0 +1,185 @@
+// If you edit this file you need to compile the theme. See README.md for details.
+
+// Global variable overrides. Must be declared before importing Valo.
+
+// Defines the plaintext font size, weight and family. Font size affects general component sizing.
+//$v-font-size: 16px;
+//$v-font-weight: 300;
+//$v-font-family: "Open Sans", sans-serif;
+
+// Defines the border used by all components.
+//$v-border: 1px solid (v-shade 0.7);
+//$v-border-radius: 4px;
+
+// Affects the color of some component elements, e.g Button, Panel title, etc
+//$v-background-color: hsl(210, 0%, 98%);
+// Affects the color of content areas, e.g  Panel and Window content, TextField input etc
+//$v-app-background-color: $v-background-color;
+
+// Affects the visual appearance of all components
+//$v-gradient: v-linear 8%;
+//$v-bevel-depth: 30%;
+//$v-shadow-opacity: 5%;
+
+// Defines colors for indicating status (focus, success, failure)
+//$v-focus-color: valo-focus-color(); // Calculates a suitable color automatically
+//$v-friendly-color: #2c9720;
+//$v-error-indicator-color: #ed473b;
+
+// For more information, see: https://vaadin.com/book/-/page/themes.valo.html
+// Example variants can be copy/pasted from https://vaadin.com/docs/v8/framework/articles/ValoExamples.html
+
+$v-app-loading-text: "Hang on...";
+
+$v-background-color: #323131;
+$v-focus-color: #0088ff;
+$v-font-size: 15px;
+$v-font-weight: 600;
+$v-unit-size: 42px;
+$v-bevel: false;
+$v-shadow: false;
+$v-gradient: false;
+$v-textfield-bevel: false;
+$v-textfield-shadow: false;
+$v-border-radius: 0;
+$v-border: 2px solid v-tone;
+$v-overlay-shadow: 0 0 0 2px (v-tint 10);
+$v-focus-style: $v-focus-color;
+$v-font-family: "Roboto", "Lato", sans-serif;
+$v-font-weight--header: 600;
+//$v-border: 2px solid #238be8;
+
+//noinspection CssUnknownTarget
+@import "../valo/valo.scss";
+
+@mixin mytheme {
+	@include valo;
+
+	.loginImage {
+		height: 100%;
+		transform: translate(-20%);
+	}
+
+	.red {
+		border: 2px solid red;
+	}
+
+	.grey {
+		border: 2px solid #686767;
+	}
+
+	.layoutPadding {
+		padding: 0;
+	}
+
+	.addSpacingToNavBarElements {
+		margin-right: 10px;
+		margin-left: 10px;
+		margin-top: 14px;
+	}
+
+	.navBarProperties {
+		line-height: 36px;
+	}
+
+	.navBarSpacing {
+		display: flex;
+		justify-content: space-evenly;
+	}
+
+	.alreadyRegisteredTextPadding {
+		padding-top: 9px;
+	}
+
+	.dataColumn {
+		border: none;
+		background-color: #3f3e3e;
+	}
+
+	.commentColumn {
+		border: none;
+		background-color: #3f3e3e;
+	}
+
+	.nameLabelPadding {
+		padding-bottom: 30px;
+	}
+
+	.messageColumn {
+		border: none;
+		background-color: #3f3e3e;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 350px;
+		text-align: center;
+	}
+
+	.errorColumn {
+		@extend .messageColumn;
+		color: #ffacac;
+	}
+
+	.happyColumn {
+		@extend .messageColumn;
+		color: #3bef36;
+	}
+
+	.commentSenderName {
+		@extend .commentColumn;
+		border-right: 1px solid aliceblue;
+		color: #00c4ff;
+		font-weight: bold;
+		font-size: large;
+	}
+
+	.tabSheetData {
+		padding-left: 21px;
+	}
+
+	.searchBar {
+		padding-top: 42px;
+		padding-left: 42px;
+	}
+
+	.searchResult {
+		border-bottom: 1px solid #2e96f0;
+		font-size: 20px;
+	}
+
+	.commentSectionPadding {
+		padding-top: 0px;
+	}
+
+	.tabSheetDatapaddingFirstElement {
+		padding-top: 21px;
+		padding-left: 21px;
+		padding-bottom: 0px;
+	}
+
+	.tabSheetDatapaddingMiddleElement {
+		padding-top: 0px;
+		padding-left: 21px;
+		padding-bottom: 0px;
+	}
+
+	.tabSheetDatapaddingLastElement {
+		padding-top: 0px;
+		padding-left: 21px;
+		padding-bottom: 21px;
+	}
+
+	.setLiterallyEveryPaddingToZero {
+		padding: 0px !important;
+	}
+
+	//ez a tabsheet magassága, debug
+	//.v-tabsheet-tabsheetpanel {
+	//	//height: 600px !important;
+	//}
+
+	.mainLabelFontSize {
+		font-size: 27px;
+	}
+
+}

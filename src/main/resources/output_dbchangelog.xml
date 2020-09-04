@@ -1,5 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
     <changeSet author="gyakornok (generated)" id="1596449949720-1">
         <createSequence sequenceName="ID_SEQUENCE" minValue="1" maxValue="9999999999999999999" incrementBy="1"/>
     </changeSet>
@@ -50,7 +52,7 @@
             <column name="USER_ID" type="INT">
                 <constraints primaryKey="true" primaryKeyName="CONSTRAINT_9"/>
             </column>
-            <column name="MILESTONE_NAME_USER_POINT_MAP" type="VARBINARY(255)"/>
+            <column name="MILESTONE_NAME_USER_POINT_MAP" type="INT"/>
             <column name="MILESTONE" type="VARCHAR(255)">
                 <constraints primaryKey="true" primaryKeyName="CONSTRAINT_9"/>
             </column>
@@ -62,13 +64,13 @@
             <column name="ID" type="INT">
                 <constraints primaryKey="true" primaryKeyName="CONSTRAINT_7"/>
             </column>
-            <column name="CHAMPION" type="VARBINARY(255)"/>
-            <column name="GAME_ID" type="VARBINARY(255)"/>
+            <column name="CHAMPION" type="INT"/>
+            <column name="GAME_ID" type="BIGINT"/>
             <column name="LANE" type="VARCHAR(255)"/>
             <column name="PLATFORM_ID" type="VARCHAR(255)"/>
-            <column name="QUEUE" type="VARBINARY(255)"/>
-            <column name="SEASON" type="VARBINARY(255)"/>
-            <column name="GAME_DATE" type="VARBINARY(255)"/>
+            <column name="QUEUE" type="INT"/>
+            <column name="SEASON" type="INT"/>
+            <column name="GAME_DATE" type="BIGINT"/>
         </createTable>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-8">
@@ -79,10 +81,11 @@
             <column name="ACCOUNT_ID" type="VARCHAR(255)"/>
             <column name="ID_LEAGUE" type="VARCHAR(255)"/>
             <column name="NAME" type="VARCHAR(255)"/>
-            <column name="PROFILE_ICONID" type="VARBINARY(255)"/>
+            <column name="PROFILE_ICONID" type="INT"/>
             <column name="PUUID" type="VARCHAR(255)"/>
-            <column name="REVISION_DATE" type="VARBINARY(255)"/>
-            <column name="SUMMONER_LEVEL" type="VARBINARY(255)"/>
+            <column name="REVISION_DATE" type="INT"/>
+            <column name="SUMMONER_LEVEL" type="INT"/>
+            <column name="PLAYED_MATCHES" type="INT"/>
         </createTable>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-9">
@@ -99,17 +102,17 @@
             <column name="ID" type="INT">
                 <constraints primaryKey="true" primaryKeyName="CONSTRAINT_95"/>
             </column>
-            <column name="COMPETITIVE_DAMAGE_RANK" type="VARBINARY(255)"/>
-            <column name="COMPETITIVE_SUPPORT_RANK" type="VARBINARY(255)"/>
-            <column name="COMPETITIVE_TANK_RANK" type="VARBINARY(255)"/>
-            <column name="GAMES_COMPETITIVE_DRAW" type="VARBINARY(255)"/>
-            <column name="GAMES_COMPETITIVE_LOST" type="VARBINARY(255)"/>
-            <column name="GAMES_COMPETITIVE_PLAYED" type="VARBINARY(255)"/>
-            <column name="GAMES_COMPETITIVE_WIN_RATE" type="VARBINARY(255)"/>
-            <column name="GAMES_COMPETITIVE_WON" type="VARBINARY(255)"/>
-            <column name="GAMES_QUICKPLAY_WON" type="VARBINARY(255)"/>
+            <column name="COMPETITIVE_DAMAGE_RANK" type="INT"/>
+            <column name="COMPETITIVE_SUPPORT_RANK" type="INT"/>
+            <column name="COMPETITIVE_TANK_RANK" type="INT"/>
+            <column name="GAMES_COMPETITIVE_DRAW" type="INT"/>
+            <column name="GAMES_COMPETITIVE_LOST" type="INT"/>
+            <column name="GAMES_COMPETITIVE_PLAYED" type="INT"/>
+            <column name="GAMES_COMPETITIVE_WIN_RATE" type="NUMBER(32, 2)"/>
+            <column name="GAMES_COMPETITIVE_WON" type="INT"/>
+            <column name="GAMES_QUICKPLAY_WON" type="INT"/>
             <column name="IS_PRIVATE" type="BOOLEAN"/>
-            <column name="PLAYER_LEVEL" type="VARBINARY(255)"/>
+            <column name="PLAYER_LEVEL" type="INT"/>
             <column name="PLAYTIME_COMPETITIVE" type="BIGINT"/>
             <column name="PLAYTIME_QUICKPLAY" type="BIGINT"/>
             <column name="PORTRAIT" type="VARCHAR(255)"/>
@@ -124,8 +127,28 @@
             <column name="EMAIL" type="VARCHAR(255)"/>
             <column name="NAME" type="VARCHAR(255)"/>
             <column name="PASSWORD" type="VARCHAR(255)"/>
-            <column name="LEAGUE_DATA_ID" type="INT"/>
-            <column name="OVERWATCH_DATA_ID" type="INT"/>
+            <column name="PROFILE_PUBLIC" type="BOOLEAN"/>
+            <column name="SEND_EMAILS" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gyakornok (generated)" id="1596449949720-69">
+        <createTable tableName="RUSER_LEAGUE_DATA_LIST">
+            <column name="USER_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LEAGUE_DATA_LIST_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="gyakornok (generated)" id="1596449949720-79">
+        <createTable tableName="RUSER_OVERWATCH_DATA_LIST">
+            <column name="USER_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OVERWATCH_DATA_LIST_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-12">
@@ -148,19 +171,17 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="gyakornok (generated)" id="1596449949720-14">
-        <addUniqueConstraint columnNames="COMMENTS_ON_PROFILE_ID" constraintName="UK_2F8QFVOTG0RTDUVXENW8NJUM4" tableName="RUSER_COMMENTS_ON_PROFILE"/>
+    <changeSet author="gyakornok (generated)" id="1596449949720-71">
+        <addUniqueConstraint columnNames="LEAGUE_DATA_LIST_ID" constraintName="UK_2F8QFVOTG0RTDUVXENW8NJUXD"
+                             tableName="RUSER_LEAGUE_DATA_LIST"/>
     </changeSet>
-    <changeSet author="gyakornok (generated)" id="1596449949720-15">
-        <addUniqueConstraint columnNames="COMMENTS_SENT_ID" constraintName="UK_JRPVIKOHGEYRXP6K5VKEU8DAT" tableName="RUSER_COMMENTS_SENT"/>
+    <changeSet author="gyakornok (generated)" id="1596449949720-72">
+        <addUniqueConstraint columnNames="OVERWATCH_DATA_LIST_ID" constraintName="UK_2F8QFVOTG0RTDUVXENW8NJOWO"
+                             tableName="RUSER_OVERWATCH_DATA_LIST"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-16">
-        <addUniqueConstraint columnNames="LAST_TEN_MATCHES_ID" constraintName="UK_OCD1V1A4E06UP1XC2E8SCHDG2" tableName="LEAGUE_DATA_LAST_TEN_MATCHES"/>
-    </changeSet>
-    <changeSet author="gyakornok (generated)" id="1596449949720-17">
-        <createIndex indexName="RUSEROWDATAINDEX" tableName="RUSER">
-            <column name="OVERWATCH_DATA_ID"/>
-        </createIndex>
+        <addUniqueConstraint columnNames="LAST_TEN_MATCHES_ID" constraintName="UK_OCD1V1A4E06UP1XC2E8SCHDG2"
+                             tableName="LEAGUE_DATA_LAST_TEN_MATCHES"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-18">
         <createIndex indexName="LEAGUEDATAMATCHINDEX" tableName="LEAGUE_DATA_LAST_TEN_MATCHES">
@@ -172,11 +193,6 @@
             <column name="USER_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="gyakornok (generated)" id="1596449949720-20">
-        <createIndex indexName="USERLEAGUEDATAINDEX" tableName="RUSER">
-            <column name="LEAGUE_DATA_ID"/>
-        </createIndex>
-    </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-21">
         <createIndex indexName="USERCOMMENTSUSERINDEX" tableName="RUSER_COMMENTS_SENT">
             <column name="USER_ID"/>
@@ -185,6 +201,16 @@
     <changeSet author="gyakornok (generated)" id="1596449949720-22">
         <createIndex indexName="COMMENTRECEIVERINDEX" tableName="PROFILE_COMMENTS">
             <column name="RECEIVER_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gyakornok (generated)" id="1596449949720-70">
+        <createIndex indexName="LEAGUEDATALISTINDEX" tableName="RUSER_LEAGUE_DATA_LIST">
+            <column name="USER_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gyakornok (generated)" id="1596449949720-80">
+        <createIndex indexName="OWDATALISTINDEX" tableName="RUSER_OVERWATCH_DATA_LIST">
+            <column name="USER_ID"/>
         </createIndex>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-23">
@@ -207,43 +233,110 @@
             <column name="SENDER_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="gyakornok (generated)" id="1596449949720-27">
-        <addForeignKeyConstraint baseColumnNames="OVERWATCH_DATA_ID" baseTableName="RUSER" constraintName="FK1XXB6P11MIL1UOOIRA0W9166W" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="OVERWATCH_DATA" validate="true"/>
-    </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-28">
-        <addForeignKeyConstraint baseColumnNames="LEAGUE_DATA_ID" baseTableName="LEAGUE_DATA_LAST_TEN_MATCHES" constraintName="FK9CTK3GFRC6EQTAKP4VJKE5ULK" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="LEAGUE_DATA" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="LEAGUE_DATA_ID" baseTableName="LEAGUE_DATA_LAST_TEN_MATCHES"
+                                 constraintName="FK9CTK3GFRC6EQTAKP4VJKE5ULK" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="LEAGUE_DATA" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-29">
-        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="MILESTONE_POINT_JOIN_TABLE" constraintName="FKDT96DEXIFXJSSRWK68OTAOYWY" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="MILESTONE_POINT_JOIN_TABLE"
+                                 constraintName="FKDT96DEXIFXJSSRWK68OTAOYWY" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-30">
-        <addForeignKeyConstraint baseColumnNames="LEAGUE_DATA_ID" baseTableName="RUSER" constraintName="FKEBIC6C0V1IOCIE8L0N6ENM4NR" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="LEAGUE_DATA" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="LEAGUE_DATA_LIST_ID" baseTableName="RUSER_LEAGUE_DATA_LIST"
+                                 constraintName="FKEBIC6C0V1IOCIE8L0N6ENM4NR" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="LEAGUE_DATA" validate="true"/>
+    </changeSet>
+    <changeSet author="gyakornok (generated)" id="1596449949720-86">
+        <addForeignKeyConstraint baseColumnNames="OVERWATCH_DATA_LIST_ID" baseTableName="RUSER_OVERWATCH_DATA_LIST"
+                                 constraintName="FKEBIC6C0V1IOCIE8L0N6ENM4NQ" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="OVERWATCH_DATA" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-31">
-        <addForeignKeyConstraint baseColumnNames="COMMENTS_ON_PROFILE_ID" baseTableName="RUSER_COMMENTS_ON_PROFILE" constraintName="FKI2OPMQWV0RI8H0QSXP7EGDG4S" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PROFILE_COMMENTS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="COMMENTS_ON_PROFILE_ID" baseTableName="RUSER_COMMENTS_ON_PROFILE"
+                                 constraintName="FKI2OPMQWV0RI8H0QSXP7EGDG4S" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PROFILE_COMMENTS" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-32">
-        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="RUSER_COMMENTS_SENT" constraintName="FKIUG2T7UK2S1PGEMVDTHJ641N2" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="RUSER_COMMENTS_SENT"
+                                 constraintName="FKIUG2T7UK2S1PGEMVDTHJ641N2" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-33">
-        <addForeignKeyConstraint baseColumnNames="LAST_TEN_MATCHES_ID" baseTableName="LEAGUE_DATA_LAST_TEN_MATCHES" constraintName="FKKYINKUIUBRXEB2P6WCAB35012" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MY_MATCH_REFERENCE" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="LAST_TEN_MATCHES_ID" baseTableName="LEAGUE_DATA_LAST_TEN_MATCHES"
+                                 constraintName="FKKYINKUIUBRXEB2P6WCAB35012" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="MY_MATCH_REFERENCE" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-34">
-        <addForeignKeyConstraint baseColumnNames="COMMENTS_SENT_ID" baseTableName="RUSER_COMMENTS_SENT" constraintName="FKMBBJUMFRU4DGVSTE3RTTN703A" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="PROFILE_COMMENTS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="COMMENTS_SENT_ID" baseTableName="RUSER_COMMENTS_SENT"
+                                 constraintName="FKMBBJUMFRU4DGVSTE3RTTN703A" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="PROFILE_COMMENTS" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-35">
-        <addForeignKeyConstraint baseColumnNames="RECEIVER_ID" baseTableName="PROFILE_COMMENTS" constraintName="FKOS93K5X9SCJWMBMGUH8GML5N3" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="RECEIVER_ID" baseTableName="PROFILE_COMMENTS"
+                                 constraintName="FKOS93K5X9SCJWMBMGUH8GML5N3" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-36">
-        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="RUSER_COMMENTS_ON_PROFILE" constraintName="FKPS9PYSN4MMKB6LGKMAJPPRVKE" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="RUSER_COMMENTS_ON_PROFILE"
+                                 constraintName="FKPS9PYSN4MMKB6LGKMAJPPRVKE" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
+    </changeSet>
+    <changeSet author="gyakornok (generated)" id="1596449949720-88">
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="RUSER_LEAGUE_DATA_LIST"
+                                 constraintName="FKPS9PYSN4MMKB6LGKMAJPPRKEK" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
+    </changeSet>
+    <changeSet author="gyakornok (generated)" id="1596449949720-89">
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="RUSER_OVERWATCH_DATA_LIST"
+                                 constraintName="FKPS9PYSN4MMKB6LGKMAJPPRKKE" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-37">
-        <addForeignKeyConstraint baseColumnNames="PLAYER_ID" baseTableName="OVERWATCH_DATA" constraintName="FKQ30B24DJ06V0RIPFKMN2D5MWA" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="OWPLAYER" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="PLAYER_ID" baseTableName="OVERWATCH_DATA"
+                                 constraintName="FKQ30B24DJ06V0RIPFKMN2D5MWA" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="OWPLAYER" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-38">
-        <addForeignKeyConstraint baseColumnNames="PLAYER_ID" baseTableName="LEAGUE_DATA" constraintName="FKQV3OUNR4JK5S5M8QLTY84UUU4" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="MY_SUMMONER" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="PLAYER_ID" baseTableName="LEAGUE_DATA"
+                                 constraintName="FKQV3OUNR4JK5S5M8QLTY84UUU4" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="MY_SUMMONER" validate="true"/>
     </changeSet>
     <changeSet author="gyakornok (generated)" id="1596449949720-39">
-        <addForeignKeyConstraint baseColumnNames="SENDER_ID" baseTableName="PROFILE_COMMENTS" constraintName="FKSBSNEI55MLY37C199WYY957TM" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="SENDER_ID" baseTableName="PROFILE_COMMENTS"
+                                 constraintName="FKSBSNEI55MLY37C199WYY957TM" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID" referencedTableName="RUSER" validate="true"/>
+    </changeSet>
+    <changeSet id="69420420" author="gyakornok">
+        <insert tableName="MILESTONE">
+            <column name="ID" valueComputed="ID_SEQUENCE.nextval"/>
+            <column name="DESCRIPTION" value="Érd el a 100-as szintet League of Legends-ben"/>
+            <column name="GAME" value="0"/>
+            <column name="NAME" value="100-as szint LOL"/>
+            <column name="REQUIREMENT" value="100"/>
+        </insert>
+        <insert tableName="MILESTONE">
+            <column name="ID" valueComputed="ID_SEQUENCE.nextval"/>
+            <column name="DESCRIPTION" value="Érd el az 1100-as szintet Overwatch-ban"/>
+            <column name="GAME" value="1"/>
+            <column name="NAME" value="1100-as szint OW"/>
+            <column name="REQUIREMENT" value="1100"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

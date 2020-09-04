@@ -26,8 +26,7 @@ class LeagueServiceTest {
 	IMilestoneService milestoneService;
 
 	@Test
-	void testRetrieveLeagueData(){
-		//TODO TESZTEK
+	void testRetrieveLeagueData() {
 		var user = TestUtils.registerAndLoginUserWhoHasLeagueName(userService);
 
 		user.ifPresent(value -> userService.requestInformation(value, leagueService));

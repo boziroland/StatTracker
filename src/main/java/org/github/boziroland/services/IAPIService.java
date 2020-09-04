@@ -2,12 +2,6 @@ package org.github.boziroland.services;
 
 import org.github.boziroland.entities.User;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-
 /**
  * The interface IAPIService provides a common base interface for the specific API data classes.
  */
@@ -20,4 +14,11 @@ public interface IAPIService {
 	 */
 	void requestInformation(User user);
 
+	/**
+	 * Checks if the user whose name is in the parameter can be queried from the game's API
+	 *
+	 * @param accountId The user's account name
+	 * @return true, if they can be, false otherwise
+	 */
+	boolean checkUser(String accountId);
 }

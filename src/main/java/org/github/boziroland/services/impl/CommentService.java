@@ -38,16 +38,31 @@ public class CommentService implements ICommentService {
 	}
 
 	@Override
-	public List<Comment> findByUser(User user) {
+	public List<Comment> findBySender(User user) {
 		return commentRepository.findBySenderId(user.getId());
 	}
 
 	@Override
-	public List<Comment> findByUserId(int userId) {
+	public List<Comment> findBySenderId(int userId) {
 		Optional<User> user = userService.findById(userId);
 
 		if (user.isPresent())
-			return findByUser(user.get());
+			return findBySender(user.get());
+
+		return List.of();
+	}
+
+	@Override
+	public List<Comment> findByReceiver(User user) {
+		return commentRepository.findByReceiverId(user.getId());
+	}
+
+	@Override
+	public List<Comment> findByReceiverId(int userId) {
+		Optional<User> user = userService.findById(userId);
+
+		if (user.isPresent())
+			return findByReceiver(user.get());
 
 		return List.of();
 	}
@@ -87,7 +102,7 @@ public class CommentService implements ICommentService {
 	public Comment sendComment(Integer fromId, Integer toId, String message) {
 		var from = userService.findById(fromId);
 		var to = userService.findById(toId);
-		if(from.isPresent() && to.isPresent()){
+		if (from.isPresent() && to.isPresent()) {
 			return sendComment(from.get(), to.get(), message);
 		}
 		return null;

@@ -30,7 +30,7 @@ public class CommentController {
 	@GetMapping("/{id}")
 	public ResponseEntity<List<Comment>> userCommentsById(@PathVariable("id") Integer id) {
 		LOGGER.info("GET Request: /comments/{}", id);
-		return ResponseEntity.ok(commentService.findByUserId(id));
+		return ResponseEntity.ok(commentService.findBySenderId(id));
 	}
 
 	@PostMapping("/post")

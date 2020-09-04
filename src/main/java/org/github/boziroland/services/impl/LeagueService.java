@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import net.rithms.riot.api.ApiConfig;
 import net.rithms.riot.api.RiotApi;
 import net.rithms.riot.api.RiotApiException;
+import net.rithms.riot.api.endpoints.match.dto.MatchList;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
 import net.rithms.riot.constant.Platform;
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,12 +41,12 @@ public class LeagueService implements ILeagueService {
 
 	private RiotApi api;
 
-	public LeagueService() throws IOException {
+	public LeagueService() {
 		init();
 	}
 
 	@SneakyThrows
-	void init() {
+	private void init() {
 		FileReader reader = new FileReader("src/main/resources/properties/riotAPI.properties");
 		Properties p = new Properties();
 		p.load(reader);
@@ -88,26 +88,42 @@ public class LeagueService implements ILeagueService {
 	@Override
 	public void requestInformation(User user) {
 		String leagueAccountId = user.getLeagueID();
+		LOGGER.info("Trying to get League information for: " + leagueAccountId + " (" + user.getName() + ")");
 		if (leagueAccountId != null) {
 			Platform platform = getRegion(leagueAccountId);
 			String riotName = leagueAccountId.substring(0, leagueAccountId.lastIndexOf("-"));
 
 			LOGGER.info("Getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
-
+			Summoner summoner;
 			try {
-
-				Summoner summoner = api.getSummonerByName(platform, riotName);
-				List<MatchReference> matchList = api.getMatchListByAccountId(platform, summoner.getAccountId()).getMatches();
-
-				//var savedData = createOrUpdate(summoner, matchList.subList(0, 10), leagueAccountId);
-
-				user.setLeagueData(new LeagueData(summoner, matchList.subList(0, 10), leagueAccountId));
+				summoner = api.getSummonerByName(platform, riotName);
 			} catch (RiotApiException e) {
-				e.printStackTrace();
+				summoner = new Summoner();
 			}
-		} else {
-			user.setLeagueData(new LeagueData());
+
+			MatchList matchList;
+			try {
+				matchList = api.getMatchListByAccountId(platform, summoner.getAccountId());
+			} catch (RiotApiException e) {
+				matchList = new MatchList();
+			}
+
+			user.setLeagueData(new LeagueData(summoner, matchList, leagueAccountId));
+			LOGGER.info("Done getting League information for: " + leagueAccountId + " (" + user.getName() + ")");
 		}
+	}
+
+	@Override
+	public boolean checkUser(String accountId) {
+		accountId = accountId.replace("#", "-");
+		Platform platform = getRegion(accountId);
+		String riotName = accountId.substring(0, accountId.lastIndexOf("-"));
+		try {
+			api.getSummonerByName(platform, riotName);
+		} catch (RiotApiException e) {
+			return false;
+		}
+		return true;
 	}
 
 	private Platform getRegion(String accountId) {

@@ -13,18 +13,8 @@ import java.util.Properties;
 public final class Translator {
 
 	private static Translator instance = null;
-
-	private Translate translate;
-
 	private static String[] languageArray;
-
-	public static Translator getInstance() {
-		if (instance == null) {
-			instance = new Translator();
-		}
-
-		return instance;
-	}
+	private final Translate translate;
 
 	@SneakyThrows
 	private Translator() {
@@ -39,6 +29,14 @@ public final class Translator {
 				.build().getService();
 
 		fillLanguageArray();
+	}
+
+	public static Translator getInstance() {
+		if (instance == null) {
+			instance = new Translator();
+		}
+
+		return instance;
 	}
 
 	@SneakyThrows
@@ -63,6 +61,15 @@ public final class Translator {
 		};
 	}
 
+	private static boolean isValidLanguage(String lang) {
+
+		for (String language : languageArray) {
+			if (lang.equalsIgnoreCase(language))
+				return true;
+		}
+		return false;
+	}
+
 	public String translate(String from, String to, String message) {
 
 		String result;
@@ -84,14 +91,5 @@ public final class Translator {
 		}
 
 		return result;
-	}
-
-	private static boolean isValidLanguage(String lang) {
-
-		for (String language : languageArray) {
-			if (lang.equalsIgnoreCase(language))
-				return true;
-		}
-		return false;
 	}
 }

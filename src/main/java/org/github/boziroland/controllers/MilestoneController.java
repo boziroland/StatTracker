@@ -1,6 +1,5 @@
 package org.github.boziroland.controllers;
 
-import org.github.boziroland.Constants;
 import org.github.boziroland.entities.Milestone;
 import org.github.boziroland.services.IMilestoneService;
 import org.slf4j.Logger;
@@ -26,13 +25,13 @@ public class MilestoneController {
 	@GetMapping
 	public ResponseEntity<List<Milestone>> milestones() {
 		LOGGER.info("GET Request: /milestones");
-		return ResponseEntity.ok(Constants.getMilestonesAsList());
+		return ResponseEntity.ok(milestoneService.getMilestonesAsList());
 	}
 
 	@GetMapping("/league")
 	public ResponseEntity<List<Milestone>> leagueMilestones() {
 		LOGGER.info("GET Request: /league");
-		List<Milestone> milestones = Constants.getMilestonesAsList();
+		List<Milestone> milestones = milestoneService.getMilestonesAsList();
 		List<Milestone> ret = new ArrayList<>();
 		for (var m : milestones)
 			if (m.getGame() == Milestone.Game.LEAGUE)
@@ -43,7 +42,7 @@ public class MilestoneController {
 	@GetMapping("/overwatch")
 	public ResponseEntity<List<Milestone>> overwatchMilestones() {
 		LOGGER.info("GET Request: /overwatch");
-		List<Milestone> milestones = Constants.getMilestonesAsList();
+		List<Milestone> milestones = milestoneService.getMilestonesAsList();
 		List<Milestone> ret = new ArrayList<>();
 		for (var m : milestones)
 			if (m.getGame() == Milestone.Game.OVERWATCH)
